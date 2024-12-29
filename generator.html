@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHA256 to MD5 Converter</title>
+    <!-- Import CryptoJS Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+    <h1>SHA256 to MD5 Converter</h1>
+    <form id="hashForm">
+        <label for="inputText">Enter text:</label>
+        <input type="text" id="inputText" placeholder="Type your text here" required>
+        <button type="button" onclick="convertHash()">Convert</button>
+    </form>
+
+    <h3>Results:</h3>
+    <p><strong>SHA256:</strong> <span id="sha256Result"></span></p>
+    <p><strong>MD5:</strong> <span id="md5Result"></span></p>
+
+    <script>
+        // Function to convert input to SHA256 and then to MD5
+        function convertHash() {
+            // Get user input
+            const inputText = document.getElementById('inputText').value;
+
+            // Check if input is not empty
+            if (!inputText) {
+                alert('Please enter some text.');
+                return;
+            }
+
+            // Generate SHA256 hash
+            const sha256Hash = CryptoJS.SHA256(inputText).toString(CryptoJS.enc.Hex);
+
+            // Convert SHA256 hash to MD5 hash
+            const md5Hash = CryptoJS.MD5(sha256Hash).toString(CryptoJS.enc.Hex);
+
+            // Display results
+            document.getElementById('sha256Result').innerText = sha256Hash;
+            document.getElementById('md5Result').innerText = md5Hash;
+        }
+    </script>
+</body>
+</html>
