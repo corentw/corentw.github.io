@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashing Tool</title>
+    <!-- Import CryptoJS Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- Import js-sha3 Library for Keccak -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
+</head>
+<body>
+    <h1>Hashing Tool with Multiple Algorithms</h1>
+    <form id="hashForm">
+        <label for="inputText">Enter text:</label>
+        <input type="text" id="inputText" placeholder="Type your text here" required>
+        <button type="button" onclick="generateHashes()">Generate Hashes</button>
+    </form>
+
+    <h3>Results:</h3>
+    <p><strong>MD5:</strong> <span id="md5Result"></span></p>
+    <p><strong>SHA-1:</strong> <span id="sha1Result"></span></p>
+    <p><strong>SHA-256:</strong> <span id="sha256Result"></span></p>
+    <p><strong>SHA-512:</strong> <span id="sha512Result"></span></p>
+    <p><strong>Keccak-256:</strong> <span id="keccak256Result"></span></p>
+    <p><strong>Keccak-512:</strong> <span id="keccak512Result"></span></p>
+
+    <script>
+        function generateHashes() {
+            // Get user input
+            const inputText = document.getElementById('inputText').value;
+
+            // Check if input is not empty
+            if (!inputText) {
+                alert('Please enter some text.');
+                return;
+            }
+
+            // Generate hashes using CryptoJS and js-sha3
+            const md5Hash = CryptoJS.MD5(inputText).toString(CryptoJS.enc.Hex);
+            const sha1Hash = CryptoJS.SHA1(inputText).toString(CryptoJS.enc.Hex);
+            const sha256Hash = CryptoJS.SHA256(inputText).toString(CryptoJS.enc.Hex);
+            const sha512Hash = CryptoJS.SHA512(inputText).toString(CryptoJS.enc.Hex);
+            const keccak256Hash = sha3_256(inputText); // From js-sha3 library
+            const keccak512Hash = sha3_512(inputText); // From js-sha3 library
+
+            // Display results
+            document.getElementById('md5Result').innerText = md5Hash;
+            document.getElementById('sha1Result').innerText = sha1Hash;
+            document.getElementById('sha256Result').innerText = sha256Hash;
+            document.getElementById('sha512Result').innerText = sha512Hash;
+            document.getElementById('keccak256Result').innerText = keccak256Hash;
+            document.getElementById('keccak512Result').innerText = keccak512Hash;
+        }
+    </script>
+</body>
+</html>
