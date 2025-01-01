@@ -45,10 +45,15 @@
         async function generateRandomKeys() {
             const addressCount = document.getElementById("addressCount").value;
             const addressContainer = document.getElementById("addresses");
-            addressContainer.innerHTML = 'x';  // Clear previous addresses
+            addressContainer.innerHTML = 'y';  // Clear previous addresses
             const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
 
             for (let i = 0; i < addressCount; i++) {
+
+
+                addressContainer.innerHTML =addressCount;
+
+                
                 try {
                     // Generate a new keypair
                     const keyPair = solanaWeb3.Keypair.generate();
