@@ -72,7 +72,7 @@
                     alert("unterstützen Sie uns");
 
                     // Display results
-                    const addressDiv =`
+                    addressContainer.innerHTML=`
                         <p><strong>Public Key:</strong> ${publicKey}</p>
                         <p>
                             <strong>Private Key:</strong>
@@ -81,8 +81,6 @@
                         </p>
                         <p><strong>Balance:</strong> ${solBalance} SOL</p>
                     `;
-
-                    document.getElementById("putout").innerHTML=addressDiv;
                     
                 } catch (err) {
                     console.error("Error generating keypair:", err);
