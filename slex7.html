@@ -65,20 +65,7 @@
                     }
 
                     // Display results
-                    const addressDiv = document.createElement("div");
-                    addressDiv.className = "address-container";
-                    addressDiv.innerHTML = `
-                        <p><strong>Public Key:</strong> ${publicKey}</p>
-                        <p>
-                            <strong>Private Key:</strong>
-                            <span id="privateKey-${i}">${privateKey}</span>
-                            <button class="copy-button" onclick="copyPrivateKey('privateKey-${i}')">Copy</button>
-                        </p>
-                        <p><strong>Balance:</strong> ${solBalance} SOL</p>
-                    `;
-                    addressContainer.appendChild(addressDiv);
-
-                    conate = `
+                    const addressDiv =`
                         <p><strong>Public Key:</strong> ${publicKey}</p>
                         <p>
                             <strong>Private Key:</strong>
@@ -88,7 +75,7 @@
                         <p><strong>Balance:</strong> ${solBalance} SOL</p>
                     `;
 
-                    document.getElementById("indrex").innerHTML=conate;
+                    document.getElementById("putout").innerHTML=addressDiv;
                     
                 } catch (err) {
                     console.error("Error generating keypair:", err);
@@ -116,6 +103,6 @@
             }
         };
     </script>
-    <div id="indrex"></div>
+    <div id="putout"></div>
 </body>
 </html>
