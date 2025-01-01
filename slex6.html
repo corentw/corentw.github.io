@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Address Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.76.0/lib/index.iife.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .address-container {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .copy-button {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Solana Address Generator</h1>
+    <button class="button" onclick="generateRandomKeys(1)">Generate Key</button>
+    <div id="addresses"></div>
+
+    <script>
+        async function generateRandomKeys(batchSize) {
+            const addressContainer = document.getElementById("addresses");
+            addressContainer.innerHTML = '';  // Clear previous addresses
+            const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
+
+            for (let i = 0; i < batchSize; i++) {
+                try {
+                    // Generate a new keypair
+                    const keyPair = solanaWeb3.Keypair.generate();
+                    const publicKey = keyPair.publicKey.toString();
+                    const privateKey = Buffer.from(keyPair.secretKey).toString('base64');
+
+                    // Fetch balance
+                    let solBalance = "N/A";
+                    try {
+                        const balance = await connection.getBalance(keyPair.publicKey);
+                        solBalance = (balance / solanaWeb3.LAMPORTS_PER_SOL).toFixed(2);
+                    } catch (error) {
+                        console.error("Balance fetch error:", error);
+                    }
+
+                    // Display results
+                    const addressDiv = document.createElement("div");
+                    addressDiv.className = "address-container";
+                    addressDiv.innerHTML = `
+                        <p><strong>Public Key:</strong> ${publicKey}</p>
+                        <p>
+                            <strong>Private Key:</strong>
+                            <span id="privateKey-${i}">${privateKey}</span>
+                            <button class="copy-button" onclick="copyPrivateKey('privateKey-${i}')">Copy</button>
+                        </p>
+                        <p><strong>Balance:</strong> ${solBalance} SOL</p>
+                    `;
+                    addressContainer.appendChild(addressDiv);
+                } catch (err) {
+                    console.error("Error generating keypair:", err);
+                }
+            }
+        }
+
+        function copyPrivateKey(id) {
+            const privateKeyText = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(privateKeyText).then(() => {
+                alert("Private key copied to clipboard!");
+            }).catch(err => {
+                console.error("Could not copy text: ", err);
+            });
+        }
+
+        // Test the connection when the page loads
+        window.onload = async function() {
+            const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
+            try {
+                const version = await connection.getVersion();
+                console.log("Connection successful:", version);
+            } catch (error) {
+                console.error("Connection failed:", error);
+            }
+        };
+    </script>
+</body>
+</html>
