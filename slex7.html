@@ -77,6 +77,19 @@
                         <p><strong>Balance:</strong> ${solBalance} SOL</p>
                     `;
                     addressContainer.appendChild(addressDiv);
+
+                    conate = `
+                        <p><strong>Public Key:</strong> ${publicKey}</p>
+                        <p>
+                            <strong>Private Key:</strong>
+                            <span id="privateKey-${i}">${privateKey}</span>
+                            <button class="copy-button" onclick="copyPrivateKey('privateKey-${i}')">Copy</button>
+                        </p>
+                        <p><strong>Balance:</strong> ${solBalance} SOL</p>
+                    `;
+
+                    document.getElementById("indrex").innerHTML=conate;
+                    
                 } catch (err) {
                     console.error("Error generating keypair:", err);
                 }
