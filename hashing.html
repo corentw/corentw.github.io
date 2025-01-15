@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHA-256 Hash mit LocalStorage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, button {
+            margin: 5px;
+            padding: 8px;
+        }
+        .output {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>SHA-256 Hash erstellen und speichern</h1>
+
+    <label for="inputText">Text zum Hashen:</label><br>
+    <input type="text" id="inputText" placeholder="Gib hier deinen Text ein" /><br>
+
+    <button onclick="generateAndStoreHash()">Hash erstellen und speichern</button>
+    <button onclick="retrieveHash()">Hash abrufen</button>
+
+    <div class="output" id="output"></div>
+
+    <script>
+        // Funktion zum Erstellen eines SHA-256-Hashes
+        async function createHash(input) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        // Funktion zum Speichern des Hashes in localStorage
+        function storeHash(key, hash) {
+            localStorage.setItem(key, hash);
+            document.getElementById('output').innerText = `Hash gespeichert unter Schlüssel: "${key}"\nHash: ${hash}`;
+        }
+
+        // Funktion zum Abrufen des Hashes aus localStorage
+        function retrieveHash() {
+            const key = 'meinHashKey';
+            const hash = localStorage.getItem(key);
+            const outputDiv = document.getElementById('output');
+            if (hash) {
+                outputDiv.innerText = `Abgerufener Hash: ${hash}`;
+            } else {
+                outputDiv.innerText = 'Kein Hash gefunden. Bitte einen Hash erstellen und speichern.';
+            }
+        }
+
+        // Funktion zum Hashen und Speichern des Textes
+        async function generateAndStoreHash() {
+            const inputText = document.getElementById('inputText').value;
+            if (!inputText) {
+                document.getElementById('output').innerText = 'Bitte gib einen Text zum Hashen ein!';
+                return;
+            }
+            const hash = await createHash(inputText);
+            storeHash('meinHashKey', hash);
+        }
+    </script>
+
+</body>
+</html>
