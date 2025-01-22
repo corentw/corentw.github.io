@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abenteuer-Spiel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('images/background.png') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        #main-menu, #game-container, #pause-menu {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #main-menu.active, #game-container.active, #pause-menu.active {
+            display: flex;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #4CAF50;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .character, .item, .obstacle, .power-up {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .character {
+            width: 100px;
+            height: 100px;
+            background: url('./images/character.png') no-repeat center;
+            background-size: contain;
+            animation: bounce 2s infinite;
+        }
+
+        .item {
+            width: 80px;
+            height: 80px;
+            background: url('./images/item.png') no-repeat center;
+            background-size: contain;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .obstacle {
+            width: 90px;
+            height: 90px;
+            background: url('./images/obstacle.png') no-repeat center;
+            background-size: contain;
+        }
+
+        .power-up {
+            width: 70px;
+            height: 70px;
+            background: url('./images/power-up.png') no-repeat center;
+            background-size: contain;
+            animation: glow 3s infinite alternate;
+        }
+
+        .score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px 5px rgba(255, 215, 0, 0.5); }
+            100% { box-shadow: 0 0 20px 10px rgba(255, 215, 0, 1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hauptmenü -->
+    <div id="main-menu" class="active">
+        <h1>Abenteuer-Spiel</h1>
+        <button onclick="startGame()">Spiel starten</button>
+    </div>
+
+    <!-- Spielbereich -->
+    <div id="game-container">
+        <div class="score-board">
+            Punkte: <span id="score">0</span> | Level: <span id="level">1</span>
+        </div>
+        <div id="character" class="character"></div>
+    </div>
+
+    <!-- Pausenmenü -->
+    <div id="pause-menu">
+        <h2>Pause</h2>
+        <button onclick="resumeGame()">Weiter</button>
+        <button onclick="restartGame()">Neustart</button>
+        <button onclick="quitGame()">Beenden</button>
+    </div>
+
+    <script>
+        const mainMenu = document.getElementById('main-menu');
+        const gameContainer = document.getElementById('game-container');
+        const pauseMenu = document.getElementById('pause-menu');
+        const character = document.getElementById('character');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+
+        let score = 0;
+        let level = 1;
+        let dragging = false;
+        let offsetX = 0, offsetY = 0;
+        let gamePaused = false;
+
+        // Startet das Spiel
+        function startGame() {
+            mainMenu.classList.remove('active');
+            gameContainer.classList.add('active');
+            resetGame();
+        }
+
+        // Spiel-Reset
+        function resetGame() {
+            score = 0;
+            level = 1;
+            updateScore();
+            generateItems(level);
+            generateObstacles(level);
+            generatePowerUps();
+        }
+
+        // Aktualisiert die Punktzahl
+        function updateScore() {
+            scoreDisplay.textContent = score;
+            levelDisplay.textContent = level;
+        }
+
+        // Pausiert das Spiel
+        function pauseGame() {
+            gamePaused = true;
+            gameContainer.classList.remove('active');
+            pauseMenu.classList.add('active');
+        }
+
+        // Fortsetzen
+        function resumeGame() {
+            gamePaused = false;
+            gameContainer.classList.add('active');
+            pauseMenu.classList.remove('active');
+        }
+
+        // Neustart
+        function restartGame() {
+            pauseMenu.classList.remove('active');
+            gameContainer.classList.add('active');
+            resetGame();
+        }
+
+        // Beenden
+        function quitGame() {
+            pauseMenu.classList.remove('active');
+            mainMenu.classList.add('active');
+        }
+
+        // Generiert Items
+        function generateItems(level) {
+            const itemCount = level + 2;
+            for (let i = 0; i < itemCount; i++) {
+                createObject('item', './images/item.png');
+            }
+        }
+
+        // Generiert Hindernisse
+        function generateObstacles(level) {
+            for (let i = 0; i < level; i++) {
+                createObject('obstacle', './images/obstacle.png', true);
+            }
+        }
+
+        // Generiert Power-Ups
+        function generatePowerUps() {
+            createObject('power-up', './images/power-up.png');
+        }
+
+        // Hilfsfunktion zum Erstellen eines Objekts
+        function createObject(className, imgSrc, isMovable = false) {
+            const obj = document.createElement('div');
+            obj.className = className;
+            obj.style.left = `${Math.random() * 90}%`;
+            obj.style.top = `${Math.random() * 90}%`;
+            obj.style.backgroundImage = `url(${imgSrc})`;
+
+            if (isMovable) moveObstacle(obj);
+            gameContainer.appendChild(obj);
+        }
+
+        // Hindernisse bewegen
+        function moveObstacle(obstacle) {
+            setInterval(() => {
+                if (gamePaused) return;
+                obstacle.style.left = `${Math.random() * 90}%`;
+                obstacle.style.top = `${Math.random() * 90}%`;
+            }, 2000);
+        }
+
+        // Kollisionsprüfung und Power-Up-Funktionalität
+        function checkCollision() {
+            const characterRect = character.getBoundingClientRect();
+            const items = document.querySelectorAll('.item');
+            const obstacles = document.querySelectorAll('.obstacle');
+            const powerUps = document.querySelectorAll('.power-up');
+
+            items.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                if (isColliding(characterRect, rect)) {
+                    item.remove();
+                    score++;
+                    updateScore();
+                }
+            });
+
+            obstacles.forEach(obstacle => {
+                const rect = obstacle.getBoundingClientRect();
+                if (isColliding(characterRect, rect)) {
+                    alert('Game Over!');
+                    resetGame();
+                }
+            });
+
+            powerUps.forEach(powerUp => {
+                const rect = powerUp.getBoundingClientRect();
+                if (isColliding(characterRect, rect)) {
+                    powerUp.remove();
+                    alert('Power-Up aktiviert!');
+                }
+            });
+        }
+
+        // Kollisionslogik
+        function isColliding(rect1, rect2) {
+            return (
+                rect1.left < rect2.right &&
+                rect1.right > rect2.left &&
+                rect1.top < rect2.bottom &&
+                rect1.bottom > rect2.top
+            );
+        }
+
+        // Drag-and-Drop Funktionalität
+        character.addEventListener('mousedown', startDrag);
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('mouseup', endDrag);
+
+        function startDrag(e) {
+            dragging = true;
+            const rect = character.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+        }
+
+        function drag(e) {
+            if (!dragging) return;
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+            character.style.left = `${x}px`;
+            character.style.top = `${y}px`;
+            checkCollision();
+        }
+
+        function endDrag() {
+            dragging = false;
+        }
+    </script>
+</body>
+</html>
