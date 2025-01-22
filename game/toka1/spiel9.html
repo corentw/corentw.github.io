@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abenteuer-Spiel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('images/background.png') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+            animation: bg-move 30s linear infinite;
+        }
+
+        @keyframes bg-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            z-index: 1000;
+        }
+
+        #menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            z-index: 100;
+        }
+
+        #menu button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #menu button:hover {
+            background: #0056b3;
+        }
+
+        .character-select-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .character-select {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: white;
+        }
+
+        .character-select img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .character-select img:hover {
+            border: 2px solid #007BFF;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .character {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            background-size: contain;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            z-index: 2;
+        }
+
+        .item {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            z-index: 1;
+            animation: float 2s infinite ease-in-out, glow 1.5s infinite alternate;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(255, 255, 0, 1); }
+        }
+
+        .score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 3;
+            animation: pulse 1s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        #back-to-menu-btn {
+            margin-left: 20px;
+            padding: 10px;
+            font-size: 16px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #back-to-menu-btn:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">Lade Spiel...</div>
+    <div id="menu">
+        <h1>Abenteuer-Spiel</h1>
+        <button id="start-btn">Spiel starten</button>
+        <button id="fullscreen-btn">Vollbild aktivieren</button>
+        <h3>Charakter auswählen:</h3>
+        <div class="character-select-container">
+            <div class="character-select" data-character="character1">
+                <img src="images/character1_ico.jpg" alt="Charakter 1">
+                <span>Haylie</span>
+            </div>
+            <div class="character-select" data-character="character2">
+                <img src="images/character2_ico.jpg" alt="Charakter 2">
+                <span>Amelina</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-container" style="display: none;">
+        <div class="score-board">
+            Punkte: <span id="score">0</span> | Level: <span id="level">1</span>
+            <button id="back-to-menu-btn">Menü</button>
+        </div>
+        <div id="character" class="character" style="background: url('./images/character1.png') no-repeat center;"></div>
+    </div>
+
+    <audio id="collect-sound" src="sounds/collect.mp3"></audio>
+    <audio id="levelup-sound" src="sounds/levelup.mp3"></audio>
+
+    <script>
+        const loader = document.getElementById('loader');
+        const menu = document.getElementById('menu');
+        const startBtn = document.getElementById('start-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const gameContainer = document.getElementById('game-container');
+        const character = document.getElementById('character');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+        const backToMenuBtn = document.getElementById('back-to-menu-btn');
+        const collectSound = document.getElementById('collect-sound');
+        const levelUpSound = document.getElementById('levelup-sound');
+        const characterSelectButtons = document.querySelectorAll('.character-select');
+
+        let selectedCharacter = 'character1';
+        let score = 0;
+        let level = 1;
+
+        setTimeout(() => {
+            loader.style.display = 'none';
+            menu.style.display = 'flex';
+        }, 2000);
+
+        characterSelectButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                selectedCharacter = button.getAttribute('data-character');
+                character.style.background = `url('./images/${selectedCharacter}.png') no-repeat center`;
+                character.style.backgroundSize = 'contain';
+            });
+        });
+
+        startBtn.addEventListener('click', () => {
+            menu.style.display = 'none';
+            gameContainer.style.display = 'flex';
+            generateItems(level);
+            setInterval(checkCollision, 50);
+        });
+
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        backToMenuBtn.addEventListener('click', () => {
+            gameContainer.style.display = 'none';
+            menu.style.display = 'flex';
+            resetGame();
+        });
+
+        function resetGame() {
+            score = 0;
+            level = 1;
+            scoreDisplay.textContent = score;
+            levelDisplay.textContent = level;
+            document.querySelectorAll('.item').forEach(item => item.remove());
+        }
+
+        function generateItems(level) {
+            document.querySelectorAll('.item').forEach(item => item.remove());
+            const itemCount = level + 3;
+            for (let i = 0; i < itemCount; i++) {
+                const item = document.createElement('div');
+                item.className = 'item';
+                item.style.backgroundImage = "url('images/item1.png')";
+                item.style.left = `${Math.random() * (gameContainer.clientWidth - 50)}px`;
+                item.style.top = `${Math.random() * (gameContainer.clientHeight - 50)}px`;
+                gameContainer.appendChild(item);
+            }
+        }
+
+        function checkCollision() {
+            const characterRect = character.getBoundingClientRect();
+            const items = document.querySelectorAll('.item');
+            items.forEach(item => {
+                const itemRect = item.getBoundingClientRect();
+                if (
+                    characterRect.left < itemRect.right &&
+                    characterRect.right > itemRect.left &&
+                    characterRect.top < itemRect.bottom &&
+                    characterRect.bottom > itemRect.top
+                ) {
+                    collectSound.play();
+                    item.remove();
+                    score++;
+                    scoreDisplay.textContent = score;
+                    if (document.querySelectorAll('.item').length === 0) {
+                        nextLevel();
+                    }
+                }
+            });
+        }
+
+        function nextLevel() {
+            level++;
+            levelDisplay.textContent = level;
+            levelUpSound.play();
+            generateItems(level);
+        }
+    </script>
+</body>
+</html>
