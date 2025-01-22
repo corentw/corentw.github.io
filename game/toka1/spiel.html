@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intelligentes Abenteuer-Spiel</title>
+    <title>Interaktives Abenteuer-Spiel</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #87ceeb, #fff);
+            font-family: 'Comic Sans MS', sans-serif;
+            background: url('./background.png') no-repeat center center fixed;
+            background-size: cover;
             overflow: hidden;
         }
 
@@ -17,45 +18,51 @@
             position: relative;
             width: 100vw;
             height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .character {
             position: absolute;
-            width: 80px;
-            height: 80px;
-            background: url('https://via.placeholder.com/80x80') no-repeat center;
+            width: 100px;
+            height: 100px;
+            background: url('./images/character.png') no-repeat center;
             background-size: contain;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             border-radius: 50%;
+            animation: bounce 2s infinite;
+            cursor: grab;
         }
 
         .item {
             position: absolute;
-            width: 60px;
-            height: 60px;
-            background: url('https://via.placeholder.com/60x60') no-repeat center;
+            width: 80px;
+            height: 80px;
+            background: url('./images/item.png') no-repeat center;
             background-size: contain;
-            animation: float 2s infinite ease-in-out;
+            animation: float 3s infinite ease-in-out;
         }
 
         .score-board {
             position: absolute;
             top: 10px;
             left: 10px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            font-size: 18px;
-            color: #333;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
         @keyframes float {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
     </style>
 </head>
@@ -76,18 +83,13 @@
         let score = parseInt(localStorage.getItem('score')) || 0;
         let level = parseInt(localStorage.getItem('level')) || 1;
 
-        let dragging = false;
-        let offsetX = 0, offsetY = 0;
-
-        // Initialisiere Spielfigur-Position
-        character.style.left = '50%';
-        character.style.top = '50%';
-
-        // Punkte und Level anzeigen
         scoreDisplay.textContent = score;
         levelDisplay.textContent = level;
 
-        // Touch- und Drag-Event-Listener für die Spielfigur
+        // Drag-and-drop functionality
+        let dragging = false;
+        let offsetX = 0, offsetY = 0;
+
         character.addEventListener('mousedown', startDrag);
         character.addEventListener('touchstart', startDrag);
         window.addEventListener('mousemove', drag);
@@ -110,7 +112,6 @@
             const x = event.clientX - offsetX;
             const y = event.clientY - offsetY;
 
-            // Begrenzen, damit die Spielfigur im Spielfeld bleibt
             const maxWidth = gameContainer.clientWidth - character.offsetWidth;
             const maxHeight = gameContainer.clientHeight - character.offsetHeight;
 
@@ -124,9 +125,8 @@
             dragging = false;
         }
 
-        // Generiere Items für das Level
         function generateItems(level) {
-            const itemCount = level + 2; // Mehr Items mit steigendem Level
+            const itemCount = level + 2;
             gameContainer.querySelectorAll('.item').forEach(item => item.remove());
 
             for (let i = 0; i < itemCount; i++) {
@@ -138,7 +138,6 @@
             }
         }
 
-        // Kollisionsprüfung
         function checkCollision() {
             const characterRect = character.getBoundingClientRect();
             const items = document.querySelectorAll('.item');
@@ -152,15 +151,11 @@
                     characterRect.top < itemRect.bottom &&
                     characterRect.bottom > itemRect.top
                 ) {
-                    // Kollision erkannt
                     item.remove();
                     score++;
                     scoreDisplay.textContent = score;
-
-                    // Fortschritt speichern
                     localStorage.setItem('score', score);
 
-                    // Prüfen, ob alle Items gesammelt wurden
                     if (document.querySelectorAll('.item').length === 0) {
                         nextLevel();
                     }
@@ -168,7 +163,6 @@
             });
         }
 
-        // Nächstes Level laden
         function nextLevel() {
             level++;
             localStorage.setItem('level', level);
@@ -176,7 +170,6 @@
             generateItems(level);
         }
 
-        // Spiel starten
         generateItems(level);
     </script>
 </body>
