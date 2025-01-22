@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-Spiel: Drag & Drop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: #87ceeb;
+        }
+
+        .character {
+            width: 100px;
+            height: 100px;
+            background-color: #ffcc00;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+        }
+
+        .character:active {
+            cursor: grabbing;
+        }
+
+        .target {
+            width: 150px;
+            height: 150px;
+            background-color: #ff6347;
+            border-radius: 10px;
+            position: absolute;
+            bottom: 10%;
+            left: 10%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="character" class="character"></div>
+        <div id="target" class="target">Ziel</div>
+    </div>
+
+    <script>
+        const character = document.getElementById('character');
+        const target = document.getElementById('target');
+
+        let isDragging = false;
+
+        character.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            character.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const x = e.clientX - character.offsetWidth / 2;
+                const y = e.clientY - character.offsetHeight / 2;
+                character.style.left = `${x}px`;
+                character.style.top = `${y}px`;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            character.style.cursor = 'grab';
+
+            const characterRect = character.getBoundingClientRect();
+            const targetRect = target.getBoundingClientRect();
+
+            if (
+                characterRect.left < targetRect.right &&
+                characterRect.right > targetRect.left &&
+                characterRect.top < targetRect.bottom &&
+                characterRect.bottom > targetRect.top
+            ) {
+                target.textContent = 'Erfolgreich!';
+                target.style.backgroundColor = '#32cd32';
+            }
+        });
+    </script>
+</body>
+</html>
