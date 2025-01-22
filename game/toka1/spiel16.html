@@ -220,6 +220,285 @@
         .character.touch-active {
             box-shadow: 0 0 15px 5px rgba(255, 255, 0, 0.5);
         }
+
+
+
+
+
+
+        
+        /* Ladebildschirm */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            z-index: 1000;
+            animation: fadeIn 2s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        #loader .progress-bar-container {
+            width: 80%;
+            background-color: #ddd;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        #loader .progress-bar {
+            width: 0;
+            height: 10px;
+            background-color: #4caf50;
+            border-radius: 5px;
+            animation: loadProgress 3s forwards;
+        }
+
+        @keyframes loadProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Menü */
+        #menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            animation: slideIn 1s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(0); }
+        }
+
+        #menu h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #f39c12;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        #menu button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, background 0.3s ease;
+            animation: fadeInButton 1s ease-out;
+        }
+
+        @keyframes fadeInButton {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        #menu button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .character-select-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .character-select {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .character-select img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid white;
+            transition: transform 0.3s ease-in-out, border-color 0.3s;
+        }
+
+        .character-select img:hover {
+            border: 2px solid #007BFF;
+            transform: scale(1.2);
+        }
+
+        /* Game Container */
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .character {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            background-size: contain;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            z-index: 2;
+            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+        }
+
+        .character:hover {
+            transform: translate(-50%, -50%) scale(1.4);
+            opacity: 0.8;
+        }
+
+        /* Items mit Animation */
+        .item {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            z-index: 1;
+            animation: itemGrow 3s ease-in-out forwards, itemPop 5s ease-in-out forwards;
+        }
+
+        @keyframes itemGrow {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes itemPop {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+
+        /* Diamanten und Bonus Items */
+        .diamond {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: url('./images/diamond.gif') no-repeat center;
+            background-size: contain;
+            z-index: 1;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .bonus-item {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: url('./images/bonus-item.gif') no-repeat center;
+            background-size: contain;
+            z-index: 1;
+            animation: float 3s infinite ease-in-out, scale-up 2s ease-in-out forwards;
+        }
+
+        @keyframes scale-up {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Scoreboard */
+        .score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 3;
+            border: 2px solid #f39c12;
+            animation: fadeInScoreboard 1.5s ease-out;
+        }
+
+        @keyframes fadeInScoreboard {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        #back-to-menu-btn {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            background: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, background 0.3s ease;
+        }
+
+        #back-to-menu-btn:hover {
+            background: #d9534f;
+            transform: scale(1.05);
+        }
+
+        .item-price {
+            position: absolute;
+            font-size: 14px;
+            color: #fff;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Glow-Effekt für Berührung */
+        .character.touch-active {
+            box-shadow: 0 0 15px 5px rgba(255, 255, 0, 0.5);
+        }
     </style>
 </head>
 <body>
