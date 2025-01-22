@@ -23,8 +23,8 @@
             position: absolute;
             width: 80px;
             height: 80px;
-            background: url('https://via.placeholder.com/80x80') no-repeat center;
-            background-size: contain;
+            background: url('https://via.placeholder.com/80') no-repeat center;
+            background-size: cover;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -34,8 +34,8 @@
             position: absolute;
             width: 60px;
             height: 60px;
-            background: url('https://via.placeholder.com/60x60') no-repeat center;
-            background-size: contain;
+            background: url('https://via.placeholder.com/60') no-repeat center;
+            background-size: cover;
             animation: float 3s infinite;
         }
 
@@ -73,42 +73,46 @@
         const scoreDisplay = document.getElementById('score');
         let score = 0;
 
-        let keys = {
-            ArrowUp: false,
-            ArrowDown: false,
-            ArrowLeft: false,
-            ArrowRight: false,
-        };
+        // Bewegung mit Touch (Mobile) und Maus (Fallback)
+        let isDragging = false;
+        let startX, startY;
 
-        document.addEventListener('keydown', (e) => {
-            if (keys.hasOwnProperty(e.key)) keys[e.key] = true;
-        });
-
-        document.addEventListener('keyup', (e) => {
-            if (keys.hasOwnProperty(e.key)) keys[e.key] = false;
-        });
-
-        function moveCharacter() {
-            const speed = 5;
-            let top = parseInt(getComputedStyle(character).top);
-            let left = parseInt(getComputedStyle(character).left);
-
-            if (keys.ArrowUp) top -= speed;
-            if (keys.ArrowDown) top += speed;
-            if (keys.ArrowLeft) left -= speed;
-            if (keys.ArrowRight) left += speed;
-
-            // Grenzen des Spielfeldes
-            top = Math.max(0, Math.min(window.innerHeight - character.offsetHeight, top));
-            left = Math.max(0, Math.min(window.innerWidth - character.offsetWidth, left));
-
-            character.style.top = `${top}px`;
-            character.style.left = `${left}px`;
-
-            checkCollision();
-            requestAnimationFrame(moveCharacter);
+        function startDrag(e) {
+            isDragging = true;
+            const touch = e.touches ? e.touches[0] : e;
+            startX = touch.clientX - character.offsetLeft;
+            startY = touch.clientY - character.offsetTop;
         }
 
+        function drag(e) {
+            if (!isDragging) return;
+
+            const touch = e.touches ? e.touches[0] : e;
+            const x = touch.clientX - startX;
+            const y = touch.clientY - startY;
+
+            // Grenzen setzen
+            const maxWidth = window.innerWidth - character.offsetWidth;
+            const maxHeight = window.innerHeight - character.offsetHeight;
+            character.style.left = `${Math.max(0, Math.min(maxWidth, x))}px`;
+            character.style.top = `${Math.max(0, Math.min(maxHeight, y))}px`;
+
+            checkCollision();
+        }
+
+        function endDrag() {
+            isDragging = false;
+        }
+
+        // Event-Listener für Touch und Maus
+        character.addEventListener('touchstart', startDrag);
+        character.addEventListener('touchmove', drag);
+        character.addEventListener('touchend', endDrag);
+        character.addEventListener('mousedown', startDrag);
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('mouseup', endDrag);
+
+        // Kollisionsprüfung
         function checkCollision() {
             const characterRect = character.getBoundingClientRect();
 
@@ -119,22 +123,21 @@
                     characterRect.left < itemRect.right &&
                     characterRect.right > itemRect.left &&
                     characterRect.top < itemRect.bottom &&
-                    characterRect.bottom > itemRect.top
+                    characterRect.bottom > itemRect.top &&
+                    item.style.display !== 'none'
                 ) {
                     // Kollision erkannt
                     item.style.display = 'none';
                     score++;
                     scoreDisplay.textContent = score;
 
-                    // Spiel gewonnen, wenn alle eingesammelt
+                    // Spiel gewonnen
                     if (score === items.length) {
                         alert('Herzlichen Glückwunsch! Alle Items gesammelt!');
                     }
                 }
             });
         }
-
-        moveCharacter();
     </script>
 </body>
 </html>
