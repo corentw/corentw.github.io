@@ -191,106 +191,134 @@
     </div>
 
     <script>
-        const loader = document.getElementById('loader');
-        const menu = document.getElementById('menu');
-        const startBtn = document.getElementById('start-btn');
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const gameContainer = document.getElementById('game-container');
-        const character = document.getElementById('character');
-        const scoreDisplay = document.getElementById('score');
-        const levelDisplay = document.getElementById('level');
-        const characterSelectButtons = document.querySelectorAll('.character-select');
+    const loader = document.getElementById('loader');
+    const menu = document.getElementById('menu');
+    const startBtn = document.getElementById('start-btn');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const gameContainer = document.getElementById('game-container');
+    const character = document.getElementById('character');
+    const scoreDisplay = document.getElementById('score');
+    const levelDisplay = document.getElementById('level');
+    const characterSelectButtons = document.querySelectorAll('.character-select');
 
-        let selectedCharacter = 'character1';
-        let score = 0;
-        let level = 1;
+    let selectedCharacter = 'character1';
+    let score = 0;
+    let level = 1;
 
-        // Ladebildschirm
-        setTimeout(() => {
-            loader.style.display = 'none';
-            menu.style.display = 'flex';
-        }, 2000);
+    let touchStartX, touchStartY;
 
-        // Charakterauswahl
-        characterSelectButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                selectedCharacter = button.getAttribute('data-character');
-                character.style.background = `url('./images/${selectedCharacter}.png') no-repeat center`;
-                character.style.backgroundSize = 'contain';
-            });
+    // Ladebildschirm
+    setTimeout(() => {
+        loader.style.display = 'none';
+        menu.style.display = 'flex';
+    }, 2000);
+
+    // Charakterauswahl
+    characterSelectButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            selectedCharacter = button.getAttribute('data-character');
+            character.style.background = `url('./images/${selectedCharacter}.png') no-repeat center`;
+            character.style.backgroundSize = 'contain';
         });
+    });
 
-        // Spiel starten
-        startBtn.addEventListener('click', () => {
-            menu.style.display = 'none';
-            gameContainer.style.display = 'flex';
-            generateItems(level);
-        });
+    // Spiel starten
+    startBtn.addEventListener('click', () => {
+        menu.style.display = 'none';
+        gameContainer.style.display = 'flex';
+        generateItems(level);
 
-        // Vollbild aktivieren
-        fullscreenBtn.addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                document.exitFullscreen();
-            }
-        });
+        // Kollisionsüberprüfung aktivieren
+        setInterval(checkCollision, 50);
+    });
 
-        // Items generieren
-        function generateItems(level) {
-            document.querySelectorAll('.item').forEach(item => item.remove());
-
-            const itemTypes = ['./images/item1.png', './images/item2.png', './images/item3.png'];
-            const itemCount = level + 3;
-
-            for (let i = 0; i < itemCount; i++) {
-                const item = document.createElement('div');
-                item.className = 'item';
-                const itemType = itemTypes[Math.floor(Math.random() * Math.min(level, itemTypes.length))];
-                item.style.backgroundImage = `url('${itemType}')`;
-                item.style.left = `${Math.random() * (gameContainer.clientWidth - 50)}px`;
-                item.style.top = `${Math.random() * (gameContainer.clientHeight - 50)}px`;
-                gameContainer.appendChild(item);
-            }
+    // Vollbild aktivieren
+    fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
         }
+    });
 
-        // Level-Up-Effekt
-        function nextLevel() {
-            level++;
-            levelDisplay.textContent = level;
+    // Charakterbewegung per Touch
+    character.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX - character.offsetLeft;
+        touchStartY = touch.clientY - character.offsetTop;
+    });
 
-            const flower = document.createElement('div');
-            flower.className = 'flower';
-            document.body.appendChild(flower);
+    character.addEventListener('touchmove', (e) => {
+        e.preventDefault(); // Verhindert Scrollen während des Spiels
+        const touch = e.touches[0];
+        const newX = touch.clientX - touchStartX;
+        const newY = touch.clientY - touchStartY;
 
-            setTimeout(() => flower.remove(), 1500);
-            generateItems(level);
+        // Begrenzung innerhalb des Containers
+        const maxLeft = gameContainer.clientWidth - character.offsetWidth;
+        const maxTop = gameContainer.clientHeight - character.offsetHeight;
+
+        character.style.left = `${Math.min(Math.max(0, newX), maxLeft)}px`;
+        character.style.top = `${Math.min(Math.max(0, newY), maxTop)}px`;
+    });
+
+    // Items generieren
+    function generateItems(level) {
+        document.querySelectorAll('.item').forEach(item => item.remove());
+
+        const itemTypes = ['./images/item1.png', './images/item2.png', './images/item3.png'];
+        const itemCount = level + 3;
+
+        for (let i = 0; i < itemCount; i++) {
+            const item = document.createElement('div');
+            item.className = 'item';
+            const itemType = itemTypes[Math.floor(Math.random() * itemTypes.length)];
+            item.style.backgroundImage = `url('${itemType}')`;
+            item.style.left = `${Math.random() * (gameContainer.clientWidth - 50)}px`;
+            item.style.top = `${Math.random() * (gameContainer.clientHeight - 50)}px`;
+            gameContainer.appendChild(item);
         }
+    }
 
-        // Kollisionserkennung
-        function checkCollision() {
-            const characterRect = character.getBoundingClientRect();
-            const items = document.querySelectorAll('.item');
+    // Level-Up-Effekt
+    function nextLevel() {
+        level++;
+        levelDisplay.textContent = level;
 
-            items.forEach(item => {
-                const itemRect = item.getBoundingClientRect();
+        const flower = document.createElement('div');
+        flower.className = 'flower';
+        document.body.appendChild(flower);
 
-                if (
-                    characterRect.left < itemRect.right &&
-                    characterRect.right > itemRect.left &&
-                    characterRect.top < itemRect.bottom &&
-                    characterRect.bottom > itemRect.top
-                ) {
-                    item.remove();
-                    score++;
-                    scoreDisplay.textContent = score;
+        setTimeout(() => flower.remove(), 1500);
+        generateItems(level);
+    }
 
-                    if (document.querySelectorAll('.item').length === 0) {
-                        nextLevel();
-                    }
+    // Kollisionserkennung
+    function checkCollision() {
+        const characterRect = character.getBoundingClientRect();
+        const items = document.querySelectorAll('.item');
+
+        items.forEach(item => {
+            const itemRect = item.getBoundingClientRect();
+
+            if (
+                characterRect.left < itemRect.right &&
+                characterRect.right > itemRect.left &&
+                characterRect.top < itemRect.bottom &&
+                characterRect.bottom > itemRect.top
+            ) {
+                item.remove();
+                score++;
+                scoreDisplay.textContent = score;
+
+                if (document.querySelectorAll('.item').length === 0) {
+                    nextLevel();
                 }
-            });
-        }
-    </script>
+            }
+        });
+    }
+</script>
+
+                
 </body>
 </html>
