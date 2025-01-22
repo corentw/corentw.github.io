@@ -3,98 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini-Spiel: Drag & Drop</title>
+    <title>Abenteuer-Spiel</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f8ff;
             overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #87ceeb, #fff);
         }
 
         #game-container {
             position: relative;
             width: 100vw;
             height: 100vh;
-            background-color: #87ceeb;
         }
 
         .character {
-            width: 100px;
-            height: 100px;
-            background-color: #ffcc00;
-            border-radius: 50%;
             position: absolute;
+            width: 80px;
+            height: 80px;
+            background: url('https://via.placeholder.com/80x80') no-repeat center;
+            background-size: contain;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            cursor: grab;
         }
 
-        .character:active {
-            cursor: grabbing;
-        }
-
-        .target {
-            width: 150px;
-            height: 150px;
-            background-color: #ff6347;
-            border-radius: 10px;
+        .item {
             position: absolute;
-            bottom: 10%;
-            left: 10%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
+            width: 60px;
+            height: 60px;
+            background: url('https://via.placeholder.com/60x60') no-repeat center;
+            background-size: contain;
+            animation: float 3s infinite;
+        }
+
+        .score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: #333;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
         }
     </style>
 </head>
 <body>
     <div id="game-container">
+        <div class="score-board">Punkte: <span id="score">0</span></div>
         <div id="character" class="character"></div>
-        <div id="target" class="target">Ziel</div>
+        <div id="item1" class="item" style="top: 20%; left: 30%;"></div>
+        <div id="item2" class="item" style="top: 70%; left: 50%;"></div>
+        <div id="item3" class="item" style="top: 40%; left: 80%;"></div>
     </div>
 
     <script>
         const character = document.getElementById('character');
-        const target = document.getElementById('target');
+        const items = document.querySelectorAll('.item');
+        const scoreDisplay = document.getElementById('score');
+        let score = 0;
 
-        let isDragging = false;
+        let keys = {
+            ArrowUp: false,
+            ArrowDown: false,
+            ArrowLeft: false,
+            ArrowRight: false,
+        };
 
-        character.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            character.style.cursor = 'grabbing';
+        document.addEventListener('keydown', (e) => {
+            if (keys.hasOwnProperty(e.key)) keys[e.key] = true;
         });
 
-        window.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                const x = e.clientX - character.offsetWidth / 2;
-                const y = e.clientY - character.offsetHeight / 2;
-                character.style.left = `${x}px`;
-                character.style.top = `${y}px`;
-            }
+        document.addEventListener('keyup', (e) => {
+            if (keys.hasOwnProperty(e.key)) keys[e.key] = false;
         });
 
-        window.addEventListener('mouseup', () => {
-            isDragging = false;
-            character.style.cursor = 'grab';
+        function moveCharacter() {
+            const speed = 5;
+            let top = parseInt(getComputedStyle(character).top);
+            let left = parseInt(getComputedStyle(character).left);
 
+            if (keys.ArrowUp) top -= speed;
+            if (keys.ArrowDown) top += speed;
+            if (keys.ArrowLeft) left -= speed;
+            if (keys.ArrowRight) left += speed;
+
+            // Grenzen des Spielfeldes
+            top = Math.max(0, Math.min(window.innerHeight - character.offsetHeight, top));
+            left = Math.max(0, Math.min(window.innerWidth - character.offsetWidth, left));
+
+            character.style.top = `${top}px`;
+            character.style.left = `${left}px`;
+
+            checkCollision();
+            requestAnimationFrame(moveCharacter);
+        }
+
+        function checkCollision() {
             const characterRect = character.getBoundingClientRect();
-            const targetRect = target.getBoundingClientRect();
 
-            if (
-                characterRect.left < targetRect.right &&
-                characterRect.right > targetRect.left &&
-                characterRect.top < targetRect.bottom &&
-                characterRect.bottom > targetRect.top
-            ) {
-                target.textContent = 'Erfolgreich!';
-                target.style.backgroundColor = '#32cd32';
-            }
-        });
+            items.forEach((item) => {
+                const itemRect = item.getBoundingClientRect();
+
+                if (
+                    characterRect.left < itemRect.right &&
+                    characterRect.right > itemRect.left &&
+                    characterRect.top < itemRect.bottom &&
+                    characterRect.bottom > itemRect.top
+                ) {
+                    // Kollision erkannt
+                    item.style.display = 'none';
+                    score++;
+                    scoreDisplay.textContent = score;
+
+                    // Spiel gewonnen, wenn alle eingesammelt
+                    if (score === items.length) {
+                        alert('Herzlichen Glückwunsch! Alle Items gesammelt!');
+                    }
+                }
+            });
+        }
+
+        moveCharacter();
     </script>
 </body>
 </html>
