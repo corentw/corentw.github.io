@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abenteuer-Spiel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('images/background.png') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            z-index: 1000;
+        }
+
+        #loader .progress-bar-container {
+            width: 80%;
+            background-color: #ddd;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        #loader .progress-bar {
+            width: 0;
+            height: 10px;
+            background-color: #4caf50;
+            border-radius: 5px;
+            animation: loadProgress 3s forwards;
+        }
+
+        @keyframes loadProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        #menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            z-index: 100;
+            text-align: center;
+        }
+
+        #menu button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        #menu button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .character-select-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .character-select {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: white;
+        }
+
+        .character-select img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid white;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .character-select img:hover {
+            border: 2px solid #007BFF;
+            transform: scale(1.2);
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .character {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            background-size: contain;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            z-index: 2;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .character:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .item {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            z-index: 1;
+            animation: float 2s infinite ease-in-out, attract 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes attract {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(10px) scale(1.2);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .flower {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 200px;
+            height: 200px;
+            background: url('./images/flower.png') no-repeat center;
+            background-size: contain;
+            z-index: 999;
+            animation: grow 1.5s ease-in-out forwards;
+        }
+
+        @keyframes grow {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.5);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 3;
+        }
+
+        #back-to-menu-btn {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            background: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        #back-to-menu-btn:hover {
+            background: #d9534f;
+            transform: scale(1.05);
+        }
+
+        .item-price {
+            position: absolute;
+            font-size: 14px;
+            color: #fff;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        Lade Spiel...
+        <div class="progress-bar-container">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+    <div id="menu">
+        <h1>Abenteuer-Spiel</h1>
+        <button id="start-btn">Spiel starten</button>
+        <button id="fullscreen-btn">Vollbild aktivieren</button>
+        <h3>Charakter auswählen:</h3>
+        <div class="character-select-container">
+            <div class="character-select" data-character="character1">
+                <img src="images/character1_ico.jpg" alt="Charakter 1">
+                <span>Haylie</span>
+            </div>
+            <div class="character-select" data-character="character2">
+                <img src="images/character2_ico.jpg" alt="Charakter 2">
+                <span>Amelina</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-container" style="display: none;">
+        <div class="score-board">
+            Punkte: <span id="score">0</span> | Level: <span id="level">1</span>
+            <button id="back-to-menu-btn">Zurück zum Menü</button>
+        </div>
+        <div id="character" class="character" style="background: url('./images/character1.png') no-repeat center;"></div>
+    </div>
+
+    <script>
+    const loader = document.getElementById('loader');
+    const menu = document.getElementById('menu');
+    const startBtn = document.getElementById('start-btn');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const gameContainer = document.getElementById('game-container');
+    const character = document.getElementById('character');
+    const scoreDisplay = document.getElementById('score');
+    const levelDisplay = document.getElementById('level');
+    const characterSelectButtons = document.querySelectorAll('.character-select');
+    const backToMenuBtn = document.getElementById('back-to-menu-btn');
+
+    let selectedCharacter = 'character1';
+    let score = 0;
+    let level = 1;
+    let touchStartX, touchStartY;
+
+    // Ladebildschirm
+    setTimeout(() => {
+        loader.style.display = 'none';
+        menu.style.display = 'flex';
+    }, 3000);
+
+    // Charakterauswahl
+    characterSelectButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            selectedCharacter = button.getAttribute('data-character');
+            character.style.background = `url('./images/${selectedCharacter}.png') no-repeat center`;
+            character.style.backgroundSize = 'contain';
+        });
+    });
+
+    // Spiel starten
+    startBtn.addEventListener('click', () => {
+        menu.style.display = 'none';
+        gameContainer.style.display = 'flex';
+        generateItems(level);
+
+        // Kollisionsüberprüfung aktivieren
+        setInterval(checkCollision, 50);
+    });
+
+    // Vollbild aktivieren
+    fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    });
+
+    // Zurück zum Menü
+    backToMenuBtn.addEventListener('click', () => {
+        gameContainer.style.display = 'none';
+        menu.style.display = 'flex';
+        score = 0;
+        level = 1;
+        scoreDisplay.textContent = score;
+        levelDisplay.textContent = level;
+    });
+
+    // Charakterbewegung per Touch
+    character.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX - character.offsetLeft;
+        touchStartY = touch.clientY - character.offsetTop;
+    });
+
+    character.addEventListener('touchmove', (e) => {
+        e.preventDefault(); // Verhindert Scrollen während des Spiels
+        const touch = e.touches[0];
+        const newX = touch.clientX - touchStartX;
+        const newY = touch.clientY - touchStartY;
+
+        // Begrenzung innerhalb des Containers
+        const maxLeft = gameContainer.clientWidth - character.offsetWidth;
+        const maxTop = gameContainer.clientHeight - character.offsetHeight;
+
+        character.style.left = `${Math.min(Math.max(0, newX), maxLeft)}px`;
+        character.style.top = `${Math.min(Math.max(0, newY), maxTop)}px`;
+    });
+
+    // Items generieren
+    function generateItems(level) {
+        document.querySelectorAll('.item').forEach(item => item.remove());
+
+        const itemTypes = ['./images/item1.png', './images/item2.png', './images/item3.png'];
+        const itemCount = level + 3;
+
+        for (let i = 0; i < itemCount; i++) {
+            const item = document.createElement('div');
+            item.className = 'item';
+            const itemType = itemTypes[Math.floor(Math.random() * itemTypes.length)];
+            item.style.backgroundImage = `url('${itemType}')`;
+            item.style.left = `${Math.random() * (gameContainer.clientWidth - 50)}px`;
+            item.style.top = `${Math.random() * (gameContainer.clientHeight - 50)}px`;
+
+            // Item Preise
+            const priceTag = document.createElement('div');
+            priceTag.className = 'item-price';
+            priceTag.textContent = `${Math.floor(Math.random() * 20) + 1} Münzen`;
+            item.appendChild(priceTag);
+
+            gameContainer.appendChild(item);
+        }
+    }
+
+    // Level-Up-Effekt
+    function nextLevel() {
+        level++;
+        levelDisplay.textContent = level;
+
+        const flower = document.createElement('div');
+        flower.className = 'flower';
+        document.body.appendChild(flower);
+
+        setTimeout(() => flower.remove(), 1500);
+        generateItems(level);
+    }
+
+    // Kollisionserkennung
+    function checkCollision() {
+        const characterRect = character.getBoundingClientRect();
+        const items = document.querySelectorAll('.item');
+
+        items.forEach(item => {
+            const itemRect = item.getBoundingClientRect();
+
+            if (
+                characterRect.left < itemRect.right &&
+                characterRect.right > itemRect.left &&
+                characterRect.top < itemRect.bottom &&
+                characterRect.bottom > itemRect.top
+            ) {
+                item.remove();
+                score++;
+                scoreDisplay.textContent = score;
+
+                if (document.querySelectorAll('.item').length === 0) {
+                    nextLevel();
+                }
+            }
+        });
+    }
+    </script>
+</body>
+</html>
