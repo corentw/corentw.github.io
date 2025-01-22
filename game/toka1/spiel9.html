@@ -289,34 +289,115 @@
             }
         }
 
-        function checkCollision() {
-            const characterRect = character.getBoundingClientRect();
-            const items = document.querySelectorAll('.item');
-            items.forEach(item => {
-                const itemRect = item.getBoundingClientRect();
-                if (
-                    characterRect.left < itemRect.right &&
-                    characterRect.right > itemRect.left &&
-                    characterRect.top < itemRect.bottom &&
-                    characterRect.bottom > itemRect.top
-                ) {
-                    collectSound.play();
-                    item.remove();
-                    score++;
-                    scoreDisplay.textContent = score;
-                    if (document.querySelectorAll('.item').length === 0) {
-                        nextLevel();
-                    }
-                }
-            });
-        }
 
-        function nextLevel() {
-            level++;
-            levelDisplay.textContent = level;
-            levelUpSound.play();
-            generateItems(level);
+    // Touch-Steuerung hinzufügen
+    gameContainer.addEventListener('touchstart', (event) => {
+        const touchX = event.touches[0].clientX;
+        const touchY = event.touches[0].clientY;
+
+        // Bewegung mit Animation
+        character.style.transition = 'transform 0.3s ease';
+        const containerRect = gameContainer.getBoundingClientRect();
+        const charX = touchX - containerRect.left - (character.offsetWidth / 2);
+        const charY = touchY - containerRect.top - (character.offsetHeight / 2);
+        character.style.transform = `translate(${charX}px, ${charY}px)`;
+        setTimeout(() => character.style.transition = '', 300);
+    });
+
+    // Partikel-Effekt bei Punktesammlung
+    function showParticles(x, y) {
+        const particles = document.createElement('div');
+        particles.style.position = 'absolute';
+        particles.style.left = `${x}px`;
+        particles.style.top = `${y}px`;
+        particles.style.width = '10px';
+        particles.style.height = '10px';
+        particles.style.borderRadius = '50%';
+        particles.style.background = 'rgba(255, 215, 0, 0.8)';
+        particles.style.boxShadow = '0 0 15px rgba(255, 215, 0, 1)';
+        particles.style.animation = 'fadeOut 1s ease forwards';
+
+        gameContainer.appendChild(particles);
+        setTimeout(() => particles.remove(), 1000);
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: scale(1);
         }
+        to {
+            opacity: 0;
+            transform: scale(2);
+        }
+    }
+
+    // Punktesammlung erweitern
+    function checkCollision() {
+        const characterRect = character.getBoundingClientRect();
+        const items = document.querySelectorAll('.item');
+        items.forEach(item => {
+            const itemRect = item.getBoundingClientRect();
+            if (
+                characterRect.left < itemRect.right &&
+                characterRect.right > itemRect.left &&
+                characterRect.top < itemRect.bottom &&
+                characterRect.bottom > itemRect.top
+            ) {
+                const itemX = itemRect.left + (itemRect.width / 2);
+                const itemY = itemRect.top + (itemRect.height / 2);
+                showParticles(itemX, itemY);
+                collectSound.play();
+                item.remove();
+                score++;
+                scoreDisplay.textContent = score;
+                if (document.querySelectorAll('.item').length === 0) {
+                    nextLevel();
+                }
+            }
+        });
+    }
+
+    // Levelaufstieg mit Animation
+    function nextLevel() {
+        level++;
+        levelDisplay.textContent = level;
+        levelUpSound.play();
+
+        // Levelaufstiegs-Animation
+        const levelUpText = document.createElement('div');
+        levelUpText.textContent = 'Level Up!';
+        levelUpText.style.position = 'absolute';
+        levelUpText.style.top = '50%';
+        levelUpText.style.left = '50%';
+        levelUpText.style.transform = 'translate(-50%, -50%)';
+        levelUpText.style.fontSize = '48px';
+        levelUpText.style.color = '#FFD700';
+        levelUpText.style.textShadow = '0 0 15px #FFD700, 0 0 30px #FF4500';
+        levelUpText.style.animation = 'popUp 1s ease-out forwards';
+
+        gameContainer.appendChild(levelUpText);
+        setTimeout(() => levelUpText.remove(), 1000);
+
+        generateItems(level);
+    }
+
+    @keyframes popUp {
+        0% {
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+        }
+        50% {
+            transform: translate(-50%, -50%) scale(1.2);
+            opacity: 1;
+        }
+        100% {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+
+
+        
     </script>
 </body>
 </html>
