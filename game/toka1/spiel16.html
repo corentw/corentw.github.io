@@ -449,6 +449,52 @@
         }, 5000);  // Bonus-Runde dauert 5 Sekunden
     }
 
+
+
+
+    const character = document.getElementById('character');
+    const gameContainer = document.getElementById('game-container');
+
+    let touchStartX, touchStartY;
+
+    // Touch-Start: Start der Bewegung
+    character.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX - character.offsetLeft;
+        touchStartY = touch.clientY - character.offsetTop;
+        character.classList.add('touch-active'); // Visuellen Effekt hinzufügen
+        e.preventDefault(); // Verhindert das Scrollen der Seite
+    });
+
+    // Touch-Move: Bewegungslogik
+    character.addEventListener('touchmove', (e) => {
+        e.preventDefault(); // Verhindert das Scrollen der Seite
+        const touch = e.touches[0];
+        const newX = touch.clientX - touchStartX;
+        const newY = touch.clientY - touchStartY;
+
+        // Begrenzung innerhalb des Containers
+        const maxLeft = gameContainer.clientWidth - character.offsetWidth;
+        const maxTop = gameContainer.clientHeight - character.offsetHeight;
+
+        character.style.left = `${Math.min(Math.max(0, newX), maxLeft)}px`;
+        character.style.top = `${Math.min(Math.max(0, newY), maxTop)}px`;
+    });
+
+    // Touch-End: Beenden der Bewegung
+    character.addEventListener('touchend', () => {
+        character.classList.remove('touch-active');
+    });
+
+
+
+
+
+
+
+
+        
+
     // Items generieren
     function generateItems(level) {
         document.querySelectorAll('.item').forEach(item => item.remove());
