@@ -9,15 +9,14 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background: url('images/background.png') no-repeat center center fixed;
-            background-size: cover;
+            background: linear-gradient(135deg, #1e3c72, #2a5298) no-repeat fixed;
             overflow: hidden;
-            animation: bg-move 30s linear infinite;
+            animation: bg-color-change 15s infinite alternate;
         }
 
-        @keyframes bg-move {
-            0% { background-position: 0 0; }
-            100% { background-position: 100% 100%; }
+        @keyframes bg-color-change {
+            0% { background: linear-gradient(135deg, #1e3c72, #2a5298); }
+            100% { background: linear-gradient(135deg, #ff7e5f, #feb47b); }
         }
 
         #loader {
@@ -33,6 +32,12 @@
             color: white;
             font-size: 24px;
             z-index: 1000;
+            animation: fadeIn 2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
         #menu {
@@ -49,6 +54,12 @@
             color: white;
             font-size: 24px;
             z-index: 100;
+            animation: slideDown 1.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
         }
 
         #menu button {
@@ -56,14 +67,17 @@
             padding: 15px 30px;
             font-size: 18px;
             border: none;
-            background: #007BFF;
+            background: linear-gradient(45deg, #007BFF, #0056b3);
             color: white;
             border-radius: 8px;
             cursor: pointer;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
         #menu button:hover {
-            background: #0056b3;
+            transform: scale(1.1);
+            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.7);
         }
 
         .character-select-container {
@@ -79,17 +93,26 @@
             cursor: pointer;
             font-size: 16px;
             color: white;
+            animation: glow-effect 2s infinite alternate;
         }
 
         .character-select img {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             border: 2px solid white;
+            box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.8);
+            transition: transform 0.3s;
         }
 
         .character-select img:hover {
-            border: 2px solid #007BFF;
+            transform: scale(1.2);
+            box-shadow: 0px 8px 16px rgba(255, 255, 255, 1);
+        }
+
+        @keyframes glow-effect {
+            0% { text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5); }
+            100% { text-shadow: 0px 0px 15px rgba(255, 255, 255, 1); }
         }
 
         #game-container {
@@ -100,6 +123,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            animation: fadeIn 1.5s ease-out;
         }
 
         .character {
@@ -110,8 +134,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            cursor: grab;
             z-index: 2;
+            filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.5));
         }
 
         .item {
@@ -120,21 +144,13 @@
             height: 50px;
             background-size: contain;
             z-index: 1;
-            animation: float 2s infinite ease-in-out, glow 1.5s infinite alternate;
+            animation: float 2s infinite ease-in-out, sparkle 3s infinite;
         }
 
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        @keyframes glow {
-            0% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.5); }
-            100% { box-shadow: 0 0 20px rgba(255, 255, 0, 1); }
+        @keyframes sparkle {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.1); filter: brightness(1.5); }
+            100% { transform: scale(1); filter: brightness(1); }
         }
 
         .score-board {
@@ -142,32 +158,31 @@
             top: 10px;
             left: 10px;
             padding: 15px;
-            background: rgba(255, 255, 255, 0.9);
+            background: linear-gradient(45deg, #ff7e5f, #feb47b);
+            color: white;
             border-radius: 12px;
             font-size: 20px;
             font-weight: bold;
             z-index: 3;
-            animation: pulse 1s infinite ease-in-out;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+            animation: glow-effect 1.5s infinite alternate;
         }
 
         #back-to-menu-btn {
             margin-left: 20px;
             padding: 10px;
             font-size: 16px;
-            background: #dc3545;
+            background: linear-gradient(45deg, #dc3545, #a82333);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            transition: transform 0.3s;
         }
 
         #back-to-menu-btn:hover {
-            background: #c82333;
+            transform: scale(1.1);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
@@ -202,112 +217,106 @@
     <audio id="levelup-sound" src="sounds/levelup.mp3"></audio>
 
     <script>
-    // Touch-Steuerung hinzufügen
-    gameContainer.addEventListener('touchstart', (event) => {
-        const touchX = event.touches[0].clientX;
-        const touchY = event.touches[0].clientY;
+        const loader = document.getElementById('loader');
+        const menu = document.getElementById('menu');
+        const startBtn = document.getElementById('start-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const gameContainer = document.getElementById('game-container');
+        const character = document.getElementById('character');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+        const backToMenuBtn = document.getElementById('back-to-menu-btn');
+        const collectSound = document.getElementById('collect-sound');
+        const levelUpSound = document.getElementById('levelup-sound');
+        const characterSelectButtons = document.querySelectorAll('.character-select');
 
-        // Bewegung mit Animation
-        character.style.transition = 'transform 0.3s ease';
-        const containerRect = gameContainer.getBoundingClientRect();
-        const charX = touchX - containerRect.left - (character.offsetWidth / 2);
-        const charY = touchY - containerRect.top - (character.offsetHeight / 2);
-        character.style.transform = `translate(${charX}px, ${charY}px)`;
-        setTimeout(() => character.style.transition = '', 300);
-    });
+        let selectedCharacter = 'character1';
+        let score = 0;
+        let level = 1;
 
-    // Partikel-Effekt bei Punktesammlung
-    function showParticles(x, y) {
-        const particles = document.createElement('div');
-        particles.style.position = 'absolute';
-        particles.style.left = `${x}px`;
-        particles.style.top = `${y}px`;
-        particles.style.width = '10px';
-        particles.style.height = '10px';
-        particles.style.borderRadius = '50%';
-        particles.style.background = 'rgba(255, 215, 0, 0.8)';
-        particles.style.boxShadow = '0 0 15px rgba(255, 215, 0, 1)';
-        particles.style.animation = 'fadeOut 1s ease forwards';
+        setTimeout(() => {
+            loader.style.display = 'none';
+            menu.style.display = 'flex';
+        }, 2000);
 
-        gameContainer.appendChild(particles);
-        setTimeout(() => particles.remove(), 1000);
-    }
+        characterSelectButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                selectedCharacter = button.getAttribute('data-character');
+                character.style.background = `url('./images/${selectedCharacter}.png') no-repeat center`;
+                character.style.backgroundSize = 'contain';
+            });
+        });
 
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-            transform: scale(1);
-        }
-        to {
-            opacity: 0;
-            transform: scale(2);
-        }
-    }
+        startBtn.addEventListener('click', () => {
+            menu.style.display = 'none';
+            gameContainer.style.display = 'flex';
+            generateItems(level);
+            setInterval(checkCollision, 50);
+        });
 
-    // Punktesammlung erweitern
-    function checkCollision() {
-        const characterRect = character.getBoundingClientRect();
-        const items = document.querySelectorAll('.item');
-        items.forEach(item => {
-            const itemRect = item.getBoundingClientRect();
-            if (
-                characterRect.left < itemRect.right &&
-                characterRect.right > itemRect.left &&
-                characterRect.top < itemRect.bottom &&
-                characterRect.bottom > itemRect.top
-            ) {
-                const itemX = itemRect.left + (itemRect.width / 2);
-                const itemY = itemRect.top + (itemRect.height / 2);
-                showParticles(itemX, itemY);
-                collectSound.play();
-                item.remove();
-                score++;
-                scoreDisplay.textContent = score;
-                if (document.querySelectorAll('.item').length === 0) {
-                    nextLevel();
-                }
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
             }
         });
-    }
 
-    // Levelaufstieg mit Animation
-    function nextLevel() {
-        level++;
-        levelDisplay.textContent = level;
-        levelUpSound.play();
+        backToMenuBtn.addEventListener('click', () => {
+            gameContainer.style.display = 'none';
+            menu.style.display = 'flex';
+            resetGame();
+        });
 
-        // Levelaufstiegs-Animation
-        const levelUpText = document.createElement('div');
-        levelUpText.textContent = 'Level Up!';
-        levelUpText.style.position = 'absolute';
-        levelUpText.style.top = '50%';
-        levelUpText.style.left = '50%';
-        levelUpText.style.transform = 'translate(-50%, -50%)';
-        levelUpText.style.fontSize = '48px';
-        levelUpText.style.color = '#FFD700';
-        levelUpText.style.textShadow = '0 0 15px #FFD700, 0 0 30px #FF4500';
-        levelUpText.style.animation = 'popUp 1s ease-out forwards';
-
-        gameContainer.appendChild(levelUpText);
-        setTimeout(() => levelUpText.remove(), 1000);
-
-        generateItems(level);
-    }
-
-    @keyframes popUp {
-        0% {
-            transform: translate(-50%, -50%) scale(0);
-            opacity: 0;
+        function resetGame() {
+            score = 0;
+            level = 1;
+            scoreDisplay.textContent = score;
+            levelDisplay.textContent = level;
+            document.querySelectorAll('.item').forEach(item => item.remove());
         }
-        50% {
-            transform: translate(-50%, -50%) scale(1.2);
-            opacity: 1;
-        }
-        100% {
-            transform: translate(-50%, -50%) scale(1);
-        }
-    }
-</script>
 
+        function generateItems(level) {
+            document.querySelectorAll('.item').forEach(item => item.remove());
+            const itemCount = level + 3;
+            for (let i = 0; i < itemCount; i++) {
+                const item = document.createElement('div');
+                item.className = 'item';
+                item.style.backgroundImage = "url('images/item1.png')";
+                item.style.left = `${Math.random() * (gameContainer.clientWidth - 50)}px`;
+                item.style.top = `${Math.random() * (gameContainer.clientHeight - 50)}px`;
+                gameContainer.appendChild(item);
+            }
+        }
+
+        function checkCollision() {
+            const characterRect = character.getBoundingClientRect();
+            const items = document.querySelectorAll('.item');
+            items.forEach(item => {
+                const itemRect = item.getBoundingClientRect();
+                if (
+                    characterRect.left < itemRect.right &&
+                    characterRect.right > itemRect.left &&
+                    characterRect.top < itemRect.bottom &&
+                    characterRect.bottom > itemRect.top
+                ) {
+                    collectSound.play();
+                    item.remove();
+                    score++;
+                    scoreDisplay.textContent = score;
+                    if (document.querySelectorAll('.item').length === 0) {
+                        nextLevel();
+                    }
+                }
+            });
+        }
+
+        function nextLevel() {
+            level++;
+            levelDisplay.textContent = level;
+            levelUpSound.play();
+            generateItems(level);
+        }
+    </script>
 </body>
 </html>
