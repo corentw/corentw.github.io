@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abenteuer-Spiel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('images/background.png') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            z-index: 1000;
+        }
+
+        #menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            z-index: 100;
+        }
+
+        #menu button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #menu button:hover {
+            background: #0056b3;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .character {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            background-size: contain;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            z-index: 2;
+        }
+
+        .item {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url('./images/item.png') no-repeat center;
+            background-size: contain;
+            z-index: 1;
+            animation: float 2s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .flower {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: url('./images/flower.png') no-repeat center;
+            background-size: contain;
+            animation: grow 1s ease-in-out forwards;
+            z-index: 1;
+        }
+
+        @keyframes grow {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 3;
+        }
+
+        #back-menu-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        @media (max-width: 600px) {
+            .character {
+                width: 60px;
+                height: 80px;
+            }
+            .item {
+                width: 40px;
+                height: 40px;
+            }
+            .score-board {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">Lade Spiel...</div>
+    <div id="menu">
+        <h1>Abenteuer-Spiel</h1>
+        <button id="start-btn">Spiel starten</button>
+        <button id="fullscreen-btn">Vollbild aktivieren</button>
+    </div>
+
+    <div id="game-container" style="display: none;">
+        <div class="score-board">
+            Punkte: <span id="score">0</span> | Level: <span id="level">1</span>
+        </div>
+        <button id="back-menu-btn">Zurück zum Menü</button>
+        <div id="character" class="character" style="background: url('./images/character1.png') no-repeat center;"></div>
+    </div>
+
+    <script>
+        const loader = document.getElementById('loader');
+        const menu = document.getElementById('menu');
+        const startBtn = document.getElementById('start-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const backMenuBtn = document.getElementById('back-menu-btn');
+        const gameContainer = document.getElementById('game-container');
+        const character = document.getElementById('character');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+
+        let score = 0;
+        let level = 1;
+        let dragging = false;
+        let offsetX = 0, offsetY = 0;
+
+        setTimeout(() => {
+            loader.style.display = 'none';
+            menu.style.display = 'flex';
+        }, 2000);
+
+        startBtn.addEventListener('click', () => {
+            menu.style.display = 'none';
+            gameContainer.style.display = 'flex';
+            generateItems(level);
+        });
+
+        backMenuBtn.addEventListener('click', () => {
+            gameContainer.style.display = 'none';
+            menu.style.display = 'flex';
+        });
+
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        character.addEventListener('mousedown', startDrag);
+        character.addEventListener('touchstart', startDrag);
+
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('touchmove', drag);
+
+        window.addEventListener('mouseup', endDrag);
+        window.addEventListener('touchend', endDrag);
+
+        function startDrag(e) {
+            dragging = true;
+            const rect = character.getBoundingClientRect();
+            const event = e.touches ? e.touches[0] : e;
+            offsetX = event.clientX - rect.left;
+            offsetY = event.clientY - rect.top;
+        }
+
+        function drag(e) {
+            if (!dragging) return;
+            const event = e.touches ? e.touches[0] : e;
+            const x = event.clientX - offsetX;
+            const y = event.clientY - offsetY;
+
+            const maxWidth = gameContainer.clientWidth - character.offsetWidth;
+            const maxHeight = gameContainer.clientHeight - character.offsetHeight;
+
+            character.style.left = `${Math.max(0, Math.min(maxWidth, x))}px`;
+            character.style.top = `${Math.max(0, Math.min(maxHeight, y))}px`;
+
+            checkCollision();
+        }
+
+        function endDrag() {
+            dragging = false;
+        }
+
+        function generateItems(level) {
+            document.querySelectorAll('.item').forEach(item => item.remove());
+            const itemCount = level + 3;
+            for (let i = 0; i < itemCount; i++) {
+                const item = document.createElement('div');
+                item.className = 'item';
+                item.style.left = `${Math.random() * (gameContainer.clientWidth - 50)}px`;
+                item.style.top = `${Math.random() * (gameContainer.clientHeight - 50)}px`;
+                gameContainer.appendChild(item);
+            }
+        }
+
+        function checkCollision() {
+            const characterRect = character.getBoundingClientRect();
+            const items = document.querySelectorAll('.item');
+
+            items.forEach(item => {
+                const itemRect = item.getBoundingClientRect();
+                if (
+                    characterRect.left < itemRect.right &&
+                    characterRect.right > itemRect.left &&
+                    characterRect.top < itemRect.bottom &&
+                    characterRect.bottom > itemRect.top
+                ) {
+                    item.remove();
+                    score++;
+                    scoreDisplay.textContent = score;
+
+                    if (document.querySelectorAll('.item').length === 0) {
+                        nextLevel();
+                    }
+                }
+            });
+        }
+
+        function nextLevel() {
+            level++;
+            levelDisplay.textContent = level;
+            generateItems(level);
+            spawnFlowers();
+        }
+
+        function spawnFlowers() {
+            for (let i = 0; i < 5; i++) {
+                const flower = document.createElement('div');
+                flower.className = 'flower';
+                flower.style.left = `${Math.random() * (gameContainer.clientWidth - 30)}px`;
+                flower.style.top = `${Math.random() * (gameContainer.clientHeight - 30)}px`;
+                gameContainer.appendChild(flower);
+
+                setTimeout(() => flower.remove(), 2000);
+            }
+        }
+    </script>
+</body>
+</html>
