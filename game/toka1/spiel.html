@@ -14,33 +14,61 @@
             overflow: hidden;
         }
 
-        #game-container {
-            position: relative;
+        #main-menu, #game-container, #settings-menu {
+            display: none;
             width: 100vw;
             height: 100vh;
-            display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
+        }
+
+        #main-menu.active, #game-container.active, #settings-menu.active {
+            display: flex;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #4CAF50;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .character, .item, .obstacle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 3s infinite ease-in-out;
+            cursor: grab;
         }
 
         .character {
-            position: absolute;
             width: 100px;
             height: 100px;
             background: url('./images/character.png') no-repeat center;
             background-size: contain;
-            border-radius: 50%;
-            animation: bounce 2s infinite;
-            cursor: grab;
         }
 
         .item {
-            position: absolute;
             width: 80px;
             height: 80px;
             background: url('./images/item.png') no-repeat center;
             background-size: contain;
-            animation: float 3s infinite ease-in-out;
+        }
+
+        .obstacle {
+            width: 90px;
+            height: 90px;
+            background: url('./images/obstacle.png') no-repeat center;
+            background-size: contain;
         }
 
         .score-board {
@@ -55,11 +83,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
@@ -67,6 +90,14 @@
     </style>
 </head>
 <body>
+    <!-- Hauptmenü -->
+    <div id="main-menu" class="active">
+        <h1>Willkommen zum Abenteuer-Spiel</h1>
+        <button onclick="startGame()">Spiel starten</button>
+        <button onclick="showSettings()">Einstellungen</button>
+    </div>
+
+    <!-- Spielbereich -->
     <div id="game-container">
         <div class="score-board">
             Punkte: <span id="score">0</span> | Level: <span id="level">1</span>
@@ -74,50 +105,86 @@
         <div id="character" class="character"></div>
     </div>
 
+    <!-- Einstellungsmenü -->
+    <div id="settings-menu">
+        <h2>Einstellungen</h2>
+        <label>
+            <input type="checkbox" id="sound-toggle" checked>
+            Sound aktivieren
+        </label>
+        <button onclick="backToMenu()">Zurück</button>
+    </div>
+
     <script>
+        // Allgemeine Variablen
+        const mainMenu = document.getElementById('main-menu');
         const gameContainer = document.getElementById('game-container');
+        const settingsMenu = document.getElementById('settings-menu');
         const character = document.getElementById('character');
         const scoreDisplay = document.getElementById('score');
         const levelDisplay = document.getElementById('level');
+        const soundToggle = document.getElementById('sound-toggle');
 
-        let score = parseInt(localStorage.getItem('score')) || 0;
-        let level = parseInt(localStorage.getItem('level')) || 1;
-
-        scoreDisplay.textContent = score;
-        levelDisplay.textContent = level;
-
-        // Drag-and-drop functionality
+        let score = 0;
+        let level = 1;
         let dragging = false;
         let offsetX = 0, offsetY = 0;
 
+        // Hintergrundmusik
+        const bgMusic = new Audio('./sounds/bg-music.mp3');
+        bgMusic.loop = true;
+
+        // Startet das Spiel
+        function startGame() {
+            mainMenu.classList.remove('active');
+            gameContainer.classList.add('active');
+            if (soundToggle.checked) bgMusic.play();
+            resetGame();
+        }
+
+        // Zeigt das Einstellungsmenü
+        function showSettings() {
+            mainMenu.classList.remove('active');
+            settingsMenu.classList.add('active');
+        }
+
+        // Zurück zum Hauptmenü
+        function backToMenu() {
+            settingsMenu.classList.remove('active');
+            mainMenu.classList.add('active');
+        }
+
+        // Initialisiert das Spiel
+        function resetGame() {
+            score = 0;
+            level = 1;
+            updateScore();
+            generateItems(level);
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = score;
+            levelDisplay.textContent = level;
+        }
+
+        // Drag-and-Drop Funktionalität
         character.addEventListener('mousedown', startDrag);
-        character.addEventListener('touchstart', startDrag);
         window.addEventListener('mousemove', drag);
-        window.addEventListener('touchmove', drag);
         window.addEventListener('mouseup', endDrag);
-        window.addEventListener('touchend', endDrag);
 
         function startDrag(e) {
             dragging = true;
             const rect = character.getBoundingClientRect();
-            const event = e.touches ? e.touches[0] : e;
-            offsetX = event.clientX - rect.left;
-            offsetY = event.clientY - rect.top;
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
         }
 
         function drag(e) {
             if (!dragging) return;
-
-            const event = e.touches ? e.touches[0] : e;
-            const x = event.clientX - offsetX;
-            const y = event.clientY - offsetY;
-
-            const maxWidth = gameContainer.clientWidth - character.offsetWidth;
-            const maxHeight = gameContainer.clientHeight - character.offsetHeight;
-
-            character.style.left = `${Math.max(0, Math.min(maxWidth, x))}px`;
-            character.style.top = `${Math.max(0, Math.min(maxHeight, y))}px`;
-
+            const x = e.clientX - offsetX;
+            const y = e.clientY - offsetY;
+            character.style.left = `${x}px`;
+            character.style.top = `${y}px`;
             checkCollision();
         }
 
@@ -125,52 +192,51 @@
             dragging = false;
         }
 
+        // Generiert Gegenstände und Hindernisse
         function generateItems(level) {
             const itemCount = level + 2;
-            gameContainer.querySelectorAll('.item').forEach(item => item.remove());
+            gameContainer.querySelectorAll('.item, .obstacle').forEach(el => el.remove());
 
             for (let i = 0; i < itemCount; i++) {
-                const item = document.createElement('div');
-                item.className = 'item';
-                item.style.left = `${Math.random() * 90}%`;
-                item.style.top = `${Math.random() * 90}%`;
-                gameContainer.appendChild(item);
+                createObject('item', './images/item.png');
+            }
+
+            for (let i = 0; i < level; i++) {
+                createObject('obstacle', './images/obstacle.png');
             }
         }
 
+        function createObject(className, imgSrc) {
+            const obj = document.createElement('div');
+            obj.className = className;
+            obj.style.left = `${Math.random() * 90}%`;
+            obj.style.top = `${Math.random() * 90}%`;
+            obj.style.backgroundImage = `url(${imgSrc})`;
+            gameContainer.appendChild(obj);
+        }
+
+        // Kollisionsprüfung
         function checkCollision() {
             const characterRect = character.getBoundingClientRect();
-            const items = document.querySelectorAll('.item');
-
-            items.forEach(item => {
+            document.querySelectorAll('.item').forEach(item => {
                 const itemRect = item.getBoundingClientRect();
-
-                if (
-                    characterRect.left < itemRect.right &&
+                if (characterRect.left < itemRect.right &&
                     characterRect.right > itemRect.left &&
                     characterRect.top < itemRect.bottom &&
-                    characterRect.bottom > itemRect.top
-                ) {
+                    characterRect.bottom > itemRect.top) {
                     item.remove();
                     score++;
-                    scoreDisplay.textContent = score;
-                    localStorage.setItem('score', score);
-
-                    if (document.querySelectorAll('.item').length === 0) {
-                        nextLevel();
-                    }
+                    updateScore();
+                    if (!document.querySelectorAll('.item').length) nextLevel();
                 }
             });
         }
 
         function nextLevel() {
             level++;
-            localStorage.setItem('level', level);
-            levelDisplay.textContent = level;
+            updateScore();
             generateItems(level);
         }
-
-        generateItems(level);
     </script>
 </body>
 </html>
