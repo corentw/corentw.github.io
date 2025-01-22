@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abenteuer-Spiel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('images/background.png') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .character, .npc {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-size: contain;
+            cursor: grab;
+            animation: bounce 2s infinite;
+        }
+
+        .character {
+            background: url('./images/character.png') no-repeat center;
+            z-index: 2;
+        }
+
+        .npc {
+            background: url('./images/npc.png') no-repeat center;
+            z-index: 1;
+        }
+
+        .item {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: url('./images/item.png') no-repeat center;
+            background-size: contain;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .score-board, .task-bar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 3;
+        }
+
+        .task-bar {
+            left: auto;
+            right: 10px;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div class="score-board">
+            Punkte: <span id="score">0</span> | Level: <span id="level">1</span>
+        </div>
+        <div class="task-bar">
+            Aufgabe: <span id="task">Sammle 3 Münzen!</span>
+        </div>
+        <div id="character" class="character"></div>
+    </div>
+
+    <script>
+        const gameContainer = document.getElementById('game-container');
+        const character = document.getElementById('character');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+        const taskDisplay = document.getElementById('task');
+
+        let score = parseInt(localStorage.getItem('score')) || 0;
+        let level = parseInt(localStorage.getItem('level')) || 1;
+        let currentTask = localStorage.getItem('task') || "Sammle 3 Münzen!";
+        let dragging = false;
+        let offsetX = 0, offsetY = 0;
+
+        scoreDisplay.textContent = score;
+        levelDisplay.textContent = level;
+        taskDisplay.textContent = currentTask;
+
+        function generateItems(level) {
+            const itemCount = level + 3; // Mehr Items pro Level
+            gameContainer.querySelectorAll('.item').forEach(item => item.remove());
+
+            for (let i = 0; i < itemCount; i++) {
+                const item = document.createElement('div');
+                item.className = 'item';
+                item.style.left = `${Math.random() * 90}%`;
+                item.style.top = `${Math.random() * 90}%`;
+                gameContainer.appendChild(item);
+            }
+        }
+
+        function checkCollision() {
+            const characterRect = character.getBoundingClientRect();
+            const items = document.querySelectorAll('.item');
+
+            items.forEach(item => {
+                const itemRect = item.getBoundingClientRect();
+
+                if (
+                    characterRect.left < itemRect.right &&
+                    characterRect.right > itemRect.left &&
+                    characterRect.top < itemRect.bottom &&
+                    characterRect.bottom > itemRect.top
+                ) {
+                    item.remove();
+                    score++;
+                    scoreDisplay.textContent = score;
+                    localStorage.setItem('score', score);
+
+                    if (document.querySelectorAll('.item').length === 0) {
+                        nextLevel();
+                    }
+                }
+            });
+        }
+
+        function nextLevel() {
+            level++;
+            localStorage.setItem('level', level);
+            levelDisplay.textContent = level;
+
+            // Aktualisiere Aufgaben
+            currentTask = `Sammle ${level + 3} Münzen!`;
+            localStorage.setItem('task', currentTask);
+            taskDisplay.textContent = currentTask;
+
+            generateItems(level);
+        }
+
+        function startDrag(e) {
+            dragging = true;
+            const rect = character.getBoundingClientRect();
+            const event = e.touches ? e.touches[0] : e;
+            offsetX = event.clientX - rect.left;
+            offsetY = event.clientY - rect.top;
+            character.style.cursor = 'grabbing';
+        }
+
+        function drag(e) {
+            if (!dragging) return;
+            const event = e.touches ? e.touches[0] : e;
+            const x = event.clientX - offsetX;
+            const y = event.clientY - offsetY;
+
+            const maxWidth = gameContainer.clientWidth - character.offsetWidth;
+            const maxHeight = gameContainer.clientHeight - character.offsetHeight;
+
+            character.style.left = `${Math.max(0, Math.min(maxWidth, x))}px`;
+            character.style.top = `${Math.max(0, Math.min(maxHeight, y))}px`;
+
+            checkCollision();
+        }
+
+        function endDrag() {
+            dragging = false;
+            character.style.cursor = 'grab';
+        }
+
+        // Event-Listener
+        character.addEventListener('mousedown', startDrag);
+        character.addEventListener('touchstart', startDrag);
+
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('touchmove', drag);
+
+        window.addEventListener('mouseup', endDrag);
+        window.addEventListener('touchend', endDrag);
+
+        generateItems(level);
+    </script>
+</body>
+</html>
