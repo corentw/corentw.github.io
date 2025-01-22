@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abenteuer-Spiel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: url('images/background.png') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Ladebildschirm */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            z-index: 1000;
+            animation: fadeIn 2s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        #loader .progress-bar-container {
+            width: 80%;
+            background-color: #ddd;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        #loader .progress-bar {
+            width: 0;
+            height: 10px;
+            background-color: #4caf50;
+            border-radius: 5px;
+            animation: loadProgress 3s forwards;
+        }
+
+        @keyframes loadProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Menü */
+        #menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            animation: slideIn 1s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(0); }
+        }
+
+        #menu h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #f39c12;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        #menu button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, background 0.3s ease;
+            animation: fadeInButton 1s ease-out;
+        }
+
+        @keyframes fadeInButton {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        #menu button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+
+        /* Scoreboard */
+        .score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 20px;
+            background: rgba(255, 105, 180, 0.8);
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 3;
+            border: 2px solid #f39c12;
+            color: #ff0;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            animation: fadeInScoreboard 1.5s ease-out;
+        }
+
+        @keyframes fadeInScoreboard {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Explosions-Animation für Items */
+        @keyframes explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(2);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        .item.exploded {
+            animation: explode 0.5s forwards;
+        }
+
+        /* Items mit Explosionseffekt */
+        .item {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            z-index: 1;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .item:hover {
+            transform: scale(1.2);
+        }
+
+        .diamond {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: url('./images/diamond.gif') no-repeat center;
+            background-size: contain;
+            z-index: 1;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .bonus-item {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: url('./images/bonus-item.gif') no-repeat center;
+            background-size: contain;
+            z-index: 1;
+            animation: float 3s infinite ease-in-out, scale-up 2s ease-in-out forwards;
+        }
+
+        @keyframes scale-up {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Highscore und Bonus-Runden */
+        .highscore-list {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            z-index: 5;
+            display: none;
+        }
+
+        /* Glow-Effekt für Berührung */
+        .character.touch-active {
+            box-shadow: 0 0 15px 5px rgba(255, 255, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <div class="progress-bar-container">
+            <div class="progress-bar"></div>
+        </div>
+    </div>
+    <div id="menu">
+        <h1>LinEy v.1.2</h1>
+        <button id="start-btn">Spiel starten</button>
+        <button id="fullscreen-btn">Vollbild aktivieren</button>
+        <h3>Charakter auswählen:</h3>
+        <div class="character-select-container">
+            <div class="character-select" data-character="character1">
+                <img src="images/character1_ico.jpg" alt="Charakter 1">
+                <span>Haylie</span>
+            </div>
+            <div class="character-select" data-character="character2">
+                <img src="images/character2_ico.jpg" alt="Charakter 2">
+                <span>Amelina</span>
+            </div>
+            <div class="character-select" data-character="character3">
+                <img src="images/character3_ico.jpg" alt="Charakter 3">
+                <span>Lexa</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-container" style="display: none;">
+        <div class="score-board">
+            Punkte: <span id="score">0</span> | Level: <span id="level">1</span> | Diamanten: <span id="diamonds">0</span>
+            <button id="back-to-menu-btn">Zurück zum Menü</button>
+        </div>
+        <div id="character" class="character" style="background: url('./images/character1.png') no-repeat center;"></div>
+    </div>
+
+    <div class="highscore-list">
+        <h3>Highscores:</h3>
+        <ul id="highscore-list">
+            <!-- Highscores werden hier dynamisch hinzugefügt -->
+        </ul>
+    </div>
+
+    <script>
+    const loader = document.getElementById('loader');
+    const menu = document.getElementById('menu');
+    const startBtn = document.getElementById('start-btn');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const gameContainer = document.getElementById('game-container');
+    const character = document.getElementById('character');
+    const scoreDisplay = document.getElementById('score');
+    const levelDisplay = document.getElementById('level');
+    const diamondsDisplay = document.getElementById('diamonds');
+    const characterSelectButtons = document.querySelectorAll('.character-select');
+    const backToMenuBtn = document.getElementById('back-to-menu-btn');
+    const highscoreList = document.getElementById('highscore-list');
+
+    let selectedCharacter = 'character1';
+    let score = 0;
+    let level = 1;
+    let diamonds = 0;
+
+    let touchStartX, touchStartY;
+    const levelUpSound = new Audio('sounds/levelup.mp3');
+    const collectSound = new Audio('sounds/collect.mp3');
+    const diamondSound = new Audio('sounds/diamond.mp3');
+
+    // Lokale Speicherung für Punktestand und Diamanten
+    if (localStorage.getItem('score')) {
+        score = parseInt(localStorage.getItem('score'));
+        level = parseInt(localStorage.getItem('level'));
+        diamonds = parseInt(localStorage.getItem('diamonds'));
+    }
+
+    // Highscore laden
+    function loadHighscores() {
+        const highscores = JSON.parse(localStorage.getItem('highscores')) || [];
+        highscoreList.innerHTML = highscores.map((score, index) => `<li>${index + 1}. ${score.name}: ${score.points} Punkte</li>`).join('');
+    }
+
+    // Ladebildschirm
+    setTimeout(() => {
+        loader.style.display = 'none';
+        menu.style.display = 'flex';
+    }, 3000);
+
+    // Charakterauswahl
+    characterSelectButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            selectedCharacter = button.getAttribute('data-character');
+            character.style.background = `url('./images/${selectedCharacter}.png') no-repeat center`;
+            character.style.backgroundSize = 'contain';
+        });
+    });
+
+    // Spiel starten
+    startBtn.addEventListener('click', () => {
+        menu.style.display = 'none';
+        gameContainer.style.display = 'flex';
+        generateItems(level);
+
+        // Kollisionsüberprüfung aktivieren
+        setInterval(checkCollision, 50);
+    });
+
+    // Vollbild aktivieren
+    fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    });
+
+    // Zurück zum Menü
+    backToMenuBtn.addEventListener('click', () => {
+        gameContainer.style.display = 'none';
+        menu.style.display = 'flex';
+        score = 0;
+        level = 1;
+        diamonds = 0;
+        scoreDisplay.textContent = score;
+        levelDisplay.textContent = level;
+        diamondsDisplay.textContent = diamonds;
+        localStorage.clear(); // Fortschritt zurücksetzen
+    });
+
+    // Generiere Items für die Runde
+    function generateItems(level) {
+        document.querySelectorAll('.item').forEach(item => item.remove());
+
+        const itemTypes = ['./images/item1.png', './images/item2.png', './images/item3.png'];
+        const itemCount = level + 3;
+
+        for (let i = 0; i < itemCount; i++) {
+            const item = document.createElement('div');
+            item.className = 'item';
+            const itemType = itemTypes[Math.floor(Math.random() * itemTypes.length)];
+            item.style.backgroundImage = `url('${itemType}')`;
+            item.style.left = `${Math.random() * (gameContainer.clientWidth - 50)}px`;
+            item.style.top = `${Math.random() * (gameContainer.clientHeight - 50)}px`;
+
+            // Item Preise
+            const priceTag = document.createElement('div');
+            priceTag.className = 'item-price';
+            priceTag.textContent = `${Math.floor(Math.random() * 20) + 1} Münzen`;
+            item.appendChild(priceTag);
+
+            gameContainer.appendChild(item);
+        }
+
+        // Diamanten für Level Ups
+        const diamondCount = Math.floor(level / 2);
+        for (let i = 0; i < diamondCount; i++) {
+            const diamond = document.createElement('div');
+            diamond.className = 'diamond';
+            diamond.style.left = `${Math.random() * (gameContainer.clientWidth - 40)}px`;
+            diamond.style.top = `${Math.random() * (gameContainer.clientHeight - 40)}px`;
+            gameContainer.appendChild(diamond);
+        }
+
+        // Bonus Items
+        const bonusItemCount = Math.floor(level / 5);
+        for (let i = 0; i < bonusItemCount; i++) {
+            const bonusItem = document.createElement('div');
+            bonusItem.className = 'bonus-item';
+            bonusItem.style.left = `${Math.random() * (gameContainer.clientWidth - 60)}px`;
+            bonusItem.style.top = `${Math.random() * (gameContainer.clientHeight - 60)}px`;
+            gameContainer.appendChild(bonusItem);
+        }
+    }
+
+    // Level-Up-Effekt
+    function nextLevel() {
+        level++;
+        levelDisplay.textContent = level;
+        levelUpSound.play();
+        generateItems(level);
+    }
+
+    // Item-Kollision prüfen
+    function checkCollision() {
+        const items = document.querySelectorAll('.item');
+        items.forEach(item => {
+            if (isCollision(item, character)) {
+                item.classList.add('exploded');
+                collectSound.play();
+                setTimeout(() => item.remove(), 500);
+                score += 10;
+                scoreDisplay.textContent = score;
+
+                // Level-up prüfen
+                if (score >= level * 100) {
+                    nextLevel();
+                }
+            }
+        });
+    }
+
+    // Kollisionserkennung
+    function isCollision(item, character) {
+        const itemRect = item.getBoundingClientRect();
+        const characterRect = character.getBoundingClientRect();
+
+        return !(itemRect.right < characterRect.left || 
+                 itemRect.left > characterRect.right || 
+                 itemRect.bottom < characterRect.top || 
+                 itemRect.top > characterRect.bottom);
+    }
+
+    // Touchstart für mobile Geräte
+    document.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        const touchEndX = e.touches[0].clientX;
+        const touchEndY = e.touches[0].clientY;
+
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+
+        if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+            character.style.left = `${parseFloat(character.style.left || 0) + deltaX}px`;
+            character.style.top = `${parseFloat(character.style.top || 0) + deltaY}px`;
+
+            touchStartX = touchEndX;
+            touchStartY = touchEndY;
+        }
+    });
+    </script>
+</body>
+</html>
