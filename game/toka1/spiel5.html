@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abenteuer-Spiel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('images/background.png') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .character {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: url('./images/character.png') no-repeat center;
+            background-size: contain;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            z-index: 2;
+        }
+
+        .item {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url('./images/item.png') no-repeat center;
+            background-size: contain;
+            z-index: 1;
+        }
+
+        .score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 3;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div class="score-board">
+            Punkte: <span id="score">0</span> | Level: <span id="level">1</span>
+        </div>
+        <div id="character" class="character"></div>
+    </div>
+
+    <script>
+        const gameContainer = document.getElementById('game-container');
+        const character = document.getElementById('character');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+
+        let score = 0;
+        let level = 1;
+        let dragging = false;
+        let offsetX = 0, offsetY = 0;
+
+        // Drag-and-Drop-Logik
+        character.addEventListener('mousedown', startDrag);
+        character.addEventListener('touchstart', startDrag);
+
+        window.addEventListener('mousemove', drag);
+        window.addEventListener('touchmove', drag);
+
+        window.addEventListener('mouseup', endDrag);
+        window.addEventListener('touchend', endDrag);
+
+        function startDrag(e) {
+            e.preventDefault();
+            dragging = true;
+
+            const rect = character.getBoundingClientRect();
+            const event = e.touches ? e.touches[0] : e;
+
+            offsetX = event.clientX - rect.left;
+            offsetY = event.clientY - rect.top;
+
+            character.style.cursor = 'grabbing';
+        }
+
+        function drag(e) {
+            if (!dragging) return;
+
+            const event = e.touches ? e.touches[0] : e;
+            const x = event.clientX - offsetX;
+            const y = event.clientY - offsetY;
+
+            const maxWidth = gameContainer.clientWidth - character.offsetWidth;
+            const maxHeight = gameContainer.clientHeight - character.offsetHeight;
+
+            character.style.left = `${Math.max(0, Math.min(maxWidth, x))}px`;
+            character.style.top = `${Math.max(0, Math.min(maxHeight, y))}px`;
+
+            checkCollision();
+        }
+
+        function endDrag() {
+            dragging = false;
+            character.style.cursor = 'grab';
+        }
+
+        // Items generieren
+        function generateItems(level) {
+            // Entferne alte Items
+            document.querySelectorAll('.item').forEach(item => item.remove());
+
+            const itemCount = level + 3; // Anzahl der Items basierend auf dem Level
+            for (let i = 0; i < itemCount; i++) {
+                const item = document.createElement('div');
+                item.className = 'item';
+
+                // Zufällige Position innerhalb des Containers
+                item.style.left = `${Math.random() * (gameContainer.clientWidth - 50)}px`;
+                item.style.top = `${Math.random() * (gameContainer.clientHeight - 50)}px`;
+
+                gameContainer.appendChild(item);
+            }
+        }
+
+        // Kollision überprüfen
+        function checkCollision() {
+            const characterRect = character.getBoundingClientRect();
+            const items = document.querySelectorAll('.item');
+
+            items.forEach(item => {
+                const itemRect = item.getBoundingClientRect();
+
+                if (
+                    characterRect.left < itemRect.right &&
+                    characterRect.right > itemRect.left &&
+                    characterRect.top < itemRect.bottom &&
+                    characterRect.bottom > itemRect.top
+                ) {
+                    // Kollision erkannt
+                    item.remove();
+                    score++;
+                    scoreDisplay.textContent = score;
+
+                    // Wenn alle Items eingesammelt sind, zum nächsten Level
+                    if (document.querySelectorAll('.item').length === 0) {
+                        nextLevel();
+                    }
+                }
+            });
+        }
+
+        // Zum nächsten Level
+        function nextLevel() {
+            level++;
+            levelDisplay.textContent = level;
+
+            // Erzeuge neue Items
+            generateItems(level);
+        }
+
+        // Initiales Setup
+        generateItems(level);
+    </script>
+</body>
+</html>
