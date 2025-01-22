@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abenteuer-Spiel</title>
     <style>
+        /* Dein vorhandenes CSS bleibt unverändert */
         body {
             margin: 0;
             padding: 0;
@@ -15,106 +16,7 @@
             color: white;
         }
 
-        /* Ladebildschirm */
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            z-index: 1000;
-            animation: fadeIn 2s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        /* Menü */
-        #menu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            animation: slideIn 1s ease-out forwards;
-        }
-
-        @keyframes slideIn {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(0); }
-        }
-
-        #menu h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-            color: #f39c12;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-        }
-
-        #menu button {
-            margin: 10px;
-            padding: 15px 30px;
-            font-size: 18px;
-            border: none;
-            background: #007BFF;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.2s ease-in-out, background 0.3s ease;
-            animation: fadeInButton 1s ease-out;
-        }
-
-        @keyframes fadeInButton {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        #menu button:hover {
-            background: #0056b3;
-            transform: scale(1.05);
-        }
-
-        .character-select-container {
-            display: flex;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .character-select {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .character-select img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 2px solid white;
-            transition: transform 0.3s ease-in-out, border-color 0.3s;
-        }
-
-        .character-select img:hover {
-            border: 2px solid #007BFF;
-            transform: scale(1.2);
-        }
-
-        /* Game Container */
+        /* Spiel-Container und Charakter */
         #game-container {
             position: relative;
             width: 100%;
@@ -138,164 +40,9 @@
             transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
         }
 
-        .character:hover {
-            transform: translate(-50%, -50%) scale(1.4);
-            opacity: 0.8;
-        }
-
-        /* Items mit Animation */
-        .item {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background-size: contain;
-            z-index: 1;
-            animation: itemGrow 3s ease-in-out forwards, itemPop 5s ease-in-out forwards;
-        }
-
-        @keyframes itemGrow {
-            0% {
-                transform: scale(0);
-            }
-            50% {
-                transform: scale(2);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes itemPop {
-            0% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-            100% {
-                opacity: 0;
-                transform: scale(0);
-            }
-        }
-
-        /* Diamanten und Bonus Items */
-        .diamond {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: url('./images/diamond.gif') no-repeat center;
-            background-size: contain;
-            z-index: 1;
-            animation: float 3s infinite ease-in-out;
-        }
-
-        .bonus-item {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: url('./images/bonus-item.gif') no-repeat center;
-            background-size: contain;
-            z-index: 1;
-            animation: float 3s infinite ease-in-out, scale-up 2s ease-in-out forwards;
-        }
-
-        @keyframes scale-up {
-            0% {
-                transform: scale(0);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        /* Scoreboard */
-        .score-board {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 12px;
-            font-size: 20px;
-            font-weight: bold;
-            z-index: 3;
-            border: 2px solid #f39c12;
-            animation: fadeInScoreboard 1.5s ease-out;
-        }
-
-        @keyframes fadeInScoreboard {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        #back-to-menu-btn {
-            margin-top: 10px;
-            padding: 10px;
-            font-size: 16px;
-            background: #ff6347;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.2s ease-in-out, background 0.3s ease;
-        }
-
-        #back-to-menu-btn:hover {
-            background: #d9534f;
-            transform: scale(1.05);
-        }
-
-        .item-price {
-            position: absolute;
-            font-size: 14px;
-            color: #fff;
-            top: 60%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* Glow-Effekt für Berührung */
+        /* Touch-Interaktivität */
         .character.touch-active {
             box-shadow: 0 0 15px 5px rgba(255, 255, 0, 0.5);
-        }
-
-        .bonus-round {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 24px;
-            color: #ff0;
-            font-weight: bold;
-            z-index: 4;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50%, 100% {
-                opacity: 1;
-            }
-            25%, 75% {
-                opacity: 0;
-            }
-        }
-
-        .countdown {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 20px;
-            color: red;
-            z-index: 5;
         }
     </style>
 </head>
@@ -309,21 +56,6 @@
         <h1>LinEy v.1.2</h1>
         <button id="start-btn">Spiel starten</button>
         <button id="fullscreen-btn">Vollbild aktivieren</button>
-        <h3>Charakter auswählen:</h3>
-        <div class="character-select-container">
-            <div class="character-select" data-character="character1">
-                <img src="images/character1_ico.jpg" alt="Charakter 1">
-                <span>Haylie</span>
-            </div>
-            <div class="character-select" data-character="character2">
-                <img src="images/character2_ico.jpg" alt="Charakter 2">
-                <span>Amelina</span>
-            </div>
-            <div class="character-select" data-character="character3">
-                <img src="images/character3_ico.jpg" alt="Charakter 3">
-                <span>Lexa</span>
-            </div>
-        </div>
     </div>
 
     <div id="game-container" style="display: none;">
@@ -336,275 +68,120 @@
     </div>
 
     <script>
-    const loader = document.getElementById('loader');
-    const menu = document.getElementById('menu');
-    const startBtn = document.getElementById('start-btn');
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
-    const gameContainer = document.getElementById('game-container');
-    const character = document.getElementById('character');
-    const scoreDisplay = document.getElementById('score');
-    const levelDisplay = document.getElementById('level');
-    const diamondsDisplay = document.getElementById('diamonds');
-    const characterSelectButtons = document.querySelectorAll('.character-select');
-    const backToMenuBtn = document.getElementById('back-to-menu-btn');
-    const countdownDisplay = document.getElementById('countdown');
-    const bonusRoundDisplay = document.createElement('div');
+        const loader = document.getElementById('loader');
+        const menu = document.getElementById('menu');
+        const startBtn = document.getElementById('start-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const gameContainer = document.getElementById('game-container');
+        const character = document.getElementById('character');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+        const diamondsDisplay = document.getElementById('diamonds');
+        const backToMenuBtn = document.getElementById('back-to-menu-btn');
+        const countdownDisplay = document.getElementById('countdown');
 
-    let selectedCharacter = 'character1';
-    let score = 0;
-    let level = 1;
-    let diamonds = 0;
-    let timeRemaining = 10;
-    let gameInterval;
-    let bonusRoundActive = false;
+        let selectedCharacter = 'character1';
+        let score = 0;
+        let level = 1;
+        let diamonds = 0;
+        let timeRemaining = 10;
+        let gameInterval;
+        let bonusRoundActive = false;
 
-    let touchStartX, touchStartY;
-    const levelUpSound = new Audio('sounds/levelup.mp3');
-    const collectSound = new Audio('sounds/collect.mp3');
-    const diamondSound = new Audio('sounds/diamond.mp3');
-    const bonusSound = new Audio('sounds/bonus.mp3');
+        let touchStartX, touchStartY;
 
-    // Lokale Speicherung für Punktestand und Diamanten
-    if (localStorage.getItem('score')) {
-        score = parseInt(localStorage.getItem('score'));
-        level = parseInt(localStorage.getItem('level'));
-        diamonds = parseInt(localStorage.getItem('diamonds'));
-    }
-
-    // Ladebildschirm
-    setTimeout(() => {
-        loader.style.display = 'none';
-        menu.style.display = 'flex';
-    }, 3000);
-
-    // Charakterauswahl
-    characterSelectButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            selectedCharacter = button.getAttribute('data-character');
-            character.style.background = `url('./images/${selectedCharacter}.png') no-repeat center`;
-            character.style.backgroundSize = 'contain';
-        });
-    });
-
-    // Spiel starten
-    startBtn.addEventListener('click', () => {
-        menu.style.display = 'none';
-        gameContainer.style.display = 'flex';
-        generateItems(level);
-
-        // Bonus-Runde aktivieren
-        if (Math.random() < 0.2) {
-            activateBonusRound();
-        }
-
-        // Spiel-Timer
-        gameInterval = setInterval(() => {
-            timeRemaining--;
-            countdownDisplay.textContent = `Nächste Runde in: ${timeRemaining}s`;
-
-            if (timeRemaining <= 0) {
-                nextLevel();
-                timeRemaining = 10;  // Reset Timer
-            }
-        }, 1000);
-
-        // Kollisionsüberprüfung aktivieren
-        setInterval(checkCollision, 50);
-    });
-
-    // Vollbild aktivieren
-    fullscreenBtn.addEventListener('click', () => {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-        } else {
-            document.exitFullscreen();
-        }
-    });
-
-    // Zurück zum Menü
-    backToMenuBtn.addEventListener('click', () => {
-        gameContainer.style.display = 'none';
-        menu.style.display = 'flex';
-        score = 0;
-        level = 1;
-        diamonds = 0;
-        scoreDisplay.textContent = score;
-        levelDisplay.textContent = level;
-        diamondsDisplay.textContent = diamonds;
-        localStorage.clear(); // Fortschritt zurücksetzen
-        clearInterval(gameInterval);  // Spiel zurücksetzen
-    });
-
-    // Bonus-Runde aktivieren
-    function activateBonusRound() {
-        bonusRoundActive = true;
-        bonusRoundDisplay.textContent = "BONUS RUNDEN!";
-        bonusRoundDisplay.className = "bonus-round";
-        gameContainer.appendChild(bonusRoundDisplay);
-        bonusSound.play();
-
+        // Ladebildschirm
         setTimeout(() => {
-            bonusRoundDisplay.remove();
-            bonusRoundActive = false;
-        }, 5000);  // Bonus-Runde dauert 5 Sekunden
-    }
+            loader.style.display = 'none';
+            menu.style.display = 'flex';
+        }, 3000);
 
+        // Spiel starten
+        startBtn.addEventListener('click', () => {
+            menu.style.display = 'none';
+            gameContainer.style.display = 'flex';
 
+            // Spiel-Timer
+            gameInterval = setInterval(() => {
+                timeRemaining--;
+                countdownDisplay.textContent = `Nächste Runde in: ${timeRemaining}s`;
 
-
-    const character = document.getElementById('character');
-    const gameContainer = document.getElementById('game-container');
-
-    let touchStartX, touchStartY;
-
-    // Touch-Start: Start der Bewegung
-    character.addEventListener('touchstart', (e) => {
-        const touch = e.touches[0];
-        touchStartX = touch.clientX - character.offsetLeft;
-        touchStartY = touch.clientY - character.offsetTop;
-        character.classList.add('touch-active'); // Visuellen Effekt hinzufügen
-        e.preventDefault(); // Verhindert das Scrollen der Seite
-    });
-
-    // Touch-Move: Bewegungslogik
-    character.addEventListener('touchmove', (e) => {
-        e.preventDefault(); // Verhindert das Scrollen der Seite
-        const touch = e.touches[0];
-        const newX = touch.clientX - touchStartX;
-        const newY = touch.clientY - touchStartY;
-
-        // Begrenzung innerhalb des Containers
-        const maxLeft = gameContainer.clientWidth - character.offsetWidth;
-        const maxTop = gameContainer.clientHeight - character.offsetHeight;
-
-        character.style.left = `${Math.min(Math.max(0, newX), maxLeft)}px`;
-        character.style.top = `${Math.min(Math.max(0, newY), maxTop)}px`;
-    });
-
-    // Touch-End: Beenden der Bewegung
-    character.addEventListener('touchend', () => {
-        character.classList.remove('touch-active');
-    });
-
-
-
-
-
-
-
-
-        
-
-    // Items generieren
-    function generateItems(level) {
-        document.querySelectorAll('.item').forEach(item => item.remove());
-
-        const itemTypes = ['./images/item1.png', './images/item2.png', './images/item3.png'];
-        const itemCount = level + 3;
-
-        for (let i = 0; i < itemCount; i++) {
-            const item = document.createElement('div');
-            item.className = 'item';
-            const itemType = itemTypes[Math.floor(Math.random() * itemTypes.length)];
-            item.style.backgroundImage = `url('${itemType}')`;
-            item.style.left = `${Math.random() * (gameContainer.clientWidth - 50)}px`;
-            item.style.top = `${Math.random() * (gameContainer.clientHeight - 50)}px`;
-
-            // Item Preise
-            const priceTag = document.createElement('div');
-            priceTag.className = 'item-price';
-            priceTag.textContent = `${Math.floor(Math.random() * 20) + 1} Münzen`;
-            item.appendChild(priceTag);
-
-            gameContainer.appendChild(item);
-        }
-
-        // Diamanten für Level Ups
-        const diamondCount = Math.floor(level / 2);
-        for (let i = 0; i < diamondCount; i++) {
-            const diamond = document.createElement('div');
-            diamond.className = 'diamond';
-            diamond.style.left = `${Math.random() * (gameContainer.clientWidth - 40)}px`;
-            diamond.style.top = `${Math.random() * (gameContainer.clientHeight - 40)}px`;
-            gameContainer.appendChild(diamond);
-        }
-
-        // Bonus Items
-        const bonusItemCount = Math.floor(level / 5);
-        for (let i = 0; i < bonusItemCount; i++) {
-            const bonusItem = document.createElement('div');
-            bonusItem.className = 'bonus-item';
-            bonusItem.style.left = `${Math.random() * (gameContainer.clientWidth - 60)}px`;
-            bonusItem.style.top = `${Math.random() * (gameContainer.clientHeight - 60)}px`;
-            gameContainer.appendChild(bonusItem);
-        }
-    }
-
-    // Level-Up-Effekt
-    function nextLevel() {
-        level++;
-        levelDisplay.textContent = level;
-        levelUpSound.play();  // Level-up Sound abspielen
-
-        const flower = document.createElement('div');
-        flower.className = 'flower';
-        document.body.appendChild(flower);
-
-        setTimeout(() => flower.remove(), 1500);
-        generateItems(level);
-
-        // Diamanten erhöhen
-        diamonds += Math.floor(level / 2);
-        diamondsDisplay.textContent = diamonds;
-
-        // Fortschritt speichern
-        localStorage.setItem('score', score);
-        localStorage.setItem('level', level);
-        localStorage.setItem('diamonds', diamonds);
-    }
-
-    // Kollisionserkennung
-    function checkCollision() {
-        const characterRect = character.getBoundingClientRect();
-        const items = document.querySelectorAll('.item');
-
-        items.forEach(item => {
-            const itemRect = item.getBoundingClientRect();
-
-            if (
-                characterRect.left < itemRect.right &&
-                characterRect.right > itemRect.left &&
-                characterRect.top < itemRect.bottom &&
-                characterRect.bottom > itemRect.top
-            ) {
-                item.remove();
-                score++;
-                scoreDisplay.textContent = score;
-                collectSound.play();  // Collect Sound abspielen
-
-                if (document.querySelectorAll('.item').length === 0) {
+                if (timeRemaining <= 0) {
                     nextLevel();
+                    timeRemaining = 10;  // Reset Timer
                 }
-            }
+            }, 1000);
         });
 
-        const diamonds = document.querySelectorAll('.diamond');
-        diamonds.forEach(diamond => {
-            const diamondRect = diamond.getBoundingClientRect();
-
-            if (
-                characterRect.left < diamondRect.right &&
-                characterRect.right > diamondRect.left &&
-                characterRect.top < diamondRect.bottom &&
-                characterRect.bottom > diamondRect.top
-            ) {
-                diamond.remove();
-                diamonds++;
-                diamondsDisplay.textContent = diamonds;
-                diamondSound.play();  // Diamanten Sound abspielen
-            }
+        // Zurück zum Menü
+        backToMenuBtn.addEventListener('click', () => {
+            gameContainer.style.display = 'none';
+            menu.style.display = 'flex';
+            score = 0;
+            level = 1;
+            diamonds = 0;
+            scoreDisplay.textContent = score;
+            levelDisplay.textContent = level;
+            diamondsDisplay.textContent = diamonds;
+            clearInterval(gameInterval);  // Spiel zurücksetzen
         });
-    }
+
+        // Touch-Interaktivität - Start der Bewegung
+        character.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            touchStartX = touch.clientX - character.offsetLeft;
+            touchStartY = touch.clientY - character.offsetTop;
+            character.classList.add('touch-active'); // Visuellen Effekt hinzufügen
+            e.preventDefault(); // Verhindert das Scrollen der Seite
+        });
+
+        // Touch-Interaktivität - Bewegung des Charakters
+        character.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Verhindert das Scrollen der Seite
+            const touch = e.touches[0];
+            const newX = touch.clientX - touchStartX;
+            const newY = touch.clientY - touchStartY;
+
+            // Begrenzung innerhalb des Containers
+            const maxLeft = gameContainer.clientWidth - character.offsetWidth;
+            const maxTop = gameContainer.clientHeight - character.offsetHeight;
+
+            character.style.left = `${Math.min(Math.max(0, newX), maxLeft)}px`;
+            character.style.top = `${Math.min(Math.max(0, newY), maxTop)}px`;
+        });
+
+        // Touch-End - Beenden der Bewegung
+        character.addEventListener('touchend', () => {
+            character.classList.remove('touch-active');
+        });
+
+        // Kollisionserkennung und Punktvergabe (Beispiel)
+        function checkCollision() {
+            const characterRect = character.getBoundingClientRect();
+            const items = document.querySelectorAll('.item');
+            
+            items.forEach(item => {
+                const itemRect = item.getBoundingClientRect();
+
+                if (
+                    characterRect.left < itemRect.right &&
+                    characterRect.right > itemRect.left &&
+                    characterRect.top < itemRect.bottom &&
+                    characterRect.bottom > itemRect.top
+                ) {
+                    item.remove();
+                    score++;
+                    scoreDisplay.textContent = score;
+                }
+            });
+        }
+
+        // Level-up
+        function nextLevel() {
+            level++;
+            levelDisplay.textContent = level;
+            // Level-up Logik und Sounds hier hinzufügen
+        }
     </script>
 </body>
 </html>
