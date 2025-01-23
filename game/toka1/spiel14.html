@@ -11,7 +11,6 @@
             font-family: 'Comic Sans MS', Arial, sans-serif;
             background: linear-gradient(to bottom, #ffccff, #ff99cc);
             overflow: hidden;
-            color: white;
         }
 
         #menu, #game-container, #character-selection, #highscore-board {
@@ -29,38 +28,38 @@
         }
 
         h1, h2 {
-            color: #fff700;
+            color: yellow;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
         }
 
-        #menu button, #restart-btn, #character-selection button, #highscore-board button {
+        button {
             margin: 10px;
             padding: 15px 30px;
-            font-size: 20px;
-            border: none;
+            font-size: 18px;
             background: #ff66b2;
             color: white;
-            border-radius: 12px;
+            border: none;
+            border-radius: 10px;
             cursor: pointer;
-            transition: transform 0.2s, background 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
-        #menu button:hover, #restart-btn:hover, #character-selection button:hover, #highscore-board button:hover {
+        button:hover {
             background: #ff3385;
             transform: scale(1.1);
         }
 
-        #game-container, #character-selection, #highscore-board {
+        #game-container {
             display: none;
+            position: relative;
         }
 
         .character {
             position: absolute;
             width: 80px;
             height: 100px;
-            background-size: cover;
-            cursor: pointer;
+            background-size: contain;
+            background-repeat: no-repeat;
+            cursor: grab;
         }
 
         .item {
@@ -68,43 +67,34 @@
             width: 50px;
             height: 50px;
             background-size: contain;
+            background-repeat: no-repeat;
             animation: float 3s infinite;
         }
 
-        .item:hover {
-            transform: scale(1.3);
+        .scoreboard, .timer {
+            position: absolute;
+            padding: 10px;
+            background: rgba(255, 153, 255, 0.8);
+            border-radius: 10px;
+            font-size: 18px;
         }
 
         .scoreboard {
-            position: absolute;
             top: 10px;
             left: 10px;
-            padding: 10px;
-            background: rgba(255, 153, 255, 0.8);
-            color: white;
-            font-size: 20px;
-            border-radius: 10px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .timer {
-            position: absolute;
             top: 10px;
             right: 10px;
             background: rgba(255, 77, 77, 0.9);
-            color: white;
-            font-size: 24px;
-            padding: 10px;
-            border-radius: 10px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         #highscore-list {
             list-style-type: none;
             padding: 0;
-            margin: 10px;
             color: white;
-            font-size: 18px;
+            text-align: center;
         }
 
         @keyframes float {
@@ -119,151 +109,117 @@
 </head>
 <body>
     <div id="menu">
-        <h1>Candy Abenteuer-Spiel v14.04</h1>
+        <h1>Candy Abenteuer-Spiel v14.05</h1>
         <button id="start-game-btn">Spiel starten</button>
         <button id="character-select-btn">Charakter wählen</button>
-        <button id="highscore-btn">Highscores anzeigen</button>
     </div>
 
     <div id="character-selection">
         <h2>Wähle deinen Charakter:</h2>
-        <button class="character-option" data-character="character1.png">🍭 Charakter 1</button>
-        <button class="character-option" data-character="character2.png">🍬 Charakter 2</button>
-        <button class="character-option" data-character="character3.png">🍩 Charakter 3</button>
-        <button id="back-to-menu">Zurück zum Menü</button>
-    </div>
-
-    <div id="highscore-board">
-        <h2>Highscores</h2>
-        <ul id="highscore-list"></ul>
-        <button id="back-to-menu-hs">Zurück zum Menü</button>
+        <button data-character="character1.png">Charakter 1</button>
+        <button data-character="character2.png">Charakter 2</button>
+        <button data-character="character3.png">Charakter 3</button>
+        <button id="back-to-menu">Zurück</button>
     </div>
 
     <div id="game-container">
-        <div class="scoreboard">
-            Punkte: <span id="score">0</span>
-        </div>
-        <div class="timer" id="timer">Zeit: 60</div>
+        <div class="scoreboard">Punkte: <span id="score">0</span></div>
+        <div class="timer">Zeit: <span id="timer">60</span></div>
         <div id="character" class="character"></div>
-        <button id="restart-btn">Neustart</button>
     </div>
 
     <script>
         const menu = document.getElementById('menu');
         const gameContainer = document.getElementById('game-container');
         const characterSelection = document.getElementById('character-selection');
-        const highscoreBoard = document.getElementById('highscore-board');
         const startGameBtn = document.getElementById('start-game-btn');
-        const characterSelectBtn = document.getElementById('character-select-btn');
-        const highscoreBtn = document.getElementById('highscore-btn');
-        const backToMenuBtns = document.querySelectorAll('#back-to-menu, #back-to-menu-hs');
-        const characterOptions = document.querySelectorAll('.character-option');
-        const restartBtn = document.getElementById('restart-btn');
-        const character = document.getElementById('character');
+        const characterSelectBtns = document.querySelectorAll('[data-character]');
+        const backToMenuBtn = document.getElementById('back-to-menu');
         const scoreDisplay = document.getElementById('score');
         const timerDisplay = document.getElementById('timer');
-        const highscoreList = document.getElementById('highscore-list');
+        const character = document.getElementById('character');
 
         let score = 0;
         let timeLeft = 60;
-        let gameInterval;
         let selectedCharacter = 'character1.png';
-        let highscores = [];
+        let gameInterval;
         let isDragging = false;
 
+        // Menüanzeige
         function showMenu() {
             menu.style.display = 'flex';
             gameContainer.style.display = 'none';
             characterSelection.style.display = 'none';
-            highscoreBoard.style.display = 'none';
         }
 
+        // Spiel starten
         function startGame() {
             menu.style.display = 'none';
             gameContainer.style.display = 'flex';
-            character.style.backgroundImage = `url('images/${selectedCharacter}')`;
-            character.style.left = '50%';
-            character.style.top = '50%';
             score = 0;
             timeLeft = 60;
+            character.style.backgroundImage = `url(images/${selectedCharacter})`;
             scoreDisplay.textContent = score;
-            timerDisplay.textContent = `Zeit: ${timeLeft}`;
-            spawnItems();
+            timerDisplay.textContent = timeLeft;
 
             gameInterval = setInterval(() => {
                 timeLeft--;
-                timerDisplay.textContent = `Zeit: ${timeLeft}`;
-                if (timeLeft <= 0) {
-                    endGame();
-                }
+                timerDisplay.textContent = timeLeft;
+                if (timeLeft <= 0) endGame();
             }, 1000);
+
+            spawnItems();
         }
 
-        function endGame() {
-            clearInterval(gameInterval);
-            highscores.push(score);
-            highscores.sort((a, b) => b - a);
-            alert(`Spiel vorbei! Deine Punktzahl: ${score}`);
-            showMenu();
-        }
-
+        // Items spawnen
         function spawnItems() {
             const itemTypes = ['candy1.png', 'candy2.png', 'candy3.png'];
-            const maxItems = 5;
-
-            for (let i = 0; i < maxItems; i++) {
+            for (let i = 0; i < 5; i++) {
                 const item = document.createElement('div');
                 item.className = 'item';
-                item.style.backgroundImage = `url('images/${itemTypes[Math.floor(Math.random() * itemTypes.length)]}')`;
-                item.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
-                item.style.top = `${Math.random() * (window.innerHeight - 50)}px`;
+                item.style.backgroundImage = `url(images/${itemTypes[Math.floor(Math.random() * itemTypes.length)]})`;
+                item.style.left = `${Math.random() * window.innerWidth - 50}px`;
+                item.style.top = `${Math.random() * window.innerHeight - 50}px`;
 
                 item.addEventListener('click', () => {
-                    item.remove();
                     score += 10;
                     scoreDisplay.textContent = score;
+                    item.remove();
                 });
 
                 gameContainer.appendChild(item);
-
-                setTimeout(() => {
-                    if (item.parentElement) item.remove();
-                }, 5000);
+                setTimeout(() => item.remove(), 4000);
             }
         }
 
-        startGameBtn.addEventListener('click', startGame);
-        characterSelectBtn.addEventListener('click', () => {
-            menu.style.display = 'none';
-            characterSelection.style.display = 'flex';
-        });
+        // Spiel beenden
+        function endGame() {
+            clearInterval(gameInterval);
+            alert(`Spiel vorbei! Punktzahl: ${score}`);
+            showMenu();
+        }
 
-        characterOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                selectedCharacter = option.getAttribute('data-character');
+        // Charakter auswählen
+        characterSelectBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectedCharacter = btn.getAttribute('data-character');
                 showMenu();
             });
         });
 
-        highscoreBtn.addEventListener('click', () => {
-            menu.style.display = 'none';
-            highscoreBoard.style.display = 'flex';
-            highscoreList.innerHTML = highscores.map((score, index) => `<li>Platz ${index + 1}: ${score}</li>`).join('');
-        });
-
-        backToMenuBtns.forEach(btn => btn.addEventListener('click', showMenu));
-
-        restartBtn.addEventListener('click', startGame);
-
+        // Drag-Funktion für die Spielfigur
         character.addEventListener('mousedown', () => isDragging = true);
         character.addEventListener('mouseup', () => isDragging = false);
-
         window.addEventListener('mousemove', (e) => {
             if (isDragging) {
-                character.style.left = `${e.clientX - character.offsetWidth / 2}px`;
-                character.style.top = `${e.clientY - character.offsetHeight / 2}px`;
+                character.style.left = `${e.clientX - 40}px`;
+                character.style.top = `${e.clientY - 50}px`;
             }
         });
+
+        // Button-Events
+        startGameBtn.addEventListener('click', startGame);
+        backToMenuBtn.addEventListener('click', showMenu);
     </script>
 </body>
 </html>
