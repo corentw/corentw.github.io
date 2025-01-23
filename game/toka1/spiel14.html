@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fesselndes Abenteuer-Spiel 14.01</title>
+    <title>Fesselndes Abenteuer-Spiel</title>
     <style>
         body {
             margin: 0;
@@ -114,7 +114,7 @@
 </head>
 <body>
     <div id="menu">
-        <h1>Fesselndes Abenteuer-Spiel v14.02</h1>
+        <h1>Fesselndes Abenteuer-Spiel v14.03</h1>
         <button id="start-game-btn">Spiel starten</button>
         <button id="character-select-btn">Charakter wählen</button>
         <button id="highscore-btn">Highscore anzeigen</button>
@@ -144,6 +144,8 @@
     </div>
 
     <script>
+        console.log("Script geladen");
+
         const menu = document.getElementById('menu');
         const gameContainer = document.getElementById('game-container');
         const characterSelection = document.getElementById('character-selection');
@@ -165,7 +167,12 @@
         let selectedCharacter = 'character1.png';
         let highscores = [];
 
+        function log(msg) {
+            console.log(`[DEBUG]: ${msg}`);
+        }
+
         function showMenu() {
+            log("Menü anzeigen");
             menu.style.display = 'flex';
             gameContainer.style.display = 'none';
             characterSelection.style.display = 'none';
@@ -173,6 +180,7 @@
         }
 
         function startGame() {
+            log("Spiel gestartet");
             menu.style.display = 'none';
             gameContainer.style.display = 'flex';
             character.style.backgroundImage = `url('images/${selectedCharacter}')`;
@@ -192,6 +200,7 @@
         }
 
         function endGame() {
+            log("Spiel beendet");
             clearInterval(gameInterval);
             highscores.push(score);
             highscores.sort((a, b) => b - a);
@@ -200,6 +209,7 @@
         }
 
         function spawnItems() {
+            log("Items spawnen");
             const itemTypes = ['item1.png', 'item2.png', 'item3.png'];
             const maxItems = 10;
 
@@ -215,6 +225,7 @@
                     setTimeout(() => item.remove(), 200);
                     score += Math.floor(Math.random() * 10) + 1;
                     scoreDisplay.textContent = score;
+                    log(`Item geklickt. Neuer Score: ${score}`);
                 });
 
                 gameContainer.appendChild(item);
@@ -234,7 +245,7 @@
         characterOptions.forEach(option => {
             option.addEventListener('click', () => {
                 selectedCharacter = option.getAttribute('data-character');
-                alert(`Du hast ${selectedCharacter.split('.')[0]} gewählt!`);
+                log(`Charakter gewählt: ${selectedCharacter}`);
                 showMenu();
             });
         });
@@ -243,24 +254,12 @@
             menu.style.display = 'none';
             highscoreBoard.style.display = 'flex';
             highscoreList.innerHTML = highscores.map((score, index) => `<li>Platz ${index + 1}: ${score}</li>`).join('');
+            log("Highscores angezeigt");
         });
 
         backToMenuBtns.forEach(btn => btn.addEventListener('click', showMenu));
 
         restartBtn.addEventListener('click', startGame);
-
-        let isDragging = false;
-
-        character.addEventListener('touchstart', () => isDragging = true);
-        character.addEventListener('touchend', () => isDragging = false);
-
-        window.addEventListener('touchmove', (e) => {
-            if (isDragging) {
-                const touch = e.touches[0];
-                character.style.left = `${touch.clientX - character.offsetWidth / 2}px`;
-                character.style.top = `${touch.clientY - character.offsetHeight / 2}px`;
-            }
-        });
     </script>
 </body>
 </html>
