@@ -138,10 +138,12 @@
             cursor: grab;
             z-index: 2;
             transition: transform 0.2s ease-in-out;
+            opacity: 0.92;
         }
 
         .character:hover {
-            transform: translate(-50%, -50%) scale(1.8);
+            transform: translate(-50%, -50%) scale(1.25);
+            opacity: 1;
         }
 
         .item {
@@ -185,17 +187,21 @@
             background-size: contain;
             z-index: 999;
             animation: grow 1.5s ease-in-out forwards;
+            opacity:0;
         }
 
         @keyframes grow {
             0% {
                 transform: translate(-50%, -50%) scale(0);
+                opacity:0.6;
             }
             50% {
-                transform: translate(-50%, -50%) scale(1.8);
+                transform: translate(-50%, -50%) scale(2.4);
+                opacity:0.8;
             }
             100% {
                 transform: translate(-50%, -50%) scale(1);
+                opacity:1;
             }
         }
 
@@ -240,7 +246,7 @@
 
         /* Glow-Effekt für Berührung */
         .character.touch-active {
-            box-shadow: 0 0 15px 5px rgba(255, 255, 0, 0.5);
+            opacity: 1;
         }
 
         .diamond {
