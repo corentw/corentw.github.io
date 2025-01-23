@@ -26,31 +26,66 @@
             z-index: 100;
         }
 
-        #menu button, #game-container button {
-            padding: 15px 30px;
+        h1, h2 {
+            color: #fff700;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        button {
             margin: 10px;
+            padding: 15px 30px;
             font-size: 20px;
+            border: none;
             background: #ff66b2;
             color: white;
-            border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
         }
 
-        .character {
-            position: absolute;
-            width: 80px;
-            height: 100px;
-            background-size: contain;
-            background-repeat: no-repeat;
+        button:hover {
+            background: #ff3385;
+            transform: scale(1.1);
         }
 
-        .item {
+        .item, .diamond, .bonus-item {
             position: absolute;
             width: 50px;
             height: 50px;
             background-size: contain;
-            background-repeat: no-repeat;
+            animation: float 3s infinite;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .item.explode, .diamond.explode, .bonus-item.explode {
+            transform: scale(1.5);
+            opacity: 0;
+            transition: transform 0.5s, opacity 0.5s;
+        }
+
+        .scoreboard, .timer {
+            position: absolute;
+            padding: 10px;
+            font-size: 20px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .scoreboard {
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 153, 255, 0.8);
+        }
+
+        .timer {
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 77, 77, 0.9);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
     </style>
 </head>
@@ -61,9 +96,12 @@
     </div>
 
     <div id="game-container" style="display: none;">
-        <div>Punkte: <span id="score">0</span></div>
-        <div>Zeit: <span id="timer">60</span></div>
-        <div id="character" class="character" style="background-image: url('images/character1.png');"></div>
+        <div class="scoreboard">
+            Punkte: <span id="score">0</span>
+        </div>
+        <div class="timer">
+            Zeit: <span id="timer">60</span>
+        </div>
     </div>
 
     <script>
@@ -72,75 +110,98 @@
         const startGameBtn = document.getElementById('start-game-btn');
         const scoreDisplay = document.getElementById('score');
         const timerDisplay = document.getElementById('timer');
-        const character = document.getElementById('character');
 
         let score = 0;
         let timeLeft = 60;
         let gameInterval;
-        let spawnInterval;
-
-        // Start des Spiels
-        startGameBtn.addEventListener('click', () => {
-            menu.style.display = 'none';
-            gameContainer.style.display = 'flex';
-            startGame();
-        });
 
         function startGame() {
+            menu.style.display = 'none';
+            gameContainer.style.display = 'block';
+
             score = 0;
             timeLeft = 60;
             scoreDisplay.textContent = score;
             timerDisplay.textContent = timeLeft;
 
-            // Timer für das Spiel
+            spawnItems();
+            spawnDiamonds();
+            spawnBonusItems();
+
             gameInterval = setInterval(() => {
                 timeLeft--;
                 timerDisplay.textContent = timeLeft;
-                if (timeLeft <= 0) {
-                    endGame();
-                }
+                if (timeLeft <= 0) endGame();
             }, 1000);
-
-            // Items regelmäßig spawnen
-            spawnInterval = setInterval(spawnItems, 2000);
-            spawnItems();
         }
 
         function endGame() {
             clearInterval(gameInterval);
-            clearInterval(spawnInterval);
-            alert(`Spiel vorbei! Punktzahl: ${score}`);
-            menu.style.display = 'flex';
+            alert(`Spiel vorbei! Deine Punktzahl: ${score}`);
             gameContainer.style.display = 'none';
-            // Alle Items entfernen
-            document.querySelectorAll('.item').forEach(item => item.remove());
+            menu.style.display = 'flex';
         }
 
         function spawnItems() {
             const itemTypes = ['candy1.png', 'candy2.png', 'candy3.png'];
-
-            // Erzeuge 3 neue Items
-            for (let i = 0; i < 3; i++) {
-                const item = document.createElement('div');
-                item.className = 'item';
-                item.style.backgroundImage = `url('images/${itemTypes[Math.floor(Math.random() * itemTypes.length)]}')`;
-                item.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
-                item.style.top = `${Math.random() * (window.innerHeight - 50)}px`;
-
+            for (let i = 0; i < 5; i++) {
+                const item = createGameObject('item', itemTypes[Math.floor(Math.random() * itemTypes.length)]);
                 item.addEventListener('click', () => {
-                    score += 10;  // Punkte erhöhen
+                    score += 10;
                     scoreDisplay.textContent = score;
-                    item.remove();  // Item entfernen
+                    item.remove();
                 });
-
-                gameContainer.appendChild(item);
-
-                // Entferne das Item nach 5 Sekunden automatisch
-                setTimeout(() => {
-                    if (item.parentElement) item.remove();
-                }, 5000);
+                setItemTimeout(item);
             }
+            setTimeout(spawnItems, 5000);
         }
+
+        function spawnDiamonds() {
+            for (let i = 0; i < 3; i++) {
+                const diamond = createGameObject('diamond', 'diamond.png');
+                diamond.addEventListener('click', () => {
+                    score += 20;
+                    scoreDisplay.textContent = score;
+                    diamond.remove();
+                });
+                setItemTimeout(diamond);
+            }
+            setTimeout(spawnDiamonds, 7000);
+        }
+
+        function spawnBonusItems() {
+            for (let i = 0; i < 2; i++) {
+                const bonusItem = createGameObject('bonus-item', 'bonus.png');
+                bonusItem.addEventListener('click', () => {
+                    score += 50;
+                    scoreDisplay.textContent = score;
+                    bonusItem.remove();
+                });
+                setItemTimeout(bonusItem);
+            }
+            setTimeout(spawnBonusItems, 10000);
+        }
+
+        function createGameObject(className, image) {
+            const item = document.createElement('div');
+            item.className = className;
+            item.style.backgroundImage = `url(images/${image})`;
+            item.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
+            item.style.top = `${Math.random() * (window.innerHeight - 50)}px`;
+            gameContainer.appendChild(item);
+            return item;
+        }
+
+        function setItemTimeout(item) {
+            setTimeout(() => {
+                if (item.parentElement) {
+                    item.classList.add('explode');
+                    setTimeout(() => item.remove(), 500);
+                }
+            }, 5000);
+        }
+
+        startGameBtn.addEventListener('click', startGame);
     </script>
 </body>
 </html>
