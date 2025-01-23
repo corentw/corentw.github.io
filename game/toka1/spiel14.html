@@ -13,7 +13,7 @@
             overflow: hidden;
         }
 
-        #menu, #game-container, #character-selection, #highscore-board {
+        #menu, #game-container {
             position: fixed;
             top: 0;
             left: 0;
@@ -22,35 +22,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(0, 0, 0, 0.8);
             flex-direction: column;
             z-index: 100;
         }
 
-        h1, h2 {
-            color: yellow;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-        }
-
-        button {
-            margin: 10px;
+        #menu button, #game-container button {
             padding: 15px 30px;
-            font-size: 18px;
+            margin: 10px;
+            font-size: 20px;
             background: #ff66b2;
             color: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-        }
-
-        button:hover {
-            background: #ff3385;
-            transform: scale(1.1);
-        }
-
-        #game-container {
-            display: none;
-            position: relative;
         }
 
         .character {
@@ -59,7 +43,6 @@
             height: 100px;
             background-size: contain;
             background-repeat: no-repeat;
-            cursor: grab;
         }
 
         .item {
@@ -68,158 +51,96 @@
             height: 50px;
             background-size: contain;
             background-repeat: no-repeat;
-            animation: float 3s infinite;
-        }
-
-        .scoreboard, .timer {
-            position: absolute;
-            padding: 10px;
-            background: rgba(255, 153, 255, 0.8);
-            border-radius: 10px;
-            font-size: 18px;
-        }
-
-        .scoreboard {
-            top: 10px;
-            left: 10px;
-        }
-
-        .timer {
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 77, 77, 0.9);
-        }
-
-        #highscore-list {
-            list-style-type: none;
-            padding: 0;
-            color: white;
-            text-align: center;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-15px);
-            }
         }
     </style>
 </head>
 <body>
     <div id="menu">
-        <h1>Candy Abenteuer-Spiel v14.05</h1>
+        <h1>Candy Abenteuer-Spiel</h1>
         <button id="start-game-btn">Spiel starten</button>
-        <button id="character-select-btn">Charakter wählen</button>
     </div>
 
-    <div id="character-selection">
-        <h2>Wähle deinen Charakter:</h2>
-        <button data-character="character1.png">Charakter 1</button>
-        <button data-character="character2.png">Charakter 2</button>
-        <button data-character="character3.png">Charakter 3</button>
-        <button id="back-to-menu">Zurück</button>
-    </div>
-
-    <div id="game-container">
-        <div class="scoreboard">Punkte: <span id="score">0</span></div>
-        <div class="timer">Zeit: <span id="timer">60</span></div>
-        <div id="character" class="character"></div>
+    <div id="game-container" style="display: none;">
+        <div>Punkte: <span id="score">0</span></div>
+        <div>Zeit: <span id="timer">60</span></div>
+        <div id="character" class="character" style="background-image: url('images/character1.png');"></div>
     </div>
 
     <script>
         const menu = document.getElementById('menu');
         const gameContainer = document.getElementById('game-container');
-        const characterSelection = document.getElementById('character-selection');
         const startGameBtn = document.getElementById('start-game-btn');
-        const characterSelectBtns = document.querySelectorAll('[data-character]');
-        const backToMenuBtn = document.getElementById('back-to-menu');
         const scoreDisplay = document.getElementById('score');
         const timerDisplay = document.getElementById('timer');
         const character = document.getElementById('character');
 
         let score = 0;
         let timeLeft = 60;
-        let selectedCharacter = 'character1.png';
         let gameInterval;
-        let isDragging = false;
+        let spawnInterval;
 
-        // Menüanzeige
-        function showMenu() {
-            menu.style.display = 'flex';
-            gameContainer.style.display = 'none';
-            characterSelection.style.display = 'none';
-        }
-
-        // Spiel starten
-        function startGame() {
+        // Start des Spiels
+        startGameBtn.addEventListener('click', () => {
             menu.style.display = 'none';
             gameContainer.style.display = 'flex';
+            startGame();
+        });
+
+        function startGame() {
             score = 0;
             timeLeft = 60;
-            character.style.backgroundImage = `url(images/${selectedCharacter})`;
             scoreDisplay.textContent = score;
             timerDisplay.textContent = timeLeft;
 
+            // Timer für das Spiel
             gameInterval = setInterval(() => {
                 timeLeft--;
                 timerDisplay.textContent = timeLeft;
-                if (timeLeft <= 0) endGame();
+                if (timeLeft <= 0) {
+                    endGame();
+                }
             }, 1000);
 
+            // Items regelmäßig spawnen
+            spawnInterval = setInterval(spawnItems, 2000);
             spawnItems();
         }
 
-        // Items spawnen
+        function endGame() {
+            clearInterval(gameInterval);
+            clearInterval(spawnInterval);
+            alert(`Spiel vorbei! Punktzahl: ${score}`);
+            menu.style.display = 'flex';
+            gameContainer.style.display = 'none';
+            // Alle Items entfernen
+            document.querySelectorAll('.item').forEach(item => item.remove());
+        }
+
         function spawnItems() {
             const itemTypes = ['candy1.png', 'candy2.png', 'candy3.png'];
-            for (let i = 0; i < 5; i++) {
+
+            // Erzeuge 3 neue Items
+            for (let i = 0; i < 3; i++) {
                 const item = document.createElement('div');
                 item.className = 'item';
-                item.style.backgroundImage = `url(images/${itemTypes[Math.floor(Math.random() * itemTypes.length)]})`;
-                item.style.left = `${Math.random() * window.innerWidth - 50}px`;
-                item.style.top = `${Math.random() * window.innerHeight - 50}px`;
+                item.style.backgroundImage = `url('images/${itemTypes[Math.floor(Math.random() * itemTypes.length)]}')`;
+                item.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
+                item.style.top = `${Math.random() * (window.innerHeight - 50)}px`;
 
                 item.addEventListener('click', () => {
-                    score += 10;
+                    score += 10;  // Punkte erhöhen
                     scoreDisplay.textContent = score;
-                    item.remove();
+                    item.remove();  // Item entfernen
                 });
 
                 gameContainer.appendChild(item);
-                setTimeout(() => item.remove(), 4000);
+
+                // Entferne das Item nach 5 Sekunden automatisch
+                setTimeout(() => {
+                    if (item.parentElement) item.remove();
+                }, 5000);
             }
         }
-
-        // Spiel beenden
-        function endGame() {
-            clearInterval(gameInterval);
-            alert(`Spiel vorbei! Punktzahl: ${score}`);
-            showMenu();
-        }
-
-        // Charakter auswählen
-        characterSelectBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                selectedCharacter = btn.getAttribute('data-character');
-                showMenu();
-            });
-        });
-
-        // Drag-Funktion für die Spielfigur
-        character.addEventListener('mousedown', () => isDragging = true);
-        character.addEventListener('mouseup', () => isDragging = false);
-        window.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                character.style.left = `${e.clientX - 40}px`;
-                character.style.top = `${e.clientY - 50}px`;
-            }
-        });
-
-        // Button-Events
-        startGameBtn.addEventListener('click', startGame);
-        backToMenuBtn.addEventListener('click', showMenu);
     </script>
 </body>
 </html>
