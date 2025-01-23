@@ -137,12 +137,11 @@
             transform: translate(-50%, -50%);
             cursor: grab;
             z-index: 2;
-            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+            transition: transform 0.2s ease-in-out;
         }
 
         .character:hover {
-            transform: translate(-50%, -50%) scale(1.4);
-            opacity: 0.8;
+            transform: translate(-50%, -50%) scale(1.8);
         }
 
         .item {
@@ -182,7 +181,7 @@
             transform: translate(-50%, -50%) scale(0);
             width: 200px;
             height: 200px;
-            background: url('./images/levelup.gif') no-repeat center;
+            background: url('./images/levelup.png') no-repeat center;
             background-size: contain;
             z-index: 999;
             animation: grow 1.5s ease-in-out forwards;
@@ -193,7 +192,7 @@
                 transform: translate(-50%, -50%) scale(0);
             }
             50% {
-                transform: translate(-50%, -50%) scale(1.5);
+                transform: translate(-50%, -50%) scale(1.8);
             }
             100% {
                 transform: translate(-50%, -50%) scale(1);
@@ -305,7 +304,7 @@
     <div id="game-container" style="display: none;">
         <div class="score-board">
             Punkte: <span id="score">0</span> | Level: <span id="level">1</span> | Diamanten: <span id="diamonds">0</span>
-            <button id="back-to-menu-btn">Zurück zum Menü</button>
+            <button id="back-to-menu-btn">Menü</button>
         </div>
         <div id="character" class="character" style="background: url('./images/character1.png') no-repeat center;"></div>
     </div>
