@@ -13,7 +13,7 @@
             overflow: hidden;
         }
 
-        #menu, #game-container, #end-screen {
+        #menu, #game-container, #end-screen, #highscore-screen {
             position: fixed;
             top: 0;
             left: 0;
@@ -25,7 +25,7 @@
             flex-direction: column;
         }
 
-        #game-container, #end-screen {
+        #game-container, #end-screen, #highscore-screen {
             display: none;
         }
 
@@ -77,7 +77,19 @@
             background: rgba(77, 255, 77, 0.8);
         }
 
-        .item, .diamond, .hindrance {
+        .level-up {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 50px;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 0, 0.9);
+            display: none;
+        }
+
+        .item, .diamond, .hindrance, .special {
             position: absolute;
             width: 50px;
             height: 50px;
@@ -94,10 +106,31 @@
             }
         }
 
-        .highscore {
-            margin-top: 20px;
-            font-size: 24px;
-            color: #fff;
+        .highscore-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .highscore-entry {
+            margin: 5px;
+            font-size: 18px;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            button {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+
+            .scoreboard, .timer, .level {
+                font-size: 16px;
+            }
+
+            .level-up {
+                font-size: 30px;
+            }
         }
     </style>
 </head>
@@ -105,32 +138,45 @@
     <div id="menu">
         <h1>Candy Abenteuer-Spiel</h1>
         <button id="start-game-btn">Spiel starten</button>
+        <button id="view-highscore-btn">Highscores ansehen</button>
     </div>
 
     <div id="game-container">
         <div class="scoreboard">Punkte: <span id="score">0</span></div>
         <div class="timer">Zeit: <span id="timer">60</span></div>
         <div class="level">Level: <span id="level">1</span></div>
+        <div class="level-up" id="level-up">Level Up!</div>
     </div>
 
     <div id="end-screen">
         <h1>Spiel vorbei!</h1>
-        <div class="highscore">Deine Punktzahl: <span id="final-score">0</span></div>
-        <div class="highscore">Highscore: <span id="highscore">0</span></div>
+        <h2>Deine Punktzahl: <span id="final-score">0</span></h2>
         <button id="restart-game-btn">Erneut spielen</button>
+        <button id="view-highscore-btn-end">Highscores ansehen</button>
+    </div>
+
+    <div id="highscore-screen">
+        <h1>Highscore-Liste</h1>
+        <div class="highscore-list" id="highscore-list"></div>
+        <button id="back-to-menu-btn">Zurück zum Menü</button>
     </div>
 
     <script>
         const menu = document.getElementById('menu');
         const gameContainer = document.getElementById('game-container');
         const endScreen = document.getElementById('end-screen');
+        const highscoreScreen = document.getElementById('highscore-screen');
         const startGameBtn = document.getElementById('start-game-btn');
+        const viewHighscoreBtn = document.getElementById('view-highscore-btn');
         const restartGameBtn = document.getElementById('restart-game-btn');
+        const viewHighscoreBtnEnd = document.getElementById('view-highscore-btn-end');
+        const backToMenuBtn = document.getElementById('back-to-menu-btn');
         const scoreDisplay = document.getElementById('score');
         const timerDisplay = document.getElementById('timer');
         const levelDisplay = document.getElementById('level');
         const finalScoreDisplay = document.getElementById('final-score');
-        const highscoreDisplay = document.getElementById('highscore');
+        const highscoreList = document.getElementById('highscore-list');
+        const levelUpDisplay = document.getElementById('level-up');
 
         let score = 0;
         let timeLeft = 60;
@@ -138,6 +184,19 @@
         let spawnInterval = 1500;
         let gameInterval;
         let spawnTimer;
+
+        const highscores = JSON.parse(localStorage.getItem('highscores')) || [];
+
+        function updateHighscoreList() {
+            highscoreList.innerHTML = '';
+            highscores.sort((a, b) => b.score - a.score);
+            highscores.slice(0, 10).forEach((entry, index) => {
+                const div = document.createElement('div');
+                div.classList.add('highscore-entry');
+                div.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
+                highscoreList.appendChild(div);
+            });
+        }
 
         function startGame() {
             menu.style.display = 'none';
@@ -157,11 +216,10 @@
             clearInterval(gameInterval);
             clearInterval(spawnTimer);
 
-            const highscore = Math.max(score, localStorage.getItem('highscore') || 0);
-            localStorage.setItem('highscore', highscore);
+            highscores.push({ name: 'Spieler', score });
+            localStorage.setItem('highscores', JSON.stringify(highscores));
 
             finalScoreDisplay.textContent = score;
-            highscoreDisplay.textContent = highscore;
 
             gameContainer.style.display = 'none';
             endScreen.style.display = 'flex';
@@ -170,6 +228,14 @@
         function restartGame() {
             endScreen.style.display = 'none';
             menu.style.display = 'flex';
+        }
+
+        function viewHighscores() {
+            menu.style.display = 'none';
+            endScreen.style.display = 'none';
+            highscoreScreen.style.display = 'flex';
+
+            updateHighscoreList();
         }
 
         function updateUI() {
@@ -186,6 +252,7 @@
                 } else if (timeLeft % 20 === 0) {
                     level++;
                     spawnInterval = Math.max(800, spawnInterval - 200);
+                    highlightLevelUp();
                 }
                 updateUI();
             }, 1000);
@@ -219,8 +286,21 @@
             gameContainer.appendChild(object);
         }
 
+        function highlightLevelUp() {
+            levelUpDisplay.style.display = 'block';
+            setTimeout(() => {
+                levelUpDisplay.style.display = 'none';
+            }, 1000);
+        }
+
         startGameBtn.addEventListener('click', startGame);
         restartGameBtn.addEventListener('click', restartGame);
+        viewHighscoreBtn.addEventListener('click', viewHighscores);
+        viewHighscoreBtnEnd.addEventListener('click', viewHighscores);
+        backToMenuBtn.addEventListener('click', () => {
+            highscoreScreen.style.display = 'none';
+            menu.style.display = 'flex';
+        });
     </script>
 </body>
 </html>
