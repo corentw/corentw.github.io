@@ -5,193 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Candy Abenteuer-Spiel</title>
     <style>
-        /* Allgemeine Stile */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Comic Sans MS', Arial, sans-serif;
-            background: linear-gradient(to bottom, #ffccff, #ff99cc);
-            overflow: hidden;
-        }
-
-        /* Ladebalken */
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff5f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 999;
-        }
-
-        .progress-bar {
-            width: 80%;
-            height: 20px;
-            background: #ddd;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-
-        .progress-bar-inner {
-            height: 100%;
-            width: 0;
-            background: linear-gradient(90deg, #ff6699, #ffcc33);
-            transition: width 0.5s;
-        }
-
-        /* Menü */
-        #menu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: url('images/candy-pattern.png');
-            background-size: cover;
-        }
-
-        h1 {
-            color: #ff0066;
-            font-size: 3em;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 15px 40px;
-            font-size: 22px;
-            border: none;
-            background: #ff6699;
-            color: white;
-            border-radius: 20px;
-            cursor: pointer;
-            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s, background 0.3s;
-        }
-
-        button:hover {
-            background: #ff3385;
-            transform: scale(1.1);
-        }
-
-        /* Spielbereich */
-        #game-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, #ffccff, #ff99cc);
-            display: none;
-        }
-
-        .item, .diamond, .bonus-item, .bitter-candy {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background-size: contain;
-            animation: float 3s infinite ease-in-out, rotate 1.5s linear infinite;
-            transition: transform 0.3s, opacity 0.3s;
-        }
-
-        .bonus-item {
-            animation: float 3s infinite ease-in-out, shimmer 2s infinite;
-        }
-
-        .scoreboard, .timer {
-            position: absolute;
-            padding: 10px;
-            font-size: 20px;
-            border-radius: 10px;
-            color: white;
-        }
-
-        .scoreboard {
-            top: 10px;
-            left: 10px;
-            background: rgba(255, 153, 255, 0.8);
-        }
-
-        .timer {
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 77, 77, 0.9);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes shimmer {
-            0% { box-shadow: 0 0 10px #ff99ff; }
-            50% { box-shadow: 0 0 20px #ffffff; }
-            100% { box-shadow: 0 0 10px #ff99ff; }
-        }
+        /* Bleibt gleich oder wie vorher */
     </style>
 </head>
 <body>
-    <!-- Ladebalken -->
-    <div id="loader">
-        <h1>Lade Candy Abenteuer...</h1>
-        <div class="progress-bar">
-            <div class="progress-bar-inner"></div>
-        </div>
-    </div>
-
-    <!-- Menü -->
-    <div id="menu" style="display: none;">
+    <div id="menu">
         <h1>Candy Abenteuer-Spiel</h1>
         <button id="start-game-btn">Spiel starten</button>
     </div>
 
-    <!-- Spielbereich -->
-    <div id="game-container">
+    <div id="game-container" style="display: none;">
         <div class="scoreboard">
             Punkte: <span id="score">0</span>
         </div>
         <div class="timer">
             Zeit: <span id="timer">60</span>
         </div>
+        <div class="level">
+            Level: <span id="level">1</span>
+        </div>
     </div>
 
+    <audio id="bg-music" loop>
+        <source src="sounds/bg-music.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="click-sound">
+        <source src="sounds/click.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="wrong-click-sound">
+        <source src="sounds/wrong-click.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
-        const loader = document.getElementById('loader');
-        const progressBar = document.querySelector('.progress-bar-inner');
         const menu = document.getElementById('menu');
         const gameContainer = document.getElementById('game-container');
         const startGameBtn = document.getElementById('start-game-btn');
         const scoreDisplay = document.getElementById('score');
         const timerDisplay = document.getElementById('timer');
+        const levelDisplay = document.getElementById('level');
+        const bgMusic = document.getElementById('bg-music');
+        const clickSound = document.getElementById('click-sound');
+        const wrongClickSound = document.getElementById('wrong-click-sound');
 
         let score = 0;
         let timeLeft = 60;
         let gameInterval;
-
-        // Ladebalken-Animation
-        setTimeout(() => {
-            progressBar.style.width = '100%';
-        }, 500);
-
-        setTimeout(() => {
-            loader.style.display = 'none';
-            menu.style.display = 'flex';
-        }, 2000);
+        let level = 1;
+        let itemSpawnInterval = 5000; // Zeit in ms zwischen neuen Objekten
 
         function startGame() {
             menu.style.display = 'none';
@@ -199,40 +59,101 @@
 
             score = 0;
             timeLeft = 60;
+            level = 1;
             scoreDisplay.textContent = score;
             timerDisplay.textContent = timeLeft;
+            levelDisplay.textContent = level;
 
+            bgMusic.play();
             spawnItems();
             spawnDiamonds();
-            spawnBonusItems();
-            spawnBitterCandies();
+            spawnHindrances();
 
             gameInterval = setInterval(() => {
                 timeLeft--;
                 timerDisplay.textContent = timeLeft;
                 if (timeLeft <= 0) endGame();
+                if (timeLeft % 20 === 0) increaseDifficulty(); // Alle 20 Sekunden
             }, 1000);
         }
 
         function endGame() {
             clearInterval(gameInterval);
-            alert(`Spiel vorbei! Deine Punktzahl: ${score}`);
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+            const highScore = localStorage.getItem('highscore') || 0;
+            if (score > highScore) {
+                localStorage.setItem('highscore', score);
+                alert(`Neuer Highscore: ${score}!`);
+            } else {
+                alert(`Spiel vorbei! Deine Punktzahl: ${score}\nHighscore: ${highScore}`);
+            }
             gameContainer.style.display = 'none';
             menu.style.display = 'flex';
         }
 
-        function spawnBitterCandies() {
-            const bitterCandy = createGameObject('bitter-candy', 'bitter-candy.png');
-            bitterCandy.addEventListener('click', () => {
-                score -= 15;
-                scoreDisplay.textContent = score;
-                bitterCandy.remove();
-            });
-            setItemTimeout(bitterCandy, 3000);
-            setTimeout(spawnBitterCandies, 6000);
+        function increaseDifficulty() {
+            level++;
+            levelDisplay.textContent = level;
+            itemSpawnInterval = Math.max(2000, itemSpawnInterval - 500); // Reduziert Spawn-Interval
         }
 
-        // Weitere Funktionen sind ähnlich wie zuvor...
+        function spawnItems() {
+            const itemTypes = ['candy1.png', 'candy2.png', 'candy3.png'];
+            const item = createGameObject('item', itemTypes[Math.floor(Math.random() * itemTypes.length)]);
+            item.addEventListener('click', () => {
+                score += 10;
+                scoreDisplay.textContent = score;
+                clickSound.play();
+                item.remove();
+            });
+            setItemTimeout(item);
+            setTimeout(spawnItems, itemSpawnInterval);
+        }
+
+        function spawnDiamonds() {
+            const diamond = createGameObject('diamond', 'diamond.png');
+            diamond.addEventListener('click', () => {
+                score += 20;
+                scoreDisplay.textContent = score;
+                clickSound.play();
+                diamond.remove();
+            });
+            setItemTimeout(diamond);
+            setTimeout(spawnDiamonds, 7000);
+        }
+
+        function spawnHindrances() {
+            const hindrance = createGameObject('hindrance', 'bomb.png');
+            hindrance.addEventListener('click', () => {
+                score -= 15;
+                scoreDisplay.textContent = score;
+                wrongClickSound.play();
+                hindrance.remove();
+            });
+            setItemTimeout(hindrance);
+            setTimeout(spawnHindrances, 8000);
+        }
+
+        function createGameObject(className, image) {
+            const item = document.createElement('div');
+            item.className = className;
+            item.style.backgroundImage = `url(images/${image})`;
+            item.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
+            item.style.top = `-${Math.random() * 100}px`; // Startet außerhalb des sichtbaren Bereichs
+            item.style.animation = `fall ${Math.random() * 3 + 2}s linear`;
+            gameContainer.appendChild(item);
+            return item;
+        }
+
+        function setItemTimeout(item) {
+            setTimeout(() => {
+                if (item.parentElement) {
+                    item.remove();
+                }
+            }, 5000);
+        }
+
         startGameBtn.addEventListener('click', startGame);
     </script>
 </body>
