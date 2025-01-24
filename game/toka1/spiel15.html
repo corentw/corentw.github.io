@@ -13,7 +13,7 @@
             overflow: hidden;
         }
 
-        #menu, #game-container {
+        #menu, #game-container, #end-screen {
             position: fixed;
             top: 0;
             left: 0;
@@ -23,7 +23,10 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            z-index: 100;
+        }
+
+        #game-container, #end-screen {
+            display: none;
         }
 
         h1, h2 {
@@ -48,27 +51,12 @@
             transform: scale(1.1);
         }
 
-        .item, .diamond, .bonus-item {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background-size: contain;
-            animation: float 3s infinite;
-            transition: transform 0.3s, opacity 0.3s;
-        }
-
-        .item.explode, .diamond.explode, .bonus-item.explode {
-            transform: scale(1.5);
-            opacity: 0;
-            transition: transform 0.5s, opacity 0.5s;
-        }
-
-        .scoreboard, .timer {
+        .scoreboard, .timer, .level {
             position: absolute;
             padding: 10px;
             font-size: 20px;
-            border-radius: 10px;
             color: white;
+            border-radius: 10px;
         }
 
         .scoreboard {
@@ -83,11 +71,34 @@
             background: rgba(255, 77, 77, 0.9);
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .level {
+            bottom: 10px;
+            left: 10px;
+            background: rgba(77, 255, 77, 0.8);
         }
-  
+
+        .item, .diamond, .hindrance {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-size: cover;
+            animation: fall linear;
+        }
+
+        @keyframes fall {
+            from {
+                top: -60px;
+            }
+            to {
+                top: 100%;
+            }
+        }
+
+        .highscore {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -96,147 +107,120 @@
         <button id="start-game-btn">Spiel starten</button>
     </div>
 
-    <div id="game-container" style="display: none;">
-        <div class="scoreboard">
-            Punkte: <span id="score">0</span>
-        </div>
-        <div class="timer">
-            Zeit: <span id="timer">60</span>
-        </div>
-        <div class="level">
-            Level: <span id="level">1</span>
-        </div>
+    <div id="game-container">
+        <div class="scoreboard">Punkte: <span id="score">0</span></div>
+        <div class="timer">Zeit: <span id="timer">60</span></div>
+        <div class="level">Level: <span id="level">1</span></div>
     </div>
 
-    <audio id="bg-music" loop>
-        <source src="sounds/bg-music.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="click-sound">
-        <source src="sounds/click.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="wrong-click-sound">
-        <source src="sounds/wrong-click.mp3" type="audio/mpeg">
-    </audio>
+    <div id="end-screen">
+        <h1>Spiel vorbei!</h1>
+        <div class="highscore">Deine Punktzahl: <span id="final-score">0</span></div>
+        <div class="highscore">Highscore: <span id="highscore">0</span></div>
+        <button id="restart-game-btn">Erneut spielen</button>
+    </div>
 
     <script>
         const menu = document.getElementById('menu');
         const gameContainer = document.getElementById('game-container');
+        const endScreen = document.getElementById('end-screen');
         const startGameBtn = document.getElementById('start-game-btn');
+        const restartGameBtn = document.getElementById('restart-game-btn');
         const scoreDisplay = document.getElementById('score');
         const timerDisplay = document.getElementById('timer');
         const levelDisplay = document.getElementById('level');
-        const bgMusic = document.getElementById('bg-music');
-        const clickSound = document.getElementById('click-sound');
-        const wrongClickSound = document.getElementById('wrong-click-sound');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const highscoreDisplay = document.getElementById('highscore');
 
         let score = 0;
         let timeLeft = 60;
-        let gameInterval;
         let level = 1;
-        let itemSpawnInterval = 5000; // Zeit in ms zwischen neuen Objekten
+        let spawnInterval = 1500;
+        let gameInterval;
+        let spawnTimer;
 
         function startGame() {
             menu.style.display = 'none';
-            gameContainer.style.display = 'block';
+            gameContainer.style.display = 'flex';
 
             score = 0;
             timeLeft = 60;
             level = 1;
-            scoreDisplay.textContent = score;
-            timerDisplay.textContent = timeLeft;
-            levelDisplay.textContent = level;
+            spawnInterval = 1500;
 
-            bgMusic.play();
-            spawnItems();
-            spawnDiamonds();
-            spawnHindrances();
-
-            gameInterval = setInterval(() => {
-                timeLeft--;
-                timerDisplay.textContent = timeLeft;
-                if (timeLeft <= 0) endGame();
-                if (timeLeft % 20 === 0) increaseDifficulty(); // Alle 20 Sekunden
-            }, 1000);
+            updateUI();
+            startTimers();
+            spawnObjects();
         }
 
         function endGame() {
             clearInterval(gameInterval);
-            bgMusic.pause();
-            bgMusic.currentTime = 0;
-            const highScore = localStorage.getItem('highscore') || 0;
-            if (score > highScore) {
-                localStorage.setItem('highscore', score);
-                alert(`Neuer Highscore: ${score}!`);
-            } else {
-                alert(`Spiel vorbei! Deine Punktzahl: ${score}\nHighscore: ${highScore}`);
-            }
+            clearInterval(spawnTimer);
+
+            const highscore = Math.max(score, localStorage.getItem('highscore') || 0);
+            localStorage.setItem('highscore', highscore);
+
+            finalScoreDisplay.textContent = score;
+            highscoreDisplay.textContent = highscore;
+
             gameContainer.style.display = 'none';
+            endScreen.style.display = 'flex';
+        }
+
+        function restartGame() {
+            endScreen.style.display = 'none';
             menu.style.display = 'flex';
         }
 
-        function increaseDifficulty() {
-            level++;
+        function updateUI() {
+            scoreDisplay.textContent = score;
+            timerDisplay.textContent = timeLeft;
             levelDisplay.textContent = level;
-            itemSpawnInterval = Math.max(2000, itemSpawnInterval - 500); // Reduziert Spawn-Interval
         }
 
-        function spawnItems() {
-            const itemTypes = ['candy1.png', 'candy2.png', 'candy3.png'];
-            const item = createGameObject('item', itemTypes[Math.floor(Math.random() * itemTypes.length)]);
-            item.addEventListener('click', () => {
-                score += 10;
-                scoreDisplay.textContent = score;
-                clickSound.play();
-                item.remove();
-            });
-            setItemTimeout(item);
-            setTimeout(spawnItems, itemSpawnInterval);
-        }
-
-        function spawnDiamonds() {
-            const diamond = createGameObject('diamond', 'diamond.png');
-            diamond.addEventListener('click', () => {
-                score += 20;
-                scoreDisplay.textContent = score;
-                clickSound.play();
-                diamond.remove();
-            });
-            setItemTimeout(diamond);
-            setTimeout(spawnDiamonds, 7000);
-        }
-
-        function spawnHindrances() {
-            const hindrance = createGameObject('hindrance', 'bomb.png');
-            hindrance.addEventListener('click', () => {
-                score -= 15;
-                scoreDisplay.textContent = score;
-                wrongClickSound.play();
-                hindrance.remove();
-            });
-            setItemTimeout(hindrance);
-            setTimeout(spawnHindrances, 8000);
-        }
-
-        function createGameObject(className, image) {
-            const item = document.createElement('div');
-            item.className = className;
-            item.style.backgroundImage = `url(images/${image})`;
-            item.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
-            item.style.top = `-${Math.random() * 100}px`; // Startet außerhalb des sichtbaren Bereichs
-            item.style.animation = `fall ${Math.random() * 3 + 2}s linear`;
-            gameContainer.appendChild(item);
-            return item;
-        }
-
-        function setItemTimeout(item) {
-            setTimeout(() => {
-                if (item.parentElement) {
-                    item.remove();
+        function startTimers() {
+            gameInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    endGame();
+                } else if (timeLeft % 20 === 0) {
+                    level++;
+                    spawnInterval = Math.max(800, spawnInterval - 200);
                 }
-            }, 5000);
+                updateUI();
+            }, 1000);
+        }
+
+        function spawnObjects() {
+            spawnTimer = setInterval(() => {
+                const objectType = Math.random() < 0.2 ? 'diamond' : Math.random() < 0.5 ? 'hindrance' : 'item';
+                createObject(objectType);
+            }, spawnInterval);
+        }
+
+        function createObject(type) {
+            const object = document.createElement('div');
+            object.className = type;
+            object.style.left = `${Math.random() * 90}vw`;
+            object.style.backgroundImage = `url(images/${type}.png)`;
+            object.style.animationDuration = `${Math.random() * 3 + 2}s`;
+
+            object.addEventListener('click', () => {
+                if (type === 'item') score += 10;
+                else if (type === 'diamond') score += 20;
+                else score -= 15;
+
+                object.remove();
+                updateUI();
+            });
+
+            object.addEventListener('animationend', () => object.remove());
+
+            gameContainer.appendChild(object);
         }
 
         startGameBtn.addEventListener('click', startGame);
+        restartGameBtn.addEventListener('click', restartGame);
     </script>
 </body>
 </html>
