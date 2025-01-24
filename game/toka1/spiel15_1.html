@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candy Abenteuer-Spiel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(to bottom, #ffccff, #ff99cc);
+            overflow: hidden;
+        }
+
+        #menu, #game-container, #end-screen, #highscore-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #game-container, #end-screen, #highscore-screen {
+            display: none;
+        }
+
+        h1, h2 {
+            color: #fff700;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            background: #ff66b2;
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        button:hover {
+            background: #ff3385;
+            transform: scale(1.1);
+        }
+
+        .input-field {
+            margin: 10px;
+            padding: 10px;
+            font-size: 18px;
+            border: 1px solid #ff99cc;
+            border-radius: 8px;
+        }
+
+        .scoreboard, .timer, .level {
+            position: absolute;
+            padding: 10px;
+            font-size: 20px;
+            color: white;
+            border-radius: 10px;
+        }
+
+        .scoreboard {
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 153, 255, 0.8);
+        }
+
+        .timer {
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 77, 77, 0.9);
+        }
+
+        .level {
+            bottom: 10px;
+            left: 10px;
+            background: rgba(77, 255, 77, 0.8);
+        }
+
+        .level-up {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 50px;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 0, 0.9);
+            display: none;
+        }
+
+        .item, .diamond, .hindrance, .special {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-size: cover;
+            animation: fall linear;
+        }
+
+        @keyframes fall {
+            from {
+                top: -60px;
+            }
+            to {
+                top: 100%;
+            }
+        }
+
+        .explosion {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url('https://via.placeholder.com/50/FF0000/FFFFFF?text=EXP') no-repeat center center;
+            background-size: cover;
+            animation: explode 0.3s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes explode {
+            from {
+                transform: scale(1);
+                opacity: 1;
+            }
+            to {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .highscore-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .highscore-entry {
+            margin: 5px;
+            font-size: 18px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="menu">
+        <h1>Candy Abenteuer-Spiel</h1>
+        <input type="text" id="player-name" class="input-field" placeholder="Dein Name">
+        <button id="start-game-btn">Spiel starten</button>
+        <button id="view-highscore-btn">Highscores ansehen</button>
+    </div>
+
+    <div id="game-container">
+        <div class="scoreboard">Punkte: <span id="score">0</span></div>
+        <div class="timer">Zeit: <span id="timer">60</span></div>
+        <div class="level">Level: <span id="level">1</span></div>
+        <div class="level-up" id="level-up">Level Up!</div>
+    </div>
+
+    <div id="end-screen">
+        <h1>Spiel vorbei!</h1>
+        <h2>Deine Punktzahl: <span id="final-score">0</span></h2>
+        <button id="restart-game-btn">Erneut spielen</button>
+        <button id="view-highscore-btn-end">Highscores ansehen</button>
+    </div>
+
+    <div id="highscore-screen">
+        <h1>Highscore-Liste</h1>
+        <div class="highscore-list" id="highscore-list"></div>
+        <button id="back-to-menu-btn">Zurück zum Menü</button>
+    </div>
+
+    <script>
+        const menu = document.getElementById('menu');
+        const gameContainer = document.getElementById('game-container');
+        const endScreen = document.getElementById('end-screen');
+        const highscoreScreen = document.getElementById('highscore-screen');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const viewHighscoreBtn = document.getElementById('view-highscore-btn');
+        const restartGameBtn = document.getElementById('restart-game-btn');
+        const viewHighscoreBtnEnd = document.getElementById('view-highscore-btn-end');
+        const backToMenuBtn = document.getElementById('back-to-menu-btn');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const levelDisplay = document.getElementById('level');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const highscoreList = document.getElementById('highscore-list');
+        const levelUpDisplay = document.getElementById('level-up');
+
+        let playerName = '';
+        let score = 0;
+        let timeLeft = 60;
+        let level = 1;
+        let spawnInterval = 1500;
+        let gameInterval;
+        let spawnTimer;
+        let batchIncrease = 0;
+
+        const highscores = JSON.parse(localStorage.getItem('highscores')) || [];
+
+        function updateHighscoreList() {
+            highscoreList.innerHTML = '';
+            highscores.sort((a, b) => b.score - a.score);
+            highscores.slice(0, 10).forEach((entry, index) => {
+                const div = document.createElement('div');
+                div.classList.add('highscore-entry');
+                div.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
+                highscoreList.appendChild(div);
+            });
+        }
+
+        function startGame() {
+            playerName = document.getElementById('player-name').value.trim() || 'Spieler';
+            menu.style.display = 'none';
+            gameContainer.style.display = 'flex';
+
+            score = 0;
+            timeLeft = 60;
+            level = 1;
+            spawnInterval = 1500;
+
+            updateUI();
+            startTimers();
+            spawnObjects();
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            clearInterval(spawnTimer);
+
+            highscores.push({ name: playerName, score });
+            localStorage.setItem('highscores', JSON.stringify(highscores));
+
+            finalScoreDisplay.textContent = score;
+
+            gameContainer.style.display = 'none';
+            endScreen.style.display = 'flex';
+        }
+
+        function restartGame() {
+            endScreen.style.display = 'none';
+            menu.style.display = 'flex';
+        }
+
+        function viewHighscores() {
+            menu.style.display = 'none';
+            endScreen.style.display = 'none';
+            highscoreScreen.style.display = 'flex';
+
+            updateHighscoreList();
+        }
+
+        function updateUI() {
+            scoreDisplay.textContent = score;
+            timerDisplay.textContent = timeLeft;
+            levelDisplay.textContent = level;
+        }
+
+        function startTimers() {
+            gameInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    endGame();
+                } else if (timeLeft % 20 === 0) {
+                    level++;
+                    spawnInterval = Math.max(800, spawnInterval - 200);
+                    batchIncrease++;
+                    highlightLevelUp();
+                }
+                updateUI();
+            }, 1000);
+        }
+
+        function spawnObjects() {
+            spawnTimer = setInterval(() => {
+                for (let i = 0; i < 1 + batchIncrease; i++) {
+                    createObject();
+                }
+            }, spawnInterval);
+        }
+
+        function createObject() {
+            const objectTypes = ['item', 'diamond', 'hindrance'];
+            const type = objectTypes[Math.floor(Math.random() * objectTypes.length)];
+            const object = document.createElement('div');
+            object.className = type;
+            object.style.left = `${Math.random() * 90}vw`;
+            object.style.backgroundImage = `url('https://via.placeholder.com/50/FF66CC?text=${type}')`;
+            object.style.animationDuration = `${Math.random() * 3 + 2}s`;
+
+            object.addEventListener('click', () => {
+                if (type === 'item') score += 10;
+                else if (type === 'diamond') score += 20;
+                else score -= 15;
+
+                object.remove();
+                createExplosion(object.style.left, object.style.top);
+                updateUI();
+            });
+
+            object.addEventListener('animationend', () => object.remove());
+
+            gameContainer.appendChild(object);
+        }
+
+        function createExplosion(left, top) {
+            const explosion = document.createElement('div');
+            explosion.className = 'explosion';
+            explosion.style.left = left;
+            explosion.style.top = top;
+            gameContainer.appendChild(explosion);
+
+            setTimeout(() => explosion.remove(), 300);
+        }
+
+        function highlightLevelUp() {
+            levelUpDisplay.style.display = 'block';
+            setTimeout(() => {
+                levelUpDisplay.style.display = 'none';
+            }, 1000);
+        }
+
+        startGameBtn.addEventListener('click', startGame);
+        restartGameBtn.addEventListener('click', restartGame);
+        viewHighscoreBtn.addEventListener('click', viewHighscores);
+        viewHighscoreBtnEnd.addEventListener('click', viewHighscores);
+        backToMenuBtn.addEventListener('click', () => {
+            highscoreScreen.style.display = 'none';
+            menu.style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
