@@ -97,7 +97,7 @@
             display: none;
         }
 
-        .item, .diamond, .hindrance, .special {
+        .item, .diamond, .hindrance {
             position: absolute;
             width: 50px;
             height: 50px;
@@ -124,8 +124,11 @@
             position: absolute;
             width: 50px;
             height: 50px;
-            background: url('https://via.placeholder.com/50/FF0000/FFFFFF?text=EXP') no-repeat center center;
-            background-size: cover;
+            font-size: 30px;
+            color: red;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             animation: explode 0.3s ease-out;
             pointer-events: none;
         }
@@ -140,18 +143,6 @@
                 opacity: 0;
             }
         }
-
-        .highscore-list {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .highscore-entry {
-            margin: 5px;
-            font-size: 18px;
-            color: white;
-        }
     </style>
 </head>
 <body>
@@ -159,7 +150,6 @@
         <h1>Candy Abenteuer-Spiel</h1>
         <input type="text" id="player-name" class="input-field" placeholder="Dein Name">
         <button id="start-game-btn">Spiel starten</button>
-        <button id="view-highscore-btn">Highscores ansehen</button>
     </div>
 
     <div id="game-container">
@@ -173,20 +163,18 @@
         <h1>Spiel vorbei!</h1>
         <h2>Deine Punktzahl: <span id="final-score">0</span></h2>
         <button id="restart-game-btn">Erneut spielen</button>
-        <button id="view-highscore-btn-end">Highscores ansehen</button>
-    </div>
-
-    <div id="highscore-screen">
-        <h1>Highscore-Liste</h1>
-        <div class="highscore-list" id="highscore-list"></div>
-        <button id="back-to-menu-btn">Zurück zum Menü</button>
     </div>
 
     <script>
+        const menu = document.getElementById('menu');
         const gameContainer = document.getElementById('game-container');
+        const endScreen = document.getElementById('end-screen');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const restartGameBtn = document.getElementById('restart-game-btn');
         const scoreDisplay = document.getElementById('score');
         const timerDisplay = document.getElementById('timer');
         const levelDisplay = document.getElementById('level');
+        const finalScoreDisplay = document.getElementById('final-score');
         const levelUpDisplay = document.getElementById('level-up');
 
         let score = 0;
@@ -194,6 +182,63 @@
         let level = 1;
         let spawnInterval = 1500;
         let spawnTimer;
+        let gameTimer;
+
+        function startGame() {
+            menu.style.display = 'none';
+            gameContainer.style.display = 'flex';
+
+            score = 0;
+            timeLeft = 60;
+            level = 1;
+            spawnInterval = 1500;
+
+            updateUI();
+            startTimers();
+            spawnObjects();
+        }
+
+        function endGame() {
+            clearInterval(spawnTimer);
+            clearInterval(gameTimer);
+
+            finalScoreDisplay.textContent = score;
+            gameContainer.style.display = 'none';
+            endScreen.style.display = 'flex';
+        }
+
+        function restartGame() {
+            endScreen.style.display = 'none';
+            menu.style.display = 'flex';
+        }
+
+        function updateUI() {
+            scoreDisplay.textContent = score;
+            timerDisplay.textContent = timeLeft;
+            levelDisplay.textContent = level;
+        }
+
+        function startTimers() {
+            gameTimer = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    endGame();
+                } else if (timeLeft % 20 === 0) {
+                    level++;
+                    spawnInterval = Math.max(800, spawnInterval - 200);
+                    highlightLevelUp();
+                }
+                updateUI();
+            }, 1000);
+        }
+
+        function spawnObjects() {
+            spawnTimer = setInterval(() => {
+                for (let i = 0; i < level; i++) {
+                    createObject();
+                }
+            }, spawnInterval);
+        }
 
         function createObject() {
             const objectTypes = ['item', 'diamond', 'hindrance'];
@@ -204,7 +249,7 @@
 
             const object = document.createElement('div');
             object.className = type;
-            object.innerText = icon;
+            object.textContent = icon;
             object.style.left = `${Math.random() * 90}vw`;
             object.style.animationDuration = `${Math.random() * 3 + 2}s`;
 
@@ -222,25 +267,15 @@
             gameContainer.appendChild(object);
         }
 
-        function spawnObjects() {
-            spawnTimer = setInterval(() => {
-                for (let i = 0; i < 2; i++) {
-                    createObject();
-                }
-            }, spawnInterval);
+        function highlightLevelUp() {
+            levelUpDisplay.style.display = 'block';
+            setTimeout(() => {
+                levelUpDisplay.style.display = 'none';
+            }, 1000);
         }
 
-        function updateUI() {
-            scoreDisplay.textContent = score;
-            timerDisplay.textContent = timeLeft;
-            levelDisplay.textContent = level;
-        }
-
-        function startGame() {
-            spawnObjects();
-        }
-
-        startGame();
+        startGameBtn.addEventListener('click', startGame);
+        restartGameBtn.addEventListener('click', restartGame);
     </script>
 </body>
 </html>
