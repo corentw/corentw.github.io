@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verbessertes Spiel</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #87CEEB, #2E8B57);
+            color: white;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+
+        #hud {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #hud div {
+            margin-bottom: 5px;
+        }
+
+        #pause-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff4500;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="hud">
+        <div>Level: <span id="level">1</span></div>
+        <div>Punkte: <span id="score">0</span></div>
+        <div>Zeit: <span id="timer">30</span></div>
+    </div>
+    <button id="pause-btn">Pause</button>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        // Initialisierung
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const hud = {
+            level: document.getElementById("level"),
+            score: document.getElementById("score"),
+            timer: document.getElementById("timer"),
+        };
+
+        const pauseBtn = document.getElementById("pause-btn");
+        let isPaused = false;
+
+        // Spieler- und Spielstatus
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            size: 20,
+            color: "yellow",
+            speed: 5,
+        };
+
+        const items = [];
+        const powerUps = [];
+        const game = {
+            score: 0,
+            level: 1,
+            timer: 30,
+            spawnRate: 3000, // Item-Erzeugung alle 3 Sekunden
+            lastSpawn: Date.now(),
+            running: true,
+        };
+
+        // Eingabesteuerung
+        const keys = {};
+        window.addEventListener("keydown", (e) => (keys[e.key] = true));
+        window.addEventListener("keyup", (e) => (keys[e.key] = false));
+
+        // Pause-Funktion
+        pauseBtn.addEventListener("click", () => {
+            isPaused = !isPaused;
+            pauseBtn.textContent = isPaused ? "Fortsetzen" : "Pause";
+        });
+
+        // Funktionen
+        function spawnItem() {
+            const size = Math.random() * 30 + 10;
+            items.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size,
+                color: `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`,
+            });
+        }
+
+        function spawnPowerUp() {
+            powerUps.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: 30,
+                color: "gold",
+                type: "speed",
+            });
+        }
+
+        function drawPlayer() {
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+            ctx.fillStyle = player.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawItems() {
+            items.forEach((item) => {
+                ctx.beginPath();
+                ctx.arc(item.x, item.y, item.size, 0, Math.PI * 2);
+                ctx.fillStyle = item.color;
+                ctx.fill();
+                ctx.closePath();
+            });
+        }
+
+        function drawPowerUps() {
+            powerUps.forEach((powerUp) => {
+                ctx.beginPath();
+                ctx.arc(powerUp.x, powerUp.y, powerUp.size, 0, Math.PI * 2);
+                ctx.fillStyle = powerUp.color;
+                ctx.fill();
+                ctx.closePath();
+            });
+        }
+
+        function updatePlayer() {
+            if (keys["ArrowUp"] && player.y - player.size > 0) player.y -= player.speed;
+            if (keys["ArrowDown"] && player.y + player.size < canvas.height) player.y += player.speed;
+            if (keys["ArrowLeft"] && player.x - player.size > 0) player.x -= player.speed;
+            if (keys["ArrowRight"] && player.x + player.size < canvas.width) player.x += player.speed;
+        }
+
+        function checkCollisions() {
+            // Items
+            for (let i = items.length - 1; i >= 0; i--) {
+                const item = items[i];
+                const dist = Math.hypot(player.x - item.x, player.y - item.y);
+                if (dist < player.size + item.size) {
+                    game.score += 10;
+                    items.splice(i, 1);
+                }
+            }
+
+            // Power-Ups
+            for (let i = powerUps.length - 1; i >= 0; i--) {
+                const powerUp = powerUps[i];
+                const dist = Math.hypot(player.x - powerUp.x, player.y - powerUp.y);
+                if (dist < player.size + powerUp.size) {
+                    player.speed += 2; // Temporärer Boost
+                    powerUps.splice(i, 1);
+                    setTimeout(() => (player.speed -= 2), 5000); // Nach 5 Sekunden zurücksetzen
+                }
+            }
+        }
+
+        function updateGame() {
+            if (Date.now() - game.lastSpawn > game.spawnRate) {
+                spawnItem();
+                if (Math.random() > 0.8) spawnPowerUp(); // 20% Chance auf Power-Up
+                game.lastSpawn = Date.now();
+            }
+
+            if (game.timer <= 0) {
+                game.running = false;
+                alert("Spiel vorbei! Punkte: " + game.score);
+                location.reload();
+            }
+        }
+
+        function drawHud() {
+            hud.level.textContent = game.level;
+            hud.score.textContent = game.score;
+            hud.timer.textContent = Math.max(0, Math.floor(game.timer));
+        }
+
+        function gameLoop() {
+            if (isPaused || !game.running) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            updatePlayer();
+            checkCollisions();
+            updateGame();
+
+            drawPlayer();
+            drawItems();
+            drawPowerUps();
+            drawHud();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Timer
+        setInterval(() => {
+            if (!isPaused && game.running) {
+                game.timer -= 1 / 60; // 60 FPS
+            }
+        }, 1000 / 60);
+
+        // Start
+        for (let i = 0; i < 5; i++) spawnItem(); // Initiale Items
+        gameLoop();
+    </script>
+</body>
+</html>
