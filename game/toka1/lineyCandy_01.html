@@ -452,6 +452,9 @@
 
     // Spiel starten
     startBtn.addEventListener('click', () => {
+        
+        document.documentElement.requestFullscreen();
+        
         menu.style.display = 'none';
         gameContainer.style.display = 'flex';
         generateItems(level);
