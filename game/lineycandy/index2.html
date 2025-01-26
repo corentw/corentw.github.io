@@ -92,7 +92,7 @@
 
         /* Content Box with Candy Style */
         .content-box {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(15px);
             padding: 40px;
             border: 5px dashed #ff69b4;
@@ -102,6 +102,8 @@
             margin: auto;
             text-align: center;
             animation: slideIn 1.5s ease-out;
+            position: relative;
+            overflow: hidden;
         }
 
         h1 {
@@ -177,6 +179,7 @@
             height: auto;
             background: no-repeat center/contain;
             animation: drift 15s infinite linear;
+            z-index: -1; /* Ensure clouds are behind content */
         }
 
         .candy-cloud:nth-child(4) {
@@ -200,13 +203,14 @@
 
         /* New Info Section */
         .info-section {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(15px);
             padding: 40px;
             margin: 20px auto;
             border-radius: 30px;
             max-width: 800px;
             text-align: center;
+            animation: slideIn 1.5s ease-out;
         }
 
         .info-section h2 {
@@ -219,6 +223,44 @@
             font-size: 1.5rem;
             color: #555;
             line-height: 1.8;
+        }
+
+        /* Additional candy animations */
+        .candy-sprite {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            animation: candyFall 10s infinite;
+        }
+
+        @keyframes candyFall {
+            0% { top: -10%; }
+            100% { top: 100%; }
+        }
+
+        /* Floating Candy Elements */
+        .candy1 {
+            background-image: url('https://cdn-icons-png.flaticon.com/512/1998/1998609.png');
+            left: 20%;
+            animation-delay: 1s;
+        }
+
+        .candy2 {
+            background-image: url('https://cdn-icons-png.flaticon.com/512/1998/1998614.png');
+            left: 40%;
+            animation-delay: 2s;
+        }
+
+        .candy3 {
+            background-image: url('https://cdn-icons-png.flaticon.com/512/1998/1998625.png');
+            left: 60%;
+            animation-delay: 3s;
+        }
+
+        .candy4 {
+            background-image: url('https://cdn-icons-png.flaticon.com/512/1998/1998630.png');
+            left: 80%;
+            animation-delay: 4s;
         }
     </style>
 </head>
@@ -255,16 +297,22 @@
                - Unicorn rides and flying bonuses<br>
                - Compete with friends<br>
                - Collect rare items</p>
-            <a href="https://corentw.github.io/game/toka1/lineyCandy_01.html" class="btn">Play Now</a>
+            <a href="#tips" class="btn">Tips & Tricks</a>
         </div>
     </div>
 
-    <!-- New Info Section -->
-    <div class="info-section">
+    <!-- Tips & Tricks Section -->
+    <div class="info-section" id="tips">
         <h2>Tips & Tricks</h2>
         <p>Maximize your candy collection by exploring every level. Look for hidden paths and interact with other characters for bonus rewards!</p>
         <p>Check the daily challenges for extra surprises and don't forget to use your power-ups wisely!</p>
     </div>
+
+    <!-- Floating Candy Elements -->
+    <div class="candy-sprite candy1"></div>
+    <div class="candy-sprite candy2"></div>
+    <div class="candy-sprite candy3"></div>
+    <div class="candy-sprite candy4"></div>
 
     <!-- Glitter and Floating Candy -->
     <div class="glitter"></div>
@@ -285,6 +333,18 @@
                 behavior: 'smooth'
             });
         }
+
+        // Optional: Candy falling animation
+        setInterval(() => {
+            const candy = document.createElement('div');
+            candy.classList.add('candy-sprite');
+            candy.style.backgroundImage = `url('https://cdn-icons-png.flaticon.com/512/1998/1998611.png')`;
+            candy.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(candy);
+            setTimeout(() => {
+                candy.remove();
+            }, 10000);
+        }, 2000);
     </script>
 </body>
 </html>
