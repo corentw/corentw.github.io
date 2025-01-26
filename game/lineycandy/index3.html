@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liney Candy - The Sweetest Adventure</title>
+    <style>
+        /* Reset and Base */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: 'Pacifico', cursive;
+            scroll-behavior: smooth;
+            background: linear-gradient(to bottom, #ffb3e6, #ffcce7);
+        }
+
+        /* Neon Button */
+        .neon-btn {
+            background: linear-gradient(to right, #ff69b4, #ff85d0);
+            border: 3px solid #ff69b4;
+            color: white;
+            text-shadow: 0 0 8px rgba(255, 105, 180, 0.8);
+            box-shadow: 0px 4px 15px rgba(255, 105, 180, 0.5);
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .neon-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Glass-style Menu */
+        .glass-menu {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        /* Candy Fountain */
+        @keyframes candyFountain {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-300px);
+                opacity: 0;
+            }
+        }
+
+        .candy-fountain {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: candyFountain 2s linear infinite;
+            background: url('https://cdn-icons-png.flaticon.com/512/1998/1998611.png') no-repeat center/contain;
+            width: 50px;
+            height: 50px;
+        }
+
+        @keyframes candyFall {
+            0% {
+                transform: translateY(-100px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Interactive Glass Menu -->
+    <div class="glass-menu">
+        <h2>Willkommen bei Liney Candy!</h2>
+        <p>Entdecken Sie das süßeste Abenteuer aller Zeiten mit magischen Einhörnern und schwebenden Süßigkeiten.</p>
+        <button class="neon-btn" onclick="alert('Spiel gestartet!')">Spiel starten</button>
+    </div>
+
+    <!-- Candy Fountain Effect -->
+    <div class="candy-fountain"></div>
+
+    <!-- Candy Rain -->
+    <script>
+        setInterval(() => {
+            const candy = document.createElement('div');
+            candy.style.position = 'absolute';
+            candy.style.top = '-50px';
+            candy.style.left = Math.random() * 100 + 'vw';
+            candy.style.width = '30px';
+            candy.style.height = '30px';
+            candy.style.background = "url('https://cdn-icons-png.flaticon.com/512/1998/1998611.png') no-repeat center/contain";
+            candy.style.animation = 'candyFall 10s linear';
+            document.body.appendChild(candy);
+            setTimeout(() => candy.remove(), 10000);
+        }, 500);
+    </script>
+</body>
+
+</html>
