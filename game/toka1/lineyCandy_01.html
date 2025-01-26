@@ -515,10 +515,14 @@
     function generateItems(level) {
         document.querySelectorAll('.item').forEach(item => item.remove());
 
-        const itemTypes = ['./images/item1.png', './images/item2.png', './images/item3.png'];
+        
         if (level > 5){
             const itemTypes = ['./images/item1.png', './images/item2.png', './images/item3.png', './images/candy1.png', './images/candy2.png', './images/candy3.png'];
+        }else{
+            const itemTypes = ['./images/item1.png', './images/item2.png', './images/item3.png'];
         }
+
+        
         const itemCount = level + 3;
 
         for (let i = 0; i < itemCount; i++) {
