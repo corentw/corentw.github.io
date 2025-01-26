@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Slot-Spiel</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #2e2e2e, #1a1a1a);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        h1 {
+            color: #ffd700;
+            margin: 20px 0;
+            font-size: 2.5rem;
+        }
+        #slot-machine {
+            margin: 20px auto;
+            padding: 20px;
+            background: linear-gradient(to bottom, #333, #111);
+            border-radius: 15px;
+            width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+        .reels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .reel {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(to bottom, #222, #444);
+            border: 4px solid #ffd700;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #ffd700;
+            box-shadow: 0 0 10px #ffd700;
+            animation: spinEffect 2s infinite;
+        }
+        .reel.winning {
+            animation: glowEffect 0.8s infinite;
+        }
+        @keyframes spinEffect {
+            0% { transform: rotateX(0); }
+            50% { transform: rotateX(180deg); }
+            100% { transform: rotateX(360deg); }
+        }
+        @keyframes glowEffect {
+            0%, 100% { box-shadow: 0 0 20px #ffd700; }
+            50% { box-shadow: 0 0 40px #ffdd44; }
+        }
+        #controls {
+            margin-top: 20px;
+        }
+        #controls input, #controls button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+        }
+        #controls button {
+            background-color: #ffd700;
+            color: #000;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+        #controls button:hover {
+            background-color: #ffdd44;
+        }
+        #wallet {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        #wallet.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        #wallet-content {
+            background: linear-gradient(to bottom, #444, #222);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
+        #wallet-content h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+        #wallet-content button {
+            background: #ffd700;
+            color: #000;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.2rem;
+        }
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <h1>Golden Slot-Spiel</h1>
+    <div id="slot-machine">
+        <div class="reels">
+            <div class="reel" id="reel1">🍒</div>
+            <div class="reel" id="reel2">🍋</div>
+            <div class="reel" id="reel3">🍊</div>
+        </div>
+        <div id="controls">
+            <label for="bet">Einsatz:</label>
+            <input type="number" id="bet" value="10" min="1" max="100">
+            <button onclick="spin()">Drehen</button>
+            <button onclick="toggleWallet()">Wallet</button>
+        </div>
+        <div id="message"></div>
+    </div>
+
+    <div id="wallet">
+        <div id="wallet-content">
+            <h2>Ihr Wallet</h2>
+            <p>Aktueller Kontostand: <span id="balance">100</span> Münzen</p>
+            <button onclick="addFunds()">Einzahlen</button>
+            <button onclick="withdrawFunds()">Auszahlen</button>
+            <button onclick="toggleWallet()">Schließen</button>
+        </div>
+    </div>
+
+    <script>
+        const symbols = ['🍒', '🍋', '🍊', '🍉', '⭐', '🔔'];
+        let balance = 100;
+
+        function getRandomSymbol() {
+            return symbols[Math.floor(Math.random() * symbols.length)];
+        }
+
+        function spin() {
+            const bet = parseInt(document.getElementById('bet').value);
+            const message = document.getElementById('message');
+
+            if (bet > balance) {
+                message.textContent = 'Nicht genügend Guthaben!';
+                return;
+            }
+
+            balance -= bet;
+            updateBalance();
+
+            const reel1 = getRandomSymbol();
+            const reel2 = getRandomSymbol();
+            const reel3 = getRandomSymbol();
+
+            document.getElementById('reel1').textContent = reel1;
+            document.getElementById('reel2').textContent = reel2;
+            document.getElementById('reel3').textContent = reel3;
+
+            const reels = [reel1, reel2, reel3];
+            document.querySelectorAll('.reel').forEach(el => el.classList.remove('winning'));
+
+            if (reel1 === reel2 && reel2 === reel3) {
+                const winnings = bet * 10;
+                balance += winnings;
+                reels.forEach((_, i) => {
+                    document.getElementById(`reel${i + 1}`).classList.add('winning');
+                });
+                message.textContent = `🎉 Gewonnen! Sie erhalten ${winnings} Münzen.`;
+            } else {
+                message.textContent = `😢 Leider verloren.`;
+            }
+        }
+
+        function updateBalance() {
+            document.getElementById('balance').textContent = balance;
+        }
+
+        function toggleWallet() {
+            const wallet = document.getElementById('wallet');
+            wallet.classList.toggle('active');
+        }
+
+        function addFunds() {
+            const amount = parseInt(prompt("Betrag einzahlen:", "50"));
+            if (!isNaN(amount) && amount > 0) {
+                balance += amount;
+                updateBalance();
+                alert(`Erfolgreich ${amount} Münzen eingezahlt!`);
+            }
+        }
+
+        function withdrawFunds() {
+            const amount = parseInt(prompt("Betrag auszahlen:", "50"));
+            if (!isNaN(amount) && amount > 0 && amount <= balance) {
+                balance -= amount;
+                updateBalance();
+                alert(`Erfolgreich ${amount} Münzen ausgezahlt!`);
+            } else {
+                alert("Ungültiger Betrag oder unzureichendes Guthaben.");
+            }
+        }
+    </script>
+</body>
+</html>
