@@ -1,76 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liney Candy - The Sweetest Adventure</title>
+    <title>Liney Candy - Das süßeste Abenteuer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Reset and Base */
         body,
         html {
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
-            font-family: 'Pacifico', cursive;
-            scroll-behavior: smooth;
+            font-family: 'Open Sans', sans-serif;
             background: linear-gradient(to bottom, #ffb3e6, #ffcce7);
+            overflow-x: hidden;
         }
 
-        /* Neon Button */
-        .neon-btn {
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: url('https://corentw.github.io/game/toka1/images/background3.png') no-repeat center center/cover;
+            color: #fff;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        header h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 4rem;
+            margin: 0;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        header p {
+            font-size: 1.5rem;
+            margin: 10px 0 0;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .content {
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 800px;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3);
+            animation: slideIn 1.5s ease-out;
+        }
+
+        .content h2 {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.5rem;
+            color: #ff69b4;
+            margin-bottom: 20px;
+        }
+
+        .content p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .cta-button {
             background: linear-gradient(to right, #ff69b4, #ff85d0);
-            border: 3px solid #ff69b4;
             color: white;
-            text-shadow: 0 0 8px rgba(255, 105, 180, 0.8);
-            box-shadow: 0px 4px 15px rgba(255, 105, 180, 0.5);
             padding: 15px 30px;
             font-size: 1.5rem;
-            border-radius: 20px;
+            border: none;
+            border-radius: 30px;
             cursor: pointer;
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.3s ease-in-out, background 0.3s ease;
+            box-shadow: 0px 4px 15px rgba(255, 105, 180, 0.5);
         }
 
-        .neon-btn:hover {
+        .cta-button:hover {
             transform: scale(1.1);
+            background: linear-gradient(to left, #ff69b4, #ff85d0);
         }
 
-        /* Glass-style Menu */
-        .glass-menu {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 15px;
+        footer {
             text-align: center;
-            max-width: 500px;
-            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            color: #ff69b4;
         }
 
-        /* Candy Fountain */
-        @keyframes candyFountain {
-            0% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-300px);
-                opacity: 0;
-            }
+        footer p {
+            margin: 0;
         }
 
-        .candy-fountain {
-            position: absolute;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: candyFountain 2s linear infinite;
-            background: url('https://cdn-icons-png.flaticon.com/512/1998/1998611.png') no-repeat center/contain;
-            width: 50px;
-            height: 50px;
-        }
-
+        /* Candy Rain */
         @keyframes candyFall {
             0% {
                 transform: translateY(-100px);
@@ -81,31 +102,91 @@
                 opacity: 0;
             }
         }
+
+        .candy {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            background: url('https://cdn-icons-png.flaticon.com/512/1998/1998611.png') no-repeat center/contain;
+            animation: candyFall 10s linear infinite;
+        }
+
+        /* Fade In Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Slide In Animation */
+        @keyframes slideIn {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <!-- Interactive Glass Menu -->
-    <div class="glass-menu">
-        <h2>Willkommen bei Liney Candy!</h2>
-        <p>Entdecken Sie das süßeste Abenteuer aller Zeiten mit magischen Einhörnern und schwebenden Süßigkeiten.</p>
-        <button class="neon-btn" onclick="alert('Spiel gestartet!')">Spiel starten</button>
+    <!-- Header Section -->
+    <header>
+        <h1>Willkommen bei Liney Candy!</h1>
+        <p>Das süßeste Abenteuer erwartet dich.</p>
+    </header>
+
+    <!-- Game Description -->
+    <div class="content">
+        <h2>Über das Spiel</h2>
+        <p>In Liney Candy steuerst du süße Charaktere durch eine fantasievolle Welt voller köstlicher Items und Diamanten. Deine Aufgabe ist es, Punkte zu sammeln, Level aufzusteigen und deine Sammlung zu erweitern.</p>
+        <button class="cta-button">Jetzt spielen</button>
     </div>
 
-    <!-- Candy Fountain Effect -->
-    <div class="candy-fountain"></div>
+    <!-- Spielanleitung Section -->
+    <div class="content">
+        <h2>Spielanleitung für "Liney Candy"</h2>
+        <h3>1. Spielziel</h3>
+        <ul>
+            <li>Sammle so viele Punkte wie möglich, indem du Items berührst.</li>
+            <li>Steige Level auf, indem du alle Items in einem Level einsammelst.</li>
+            <li>Sammle Diamanten, um deinen Fortschritt zu sichern und zusätzliche Belohnungen zu erhalten.</li>
+        </ul>
+
+        <h3>2. Wie starte ich das Spiel?</h3>
+        <p>Nach dem Start des Spiels kannst du deinen Charakter auswählen und direkt loslegen.</p>
+
+        <h3>3. Steuerung</h3>
+        <ul>
+            <li>Ziehe deinen Charakter per Drag & Drop über das Spielfeld.</li>
+        </ul>
+
+        <h3>4. Levelaufstieg</h3>
+        <p>Neue Levels bieten mehr Herausforderungen und Belohnungen.</p>
+
+        <h3>5. Tipps und Tricks</h3>
+        <p>Bewege deinen Charakter strategisch und sammle Diamanten für mehr Punkte!</p>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2025 Liney Candy. Alle Rechte vorbehalten.</p>
+    </footer>
 
     <!-- Candy Rain -->
     <script>
         setInterval(() => {
             const candy = document.createElement('div');
-            candy.style.position = 'absolute';
-            candy.style.top = '-50px';
+            candy.className = 'candy';
             candy.style.left = Math.random() * 100 + 'vw';
-            candy.style.width = '30px';
-            candy.style.height = '30px';
-            candy.style.background = "url('https://cdn-icons-png.flaticon.com/512/1998/1998611.png') no-repeat center/contain";
-            candy.style.animation = 'candyFall 10s linear';
             document.body.appendChild(candy);
             setTimeout(() => candy.remove(), 10000);
         }, 500);
