@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candy Comic Slot Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fce4ec;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            color: #ff4081;
+            margin-bottom: 20px;
+            font-size: 36px;
+        }
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(7, 60px);
+            grid-gap: 8px;
+            margin-bottom: 20px;
+        }
+        .tile {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #ff80ab;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: transform 0.2s ease;
+        }
+        .tile:hover {
+            transform: scale(1.1);
+        }
+        #score {
+            font-size: 24px;
+            color: #ff4081;
+            margin-bottom: 20px;
+        }
+        .candy {
+            transition: transform 0.3s ease, opacity 0.5s ease;
+        }
+        .bomb {
+            background-color: #f44336;
+        }
+        .striped {
+            background-color: #ffeb3b;
+        }
+        .wrapped {
+            background-color: #00bcd4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Candy Comic Slot</h1>
+    <div id="score">Punkte: 0</div>
+    <div id="game-board"></div>
+    <button id="start-button" onclick="startGame()">Spiel starten</button>
+
+    <script>
+        const rows = 7;
+        const cols = 7;
+        const candies = ["🍬", "🍭", "🍫", "🍡", "🍩"];
+        const board = [];
+        let score = 0;
+        let selectedTile = null;
+        let gameActive = false;
+
+        const gameBoard = document.getElementById('game-board');
+        const scoreDisplay = document.getElementById('score');
+        const startButton = document.getElementById('start-button');
+
+        function initBoard() {
+            for (let r = 0; r < rows; r++) {
+                const row = [];
+                for (let c = 0; c < cols; c++) {
+                    const randomCandy = candies[Math.floor(Math.random() * candies.length)];
+                    row.push(randomCandy);
+                    const tile = document.createElement('div');
+                    tile.classList.add('tile', 'candy');
+                    tile.textContent = randomCandy;
+                    tile.dataset.row = r;
+                    tile.dataset.col = c;
+                    tile.setAttribute('draggable', true);
+                    tile.addEventListener('dragstart', handleDragStart);
+                    tile.addEventListener('dragover', handleDragOver);
+                    tile.addEventListener('drop', handleDrop);
+                    tile.addEventListener('click', () => tileClick(r, c));
+                    gameBoard.appendChild(tile);
+                }
+                board.push(row);
+            }
+        }
+
+        function handleDragStart(event) {
+            selectedTile = event.target;
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+        }
+
+        function handleDrop(event) {
+            const targetTile = event.target;
+            if (targetTile !== selectedTile) {
+                const sourceRow = selectedTile.dataset.row;
+                const sourceCol = selectedTile.dataset.col;
+                const targetRow = targetTile.dataset.row;
+                const targetCol = targetTile.dataset.col;
+
+                swapTiles(sourceRow, sourceCol, targetRow, targetCol);
+                selectedTile = null;
+            }
+        }
+
+        function swapTiles(r1, c1, r2, c2) {
+            const temp = board[r1][c1];
+            board[r1][c1] = board[r2][c2];
+            board[r2][c2] = temp;
+
+            const tile1 = gameBoard.querySelector(`[data-row='${r1}'][data-col='${c1}']`);
+            const tile2 = gameBoard.querySelector(`[data-row='${r2}'][data-col='${c2}']`);
+
+            tile1.textContent = board[r1][c1];
+            tile2.textContent = board[r2][c2];
+
+            checkMatches();
+        }
+
+        function checkMatches() {
+            const matches = [];
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols - 2; c++) {
+                    if (board[r][c] === board[r][c + 1] && board[r][c] === board[r][c + 2]) {
+                        matches.push([r, c], [r, c + 1], [r, c + 2]);
+                    }
+                }
+            }
+
+            for (let c = 0; c < cols; c++) {
+                for (let r = 0; r < rows - 2; r++) {
+                    if (board[r][c] === board[r + 1][c] && board[r][c] === board[r + 2][c]) {
+                        matches.push([r, c], [r + 1, c], [r + 2, c]);
+                    }
+                }
+            }
+
+            if (matches.length > 0) {
+                removeMatches(matches);
+            } else {
+                refillBoard();
+            }
+        }
+
+        function removeMatches(matches) {
+            matches.forEach(([r, c]) => {
+                const tile = gameBoard.querySelector(`[data-row='${r}'][data-col='${c}']`);
+                tile.textContent = '';
+                board[r][c] = null;
+                score += 10;
+            });
+            scoreDisplay.textContent = `Punkte: ${score}`;
+            setTimeout(refillBoard, 500);
+        }
+
+        function refillBoard() {
+            for (let r = rows - 1; r >= 0; r--) {
+                for (let c = 0; c < cols; c++) {
+                    if (!board[r][c]) {
+                        const randomCandy = candies[Math.floor(Math.random() * candies.length)];
+                        board[r][c] = randomCandy;
+                        const tile = gameBoard.querySelector(`[data-row='${r}'][data-col='${c}']`);
+                        tile.textContent = randomCandy;
+                    }
+                }
+            }
+        }
+
+        function tileClick(r, c) {
+            // Erweiterungen: Animationswechsel oder Spezialaktionen
+        }
+
+        function startGame() {
+            score = 0;
+            scoreDisplay.textContent = `Punkte: ${score}`;
+            board.length = 0; // Clear the board array
+            gameBoard.innerHTML = ''; // Clear the game board HTML
+            initBoard();
+            gameActive = true;
+            startButton.disabled = true;
+        }
+
+        // Spiel starten
+        initBoard();
+    </script>
+</body>
+</html>
