@@ -11,6 +11,7 @@
             overflow-x: hidden;
             font-family: 'Arial', sans-serif;
             scroll-behavior: smooth;
+            background: #f0e4f3;
         }
 
         /* Section Styles */
@@ -24,6 +25,8 @@
             justify-content: center;
             text-align: center;
             color: #fff;
+            position: relative;
+            overflow: hidden;
             animation: fadeIn 1.5s ease-in-out;
         }
 
@@ -41,42 +44,47 @@
 
         /* Text Box */
         .content-box {
-            background: rgba(255, 255, 255, 0.85);
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
             border-radius: 15px;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.5);
             max-width: 700px;
             animation: slideIn 1.5s ease-out;
+            z-index: 1;
         }
 
         h1 {
             font-size: 3rem;
             margin-bottom: 20px;
             color: #ff69b4;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
         }
 
         p {
             font-size: 1.2rem;
             line-height: 1.8;
             color: #333;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
         }
 
         .btn {
             display: inline-block;
             margin-top: 20px;
-            padding: 10px 20px;
+            padding: 15px 25px;
             background: #ff69b4;
             color: #fff;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             text-decoration: none;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, transform 0.3s ease;
+            animation: popIn 0.5s ease-in-out;
         }
 
         .btn:hover {
             background: #ff4394;
+            transform: scale(1.1);
         }
 
         /* Scroll Button */
@@ -85,7 +93,7 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 1.5rem;
+            font-size: 2rem;
             color: #fff;
             animation: bounce 2s infinite;
             cursor: pointer;
@@ -111,12 +119,33 @@
             40% { transform: translateY(-10px); }
             60% { transform: translateY(-5px); }
         }
+
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Additional Effects */
+        .candy-sprinkle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('https://your-sprinkle-image-url.png') repeat;
+            pointer-events: none;
+            animation: sprinkle 5s infinite linear;
+        }
+
+        @keyframes sprinkle {
+            from { background-position: 0 0; }
+            to { background-position: 100% 100%; }
+        }
     </style>
 </head>
 <body>
 
     <!-- Section 1 -->
     <div class="section">
+        <div class="candy-sprinkle"></div>
         <div class="content-box">
             <h1>Welcome to Liney Candy</h1>
             <p>Dive into the magical world of Liney Candy, where adventure meets sweetness. Guide your character through vibrant levels, collect diamonds, and unlock new challenges!</p>
@@ -127,17 +156,21 @@
 
     <!-- Section 2 -->
     <div id="section2" class="section">
+        <div class="candy-sprinkle"></div>
         <div class="content-box">
             <h1>How to Play</h1>
             <p>
                 Your goal is to collect as many points as possible by gathering items, diamonds, and activating bonuses. With every level, the game gets more exciting and visually stunning!
             </p>
+            <p>Watch out for special power-ups that give you amazing abilities and bonuses!</p>
+            <a href="#section3" class="btn">Next Section</a>
         </div>
         <div class="scroll-down" onclick="scrollToNext()">⬇</div>
     </div>
 
     <!-- Section 3 -->
     <div class="section">
+        <div class="candy-sprinkle"></div>
         <div class="content-box">
             <h1>Game Features</h1>
             <p>
@@ -145,7 +178,8 @@
                 - Vibrant, animated backgrounds with a candy-themed design.<br>
                 - Dynamic gameplay with bonus items and diamond hunts.<br>
                 - Easy-to-use controls: just swipe and play!<br>
-                - Level up and unlock new challenges and rewards.
+                - Level up and unlock new challenges and rewards.<br>
+                - Collect and customize your character with special outfits and accessories!
             </p>
             <a href="#section1" class="btn">Start Playing</a>
         </div>
