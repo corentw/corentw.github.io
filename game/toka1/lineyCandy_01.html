@@ -421,6 +421,7 @@
     
     // Ladebildschirm
     setTimeout(() => {
+        document.documentElement.requestFullscreen();
         loader.style.display = 'none';
         menu.style.display = 'flex';
     }, 3000);
@@ -453,7 +454,7 @@
     // Spiel starten
     startBtn.addEventListener('click', () => {
         
-        document.documentElement.requestFullscreen();
+    
         
         menu.style.display = 'none';
         gameContainer.style.display = 'flex';
