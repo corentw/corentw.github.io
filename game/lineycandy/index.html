@@ -11,7 +11,7 @@
             overflow-x: hidden;
             font-family: 'Arial', sans-serif;
             scroll-behavior: smooth;
-            background: #f0e4f3;
+            background: linear-gradient(to bottom, #f0e4f3, #ffc0cb);
         }
 
         /* Section Styles */
@@ -24,7 +24,6 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            color: #fff;
             position: relative;
             overflow: hidden;
             animation: fadeIn 1.5s ease-in-out;
@@ -42,6 +41,26 @@
             background-image: url("https://corentw.github.io/game/toka1/images/background3.png");
         }
 
+        /* Badge Styles */
+        .badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(45deg, #ff69b4, #ff4394);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            font-size: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .badge:hover {
+            background: linear-gradient(45deg, #ff4394, #ff69b4);
+            transform: scale(1.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
         /* Text Box */
         .content-box {
             background: rgba(255, 255, 255, 0.9);
@@ -54,7 +73,7 @@
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 20px;
             color: #ff69b4;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
@@ -67,24 +86,25 @@
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
         }
 
+        /* Buttons */
         .btn {
             display: inline-block;
             margin-top: 20px;
             padding: 15px 25px;
-            background: #ff69b4;
-            color: #fff;
+            background: linear-gradient(90deg, #ff69b4, #ff4394);
+            color: white;
             font-size: 1.5rem;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             text-decoration: none;
-            transition: background 0.3s ease, transform 0.3s ease;
-            animation: popIn 0.5s ease-in-out;
+            transition: all 0.3s ease-in-out;
         }
 
         .btn:hover {
-            background: #ff4394;
+            background: linear-gradient(90deg, #ff4394, #ff69b4);
             transform: scale(1.1);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         /* Scroll Button */
@@ -93,14 +113,15 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 2rem;
-            color: #fff;
+            font-size: 2.5rem;
+            color: white;
             animation: bounce 2s infinite;
             cursor: pointer;
         }
 
         .scroll-down:hover {
             color: #ff69b4;
+            transform: scale(1.2);
         }
 
         /* Animations */
@@ -120,35 +141,57 @@
             60% { transform: translateY(-5px); }
         }
 
-        @keyframes popIn {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
-        /* Additional Effects */
-        .candy-sprinkle {
+        /* Floating Candy */
+        .floating-candy {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: url('https://your-sprinkle-image-url.png') repeat;
-            pointer-events: none;
-            animation: sprinkle 5s infinite linear;
+            width: 50px;
+            height: 50px;
+            background: url('https://cdn-icons-png.flaticon.com/512/1064/1064974.png') no-repeat center;
+            background-size: cover;
+            animation: float 5s infinite;
         }
 
-        @keyframes sprinkle {
-            from { background-position: 0 0; }
-            to { background-position: 100% 100%; }
+        .floating-candy:nth-child(1) {
+            top: 20%;
+            left: 15%;
+            animation-delay: 1s;
         }
+
+        .floating-candy:nth-child(2) {
+            top: 50%;
+            left: 25%;
+            animation-delay: 3s;
+        }
+
+        .floating-candy:nth-child(3) {
+            top: 70%;
+            left: 40%;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(-20px); opacity: 0.8; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
     </style>
 </head>
 <body>
 
     <!-- Section 1 -->
     <div class="section">
-        <div class="candy-sprinkle"></div>
+        <span class="badge">New: Beta Access</span>
+        <div class="floating-candy"></div>
         <div class="content-box">
             <h1>Welcome to Liney Candy</h1>
-            <p>Dive into the magical world of Liney Candy, where adventure meets sweetness. Guide your character through vibrant levels, collect diamonds, and unlock new challenges!</p>
+            <p>Step into a world of sweetness and adventure! Liney Candy offers vibrant levels, exciting challenges, and endless fun. Collect diamonds, unlock rewards, and compete with friends!</p>
             <a href="#section2" class="btn">Learn More</a>
         </div>
         <div class="scroll-down" onclick="scrollToNext()">⬇</div>
@@ -156,32 +199,28 @@
 
     <!-- Section 2 -->
     <div id="section2" class="section">
-        <div class="candy-sprinkle"></div>
+        <div class="floating-candy"></div>
         <div class="content-box">
             <h1>How to Play</h1>
-            <p>
-                Your goal is to collect as many points as possible by gathering items, diamonds, and activating bonuses. With every level, the game gets more exciting and visually stunning!
-            </p>
-            <p>Watch out for special power-ups that give you amazing abilities and bonuses!</p>
-            <a href="#section3" class="btn">Next Section</a>
+            <p>Navigate through candy-filled worlds by swiping and tapping. Collect diamonds to score points, and unlock power-ups for exciting abilities!</p>
+            <p>Each level introduces new characters and fun gameplay twists. Complete daily challenges to earn exclusive rewards.</p>
+            <a href="#section3" class="btn">Explore Features</a>
         </div>
         <div class="scroll-down" onclick="scrollToNext()">⬇</div>
     </div>
 
     <!-- Section 3 -->
-    <div class="section">
-        <div class="candy-sprinkle"></div>
+    <div id="section3" class="section">
+        <div class="floating-candy"></div>
         <div class="content-box">
             <h1>Game Features</h1>
-            <p>
-                - Select from unique characters: Haylie, Amelina, or Lexa.<br>
-                - Vibrant, animated backgrounds with a candy-themed design.<br>
-                - Dynamic gameplay with bonus items and diamond hunts.<br>
-                - Easy-to-use controls: just swipe and play!<br>
-                - Level up and unlock new challenges and rewards.<br>
-                - Collect and customize your character with special outfits and accessories!
-            </p>
-            <a href="#section1" class="btn">Start Playing</a>
+            <p>- Choose from unique characters like Haylie, Amelina, and Lexa.<br>
+               - Collect and customize characters with unique outfits.<br>
+               - Vibrant, animated backgrounds in a candy wonderland.<br>
+               - Dynamic levels with challenging puzzles and obstacles.<br>
+               - Easy swipe controls for smooth gameplay.<br>
+               - Compete on leaderboards and share progress with friends.</p>
+            <a href="https://corentw.github.io/game/lineyCandy/game.html" class="btn">Play Now</a>
         </div>
     </div>
 
