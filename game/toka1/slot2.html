@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comic Candy Slot Machine</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', sans-serif;
+      background: linear-gradient(to bottom, #ffcccb, #ff99ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .slot-machine {
+      width: 300px;
+      height: 400px;
+      background: radial-gradient(circle, #ffffff, #ffcce7);
+      border: 10px solid #ff0066;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ff007f;
+      text-shadow: 1px 2px #ff99cc;
+      margin-bottom: 10px;
+    }
+
+    .reels {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+      overflow: hidden;
+      border: 5px solid #ff66cc;
+      border-radius: 10px;
+      background-color: #fff5f8;
+    }
+
+    .reel {
+      width: 80px;
+      height: 100px;
+      background: linear-gradient(to bottom, #ff99cc, #ff66ff);
+      border: 3px solid #ff33cc;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      box-shadow: inset 0 -4px 6px rgba(0, 0, 0, 0.3);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+
+    .button {
+      width: 80%;
+      padding: 10px;
+      background: linear-gradient(to bottom, #ff3399, #ff66cc);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      text-shadow: 1px 1px #ff0066;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .button:hover {
+      background: linear-gradient(to bottom, #ff66cc, #ff3399);
+      transform: scale(1.05);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .symbol {
+      width: 50px;
+      height: 50px;
+    }
+
+    .symbols img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="slot-machine">
+    <div class="title">Candy Slot Machine</div>
+    <div class="reels">
+      <div class="reel">
+        <img src="https://via.placeholder.com/50?text=🍭" alt="Candy 1" class="symbol">
+      </div>
+      <div class="reel">
+        <img src="https://via.placeholder.com/50?text=🍬" alt="Candy 2" class="symbol">
+      </div>
+      <div class="reel">
+        <img src="https://via.placeholder.com/50?text=🍫" alt="Candy 3" class="symbol">
+      </div>
+    </div>
+    <button class="button" onclick="spinReels()">Spin!</button>
+  </div>
+
+  <script>
+    const symbols = ['🍭', '🍬', '🍫', '🍩', '🍪'];
+    const reels = document.querySelectorAll('.reel');
+
+    function spinReels() {
+      reels.forEach(reel => {
+        const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+        reel.innerHTML = `<img src="https://via.placeholder.com/50?text=${randomSymbol}" alt="Candy" class="symbol">`;
+      });
+    }
+  </script>
+</body>
+</html>
