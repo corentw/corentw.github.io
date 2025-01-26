@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot-Spiel mit Münzeinsatz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #1e1e1e;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+        }
+        h1 {
+            color: #ffcc00;
+            margin: 20px 0;
+        }
+        #slot-machine {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 15px;
+            width: 350px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        .reels {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .reel {
+            width: 80px;
+            height: 80px;
+            border: 3px solid #ffcc00;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            background-color: #444;
+            color: #ffcc00;
+            animation: pulse 1s infinite;
+        }
+        .reel.highlight {
+            animation: winEffect 0.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        @keyframes winEffect {
+            0%, 100% { box-shadow: 0 0 10px #ffcc00; }
+            50% { box-shadow: 0 0 20px #ff9900; }
+        }
+        #controls {
+            margin-bottom: 20px;
+        }
+        #controls input, #controls button {
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        #controls input {
+            width: 70px;
+            text-align: center;
+        }
+        #controls button {
+            background-color: #ff9900;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #controls button:hover {
+            background-color: #ffcc00;
+        }
+        #wallet {
+            margin: 20px 0;
+            background-color: #444;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        #message {
+            font-weight: bold;
+            margin-top: 10px;
+            color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+    <h1>Slot-Spiel mit Münzeinsatz</h1>
+    <div id="wallet">
+        <p>Guthaben: <span id="balance">100</span> Münzen</p>
+        <button onclick="addFunds()">Einzahlen</button>
+        <button onclick="withdrawFunds()">Auszahlen</button>
+    </div>
+    <div id="slot-machine">
+        <div class="reels">
+            <div class="reel" id="reel1">🍒</div>
+            <div class="reel" id="reel2">🍋</div>
+            <div class="reel" id="reel3">🍊</div>
+        </div>
+        <div id="controls">
+            <label for="bet">Einsatz:</label>
+            <input type="number" id="bet" value="10" min="1" max="100">
+            <button onclick="spin()">Drehen</button>
+        </div>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const symbols = ['🍒', '🍋', '🍊', '🍉', '⭐', '🔔'];
+        let balance = 100;
+
+        function getRandomSymbol() {
+            return symbols[Math.floor(Math.random() * symbols.length)];
+        }
+
+        function spin() {
+            const bet = parseInt(document.getElementById('bet').value);
+            const message = document.getElementById('message');
+
+            if (bet > balance) {
+                message.textContent = 'Nicht genügend Guthaben!';
+                return;
+            }
+
+            balance -= bet;
+            updateBalance();
+
+            const reel1 = getRandomSymbol();
+            const reel2 = getRandomSymbol();
+            const reel3 = getRandomSymbol();
+
+            document.getElementById('reel1').textContent = reel1;
+            document.getElementById('reel2').textContent = reel2;
+            document.getElementById('reel3').textContent = reel3;
+
+            const reels = [reel1, reel2, reel3];
+            reels.forEach((_, i) => {
+                document.getElementById(`reel${i + 1}`).classList.remove('highlight');
+            });
+
+            if (reel1 === reel2 && reel2 === reel3) {
+                const winnings = bet * 10;
+                balance += winnings;
+                reels.forEach((_, i) => {
+                    document.getElementById(`reel${i + 1}`).classList.add('highlight');
+                });
+                message.textContent = `🎉 Gewonnen! Sie erhalten ${winnings} Münzen. Gesamtguthaben: ${balance} Münzen.`;
+            } else {
+                message.textContent = `😢 Leider verloren. Gesamtguthaben: ${balance} Münzen.`;
+            }
+        }
+
+        function updateBalance() {
+            document.getElementById('balance').textContent = balance;
+        }
+
+        function addFunds() {
+            const amount = parseInt(prompt("Betrag einzahlen:", "50"));
+            if (!isNaN(amount) && amount > 0) {
+                balance += amount;
+                updateBalance();
+                alert(`Erfolgreich ${amount} Münzen eingezahlt!`);
+            }
+        }
+
+        function withdrawFunds() {
+            const amount = parseInt(prompt("Betrag auszahlen:", "50"));
+            if (!isNaN(amount) && amount > 0 && amount <= balance) {
+                balance -= amount;
+                updateBalance();
+                alert(`Erfolgreich ${amount} Münzen ausgezahlt!`);
+            } else {
+                alert("Ungültiger Betrag oder unzureichendes Guthaben.");
+            }
+        }
+    </script>
+</body>
+</html>
