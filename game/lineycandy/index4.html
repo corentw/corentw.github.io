@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liney Candy - Das süßeste Abenteuer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(to bottom, #ffb3e6, #ffcce7);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: url('images/background3.png') no-repeat center center/cover;
+            color: #fff;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        header h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 4rem;
+            margin: 0;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        header p {
+            font-size: 1.5rem;
+            margin: 10px 0 0;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .content {
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 800px;
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3);
+            animation: slideIn 1.5s ease-out;
+        }
+
+        .content h2 {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.5rem;
+            color: #ff69b4;
+            margin-bottom: 20px;
+        }
+
+        .content p,
+        .content ul {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .content ul {
+            padding-left: 20px;
+        }
+
+        .content ul li {
+            margin-bottom: 10px;
+        }
+
+        .cta-button {
+            background: linear-gradient(to right, #ff69b4, #ff85d0);
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, background 0.3s ease;
+            box-shadow: 0px 4px 15px rgba(255, 105, 180, 0.5);
+        }
+
+        .cta-button:hover {
+            transform: scale(1.1);
+            background: linear-gradient(to left, #ff69b4, #ff85d0);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #fff;
+            color: #ff69b4;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        /* Parallax Sections */
+        .parallax {
+            height: 500px;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .parallax:nth-of-type(1) {
+            background-image: url('images/background5.png');
+        }
+
+        .parallax:nth-of-type(2) {
+            background-image: url('images/background6.png');
+        }
+
+        /* Candy Rain */
+        @keyframes candyFall {
+            0% {
+                transform: translateY(-100px);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        .candy {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            background: url('https://cdn-icons-png.flaticon.com/512/1998/1998611.png') no-repeat center/contain;
+            animation: candyFall 10s linear infinite;
+        }
+
+        /* Fade In Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Slide In Animation */
+        @keyframes slideIn {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>Willkommen bei Liney Candy!</h1>
+        <p>Das süßeste Abenteuer erwartet dich.</p>
+    </header>
+
+    <!-- Game Description -->
+    <div class="content">
+        <h2>Über das Spiel</h2>
+        <p>In Liney Candy steuerst du süße Charaktere durch eine fantasievolle Welt voller köstlicher Items und Diamanten. Deine Aufgabe ist es, Punkte zu sammeln, Level aufzusteigen und deine Sammlung zu erweitern.</p>
+        <button class="cta-button">Jetzt spielen</button>
+    </div>
+
+    <!-- Parallax Section 1 -->
+    <div class="parallax"></div>
+
+    <!-- Spielanleitung -->
+    <div class="content">
+        <h2>Spielanleitung für "Liney Candy"</h2>
+        <h3>1. Spielziel</h3>
+        <ul>
+            <li>Sammle so viele Punkte wie möglich, indem du Items berührst.</li>
+            <li>Steige Level auf, indem du alle Items in einem Level einsammelst.</li>
+            <li>Sammle Diamanten, um deinen Fortschritt zu sichern und zusätzliche Belohnungen zu erhalten.</li>
+        </ul>
+        <h3>2. Wie starte ich das Spiel?</h3>
+        <p>Nach dem Start des Spiels kannst du deinen Charakter auswählen und direkt loslegen.</p>
+        <h3>3. Steuerung</h3>
+        <ul>
+            <li>Ziehe deinen Charakter per Drag & Drop über das Spielfeld.</li>
+        </ul>
+        <h3>4. Levelaufstieg</h3>
+        <p>Neue Levels bieten mehr Herausforderungen und Belohnungen. Alle 5 Level ändert sich der Hintergrund.</p>
+        <h3>5. Tipps und Tricks</h3>
+        <p>Bewege deinen Charakter strategisch und sammle Diamanten für mehr Punkte!</p>
+    </div>
+
+    <!-- Parallax Section 2 -->
+    <div class="parallax"></div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Liney Candy. Alle Rechte vorbehalten.</p>
+    </footer>
+
+    <!-- Candy Rain -->
+    <script>
+        setInterval(() => {
+            const candy = document.createElement('div');
+            candy.className = 'candy';
+            candy.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(candy);
+            setTimeout(() => candy.remove(), 10000);
+        }, 500);
+    </script>
+</body>
+
+</html>
