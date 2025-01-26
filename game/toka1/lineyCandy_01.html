@@ -363,6 +363,7 @@
         <h1>Liney Candy</h1>
         <button id="start-btn">Spiel starten</button>
         <button id="fullscreen-btn">Vollbild aktivieren</button>
+        <button onclick="redirectToGame()">Weiterleitung</button>
         <h3>Charakter auswählen:</h3>
         <div class="character-select-container">
             <div class="character-select" data-character="character1">
@@ -640,6 +641,7 @@ function nextLevel() {
                 diamondSound.play();  // Diamanten Sound abspielen
             }
         });
+        
 
         // Bonus Items
         const bonusItems = document.querySelectorAll('.bonus-item');
@@ -659,6 +661,10 @@ function nextLevel() {
             }
         });
     }
+
+        function redirectToGame() {
+            window.location.href = "https://corentw.github.io/game/linacandy/";
+        }
     </script>
 </body>
 </html>
