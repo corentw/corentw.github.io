@@ -40,7 +40,7 @@
         button:hover {
             background-color: #45a049;
         }
-        input, textarea {
+        input {
             width: 100%;
             padding: 8px;
             margin: 10px 0;
@@ -78,42 +78,6 @@
             <h2>Your Address</h2>
             <div class="address-box" id="walletAddress">Loading...</div>
         </div>
-
-        <!-- Main Content -->
-        <div id="mainContent" class="hidden">
-            <div class="section">
-                <h2>Swap</h2>
-                <label for="swapFrom">From Token:</label>
-                <input type="text" id="swapFrom" placeholder="Enter token address">
-                <label for="swapTo">To Token:</label>
-                <input type="text" id="swapTo" placeholder="Enter token address">
-                <label for="amount">Amount:</label>
-                <input type="number" id="amount" placeholder="Enter amount">
-                <button onclick="swapTokens()">Swap</button>
-            </div>
-            <div class="section">
-                <h2>Contract Creation</h2>
-                <label for="contractData">Contract Data:</label>
-                <textarea id="contractData" rows="5" placeholder="Paste your contract data here"></textarea>
-                <button onclick="createContract()">Create Contract</button>
-            </div>
-            <div class="section">
-                <h2>Send Token</h2>
-                <label for="recipient">Recipient Address:</label>
-                <input type="text" id="recipient" placeholder="Enter recipient address">
-                <label for="token">Token Address:</label>
-                <input type="text" id="token" placeholder="Enter token address">
-                <label for="sendAmount">Amount:</label>
-                <input type="number" id="sendAmount" placeholder="Enter amount">
-                <button onclick="sendToken()">Send Token</button>
-            </div>
-            <div class="section">
-                <h2>Faucet</h2>
-                <label for="faucetAddress">Your Wallet Address:</label>
-                <input type="text" id="faucetAddress" placeholder="Enter your wallet address">
-                <button onclick="requestFaucet()">Request Faucet</button>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -126,39 +90,31 @@
                 return;
             }
 
-            // Derive the address using Keccak-256
             try {
-                const publicKey = "04" + privateKey; // Simplified, assumes a public key would follow this prefix
-                const hashed = sha3_256(Buffer.from(publicKey, "hex")); // Keccak-256 hashing
-                const address = "0x" + hashed.slice(-40); // Last 20 bytes
+                // Generate public key from private key
+                const publicKey = generatePublicKey(privateKey);
+
+                // Hash the public key with Keccak-256 and derive the address
+                const hashed = sha3_256(Buffer.from(publicKey, "hex"));
+                const address = "0x" + hashed.slice(-40); // Use the last 20 bytes of the hash
 
                 // Display the derived address
                 document.getElementById("walletAddress").textContent = address;
                 document.getElementById("privateKeySection").classList.add("hidden");
                 document.getElementById("addressDisplay").classList.remove("hidden");
-                document.getElementById("mainContent").classList.remove("hidden");
 
-                console.log("Derived Address:", address); // Optional for debugging
+                console.log("Derived Address:", address); // Debugging
             } catch (error) {
                 alert("Failed to derive address from the private key. Please check your input.");
                 console.error(error);
             }
         }
 
-        function swapTokens() {
-            alert("Swap Tokens - This function needs to be implemented.");
-        }
-
-        function createContract() {
-            alert("Contract Creation - This function needs to be implemented.");
-        }
-
-        function sendToken() {
-            alert("Send Token - This function needs to be implemented.");
-        }
-
-        function requestFaucet() {
-            alert("Faucet Request - This function needs to be implemented.");
+        function generatePublicKey(privateKey) {
+            // Convert private key to a public key (simplified, no elliptic curve math here)
+            const prefix = "04"; // Standard prefix for uncompressed public keys
+            const derivedKey = sha3_256(Buffer.from(privateKey, "hex")); // Example hash-based public key generation
+            return prefix + derivedKey; // Return the public key as "04" + derived hash
         }
     </script>
 </body>
