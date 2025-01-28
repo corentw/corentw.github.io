@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Token Creation</title>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/spl-token@latest/dist/spl-token.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #4caf50;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Solana Token Creator</h1>
+    <button id="connectWallet">Connect Phantom Wallet</button>
+    <div id="status" class="info"></div>
+    <div id="tokenForm" style="display: none;">
+        <h2>Create Your Token</h2>
+        <input type="number" id="initialSupply" placeholder="Enter Initial Supply (e.g., 1000)" />
+        <button id="createToken">Create Token</button>
+    </div>
+    <div id="result" class="info" style="display: none;"></div>
+
+    <script>
+        const { Connection, Keypair, Transaction, clusterApiUrl, PublicKey } = solanaWeb3;
+        const { createMint, getOrCreateAssociatedTokenAccount, mintTo } = splToken;
+
+        let walletAddress = null;
+
+        document.getElementById("connectWallet").addEventListener("click", async () => {
+            const statusDiv = document.getElementById("status");
+            if (!window.solana || !window.solana.isPhantom) {
+                statusDiv.innerText = "Phantom Wallet not detected. Please install it.";
+                return;
+            }
+
+            try {
+                const response = await window.solana.connect();
+                walletAddress = response.publicKey.toString();
+                statusDiv.innerText = `Wallet Connected: ${walletAddress}`;
+                document.getElementById("tokenForm").style.display = "block";
+            } catch (err) {
+                console.error(err);
+                statusDiv.innerText = "Failed to connect to Phantom Wallet.";
+            }
+        });
+
+        document.getElementById("createToken").addEventListener("click", async () => {
+            const initialSupply = parseInt(document.getElementById("initialSupply").value, 10);
+            if (!initialSupply || initialSupply <= 0) {
+                alert("Please enter a valid initial supply.");
+                return;
+            }
+
+            const statusDiv = document.getElementById("status");
+            const resultDiv = document.getElementById("result");
+            const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+
+            try {
+                // Create a temporary payer for the token creation
+                const payer = Keypair.generate();
+
+                // Airdrop SOL to the temporary payer
+                const airdropSignature = await connection.requestAirdrop(payer.publicKey, 2e9); // 2 SOL
+                await connection.confirmTransaction(airdropSignature);
+
+                // Create a new token mint
+                const mint = await createMint(
+                    connection,
+                    payer,
+                    new PublicKey(walletAddress), // Set the wallet as the mint authority
+                    null, // No freeze authority
+                    9 // Number of decimals
+                );
+
+                // Create an associated token account for the wallet
+                const tokenAccount = await getOrCreateAssociatedTokenAccount(
+                    connection,
+                    payer,
+                    mint,
+                    new PublicKey(walletAddress)
+                );
+
+                // Mint the initial supply to the associated token account
+                await mintTo(
+                    connection,
+                    payer,
+                    mint,
+                    tokenAccount.address,
+                    payer,
+                    initialSupply * Math.pow(10, 9) // Adjust for decimals
+                );
+
+                // Display the results
+                resultDiv.style.display = "block";
+                resultDiv.innerHTML = `
+                    <h3>Token Created Successfully!</h3>
+                    <p><strong>Token Mint Address:</strong> ${mint.toBase58()}</p>
+                    <p><strong>Initial Supply:</strong> ${initialSupply}</p>
+                    <p><strong>Token Account Address:</strong> ${tokenAccount.address.toBase58()}</p>
+                `;
+            } catch (err) {
+                console.error(err);
+                statusDiv.innerText = "Failed to create token. Please try again.";
+            }
+        });
+    </script>
+</body>
+</html>
