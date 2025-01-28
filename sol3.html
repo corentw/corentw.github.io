@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phantom Wallet Token Creation</title>
+    <title>Phantom Wallet Connection Test</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,7 +18,6 @@
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
         }
         button:hover {
             background-color: #45a049;
@@ -31,103 +30,29 @@
             border-radius: 5px;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/dist/web3.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@solana/spl-token@latest/dist/spl-token.min.js"></script>
 </head>
 <body>
-    <h1>Connect and Create a Token</h1>
+    <h1>Phantom Wallet Connection Test</h1>
     <button id="connectWallet">Connect Phantom Wallet</button>
     <div id="status" class="info"></div>
-    <div id="walletInfo" class="info" style="display: none;"></div>
-    <button id="createToken" style="display: none;">Create Token</button>
-    <div id="tokenInfo" class="info" style="display: none;"></div>
-
     <script>
-        const { Connection, Keypair, clusterApiUrl, PublicKey } = solanaWeb3;
-        const { createMint, getOrCreateAssociatedTokenAccount, mintTo } = splToken;
-
-        let walletAddress = null;
-
         document.getElementById("connectWallet").addEventListener("click", async () => {
             const statusDiv = document.getElementById("status");
-            const walletInfoDiv = document.getElementById("walletInfo");
-            const createTokenButton = document.getElementById("createToken");
 
+            // Prüfe, ob Phantom Wallet verfügbar ist
             if (!window.solana || !window.solana.isPhantom) {
-                statusDiv.innerText = "Phantom Wallet is not detected. Please install it.";
+                statusDiv.innerText = "Phantom Wallet nicht gefunden. Bitte installiere die Erweiterung.";
                 return;
             }
 
-            statusDiv.innerText = "Phantom Wallet detected. Attempting to connect...";
-
             try {
+                // Verbindung zur Wallet herstellen
                 const response = await window.solana.connect();
-                walletAddress = response.publicKey.toString();
-
-                statusDiv.innerText = "Wallet connected successfully!";
-                walletInfoDiv.style.display = "block";
-                walletInfoDiv.innerHTML = `<p>Connected Wallet Address:</p><strong>${walletAddress}</strong>`;
-                createTokenButton.style.display = "block";
-            } catch (err) {
-                console.error(err);
-                statusDiv.innerText = "Failed to connect to Phantom Wallet. Please try again.";
-            }
-        });
-
-        document.getElementById("createToken").addEventListener("click", async () => {
-            if (!walletAddress) {
-                alert("Please connect your Phantom Wallet first.");
-                return;
-            }
-
-            const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-            const payer = Keypair.generate();
-
-            const tokenInfoDiv = document.getElementById("tokenInfo");
-            tokenInfoDiv.style.display = "none";
-
-            try {
-                // Airdrop SOL to payer
-                const airdropSignature = await connection.requestAirdrop(payer.publicKey, 2e9); // 2 SOL
-                await connection.confirmTransaction(airdropSignature);
-
-                // Create token mint
-                const mint = await createMint(
-                    connection,
-                    payer,
-                    new PublicKey(walletAddress), // Set Phantom Wallet as mint authority
-                    null, // No freeze authority
-                    9 // Number of decimals
-                );
-
-                // Create associated token account
-                const tokenAccount = await getOrCreateAssociatedTokenAccount(
-                    connection,
-                    payer,
-                    mint,
-                    new PublicKey(walletAddress)
-                );
-
-                // Mint initial supply to token account
-                await mintTo(
-                    connection,
-                    payer,
-                    mint,
-                    tokenAccount.address,
-                    payer,
-                    1000 * Math.pow(10, 9) // Mint 1000 tokens (adjust for decimals)
-                );
-
-                tokenInfoDiv.style.display = "block";
-                tokenInfoDiv.innerHTML = `
-                    <h2>Token Created Successfully!</h2>
-                    <p><strong>Token Mint Address:</strong> ${mint.toBase58()}</p>
-                    <p><strong>Token Account Address:</strong> ${tokenAccount.address.toBase58()}</p>
-                    <p><strong>Initial Supply:</strong> 1000</p>
-                `;
-            } catch (err) {
-                console.error("Token creation failed", err);
-                alert("Failed to create token. Check the console for details.");
+                const walletAddress = response.publicKey.toString();
+                statusDiv.innerText = `Erfolgreich verbunden! Wallet-Adresse: ${walletAddress}`;
+            } catch (error) {
+                console.error("Fehler bei der Verbindung mit Phantom Wallet:", error);
+                statusDiv.innerText = "Verbindung fehlgeschlagen. Bitte erneut versuchen.";
             }
         });
     </script>
