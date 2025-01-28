@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultiSend - Keccak256 Address</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-sha3/dist/sha3.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 800px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        h2 {
+            margin-top: 0;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .hidden {
+            display: none;
+        }
+        .address-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>MultiSend Example</h1>
+    </header>
+    <div class="container">
+        <!-- Private Key Input -->
+        <div id="privateKeySection">
+            <h2>Enter Private Key</h2>
+            <label for="privateKey">Private Key (64 hex characters):</label>
+            <input type="text" id="privateKey" placeholder="Enter your private key">
+            <button onclick="validatePrivateKey()">Submit</button>
+        </div>
+
+        <!-- Display Address -->
+        <div id="addressDisplay" class="hidden">
+            <h2>Your Address</h2>
+            <div class="address-box" id="walletAddress">Loading...</div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="hidden">
+            <div class="section">
+                <h2>Swap</h2>
+                <label for="swapFrom">From Token:</label>
+                <input type="text" id="swapFrom" placeholder="Enter token address">
+                <label for="swapTo">To Token:</label>
+                <input type="text" id="swapTo" placeholder="Enter token address">
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" placeholder="Enter amount">
+                <button onclick="swapTokens()">Swap</button>
+            </div>
+            <div class="section">
+                <h2>Contract Creation</h2>
+                <label for="contractData">Contract Data:</label>
+                <textarea id="contractData" rows="5" placeholder="Paste your contract data here"></textarea>
+                <button onclick="createContract()">Create Contract</button>
+            </div>
+            <div class="section">
+                <h2>Send Token</h2>
+                <label for="recipient">Recipient Address:</label>
+                <input type="text" id="recipient" placeholder="Enter recipient address">
+                <label for="token">Token Address:</label>
+                <input type="text" id="token" placeholder="Enter token address">
+                <label for="sendAmount">Amount:</label>
+                <input type="number" id="sendAmount" placeholder="Enter amount">
+                <button onclick="sendToken()">Send Token</button>
+            </div>
+            <div class="section">
+                <h2>Faucet</h2>
+                <label for="faucetAddress">Your Wallet Address:</label>
+                <input type="text" id="faucetAddress" placeholder="Enter your wallet address">
+                <button onclick="requestFaucet()">Request Faucet</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function validatePrivateKey() {
+            const privateKey = document.getElementById("privateKey").value.trim();
+
+            // Validate private key length and format
+            if (!privateKey || privateKey.length !== 64 || !/^[0-9a-fA-F]+$/.test(privateKey)) {
+                alert("Invalid private key. It must be 64 hex characters.");
+                return;
+            }
+
+            // Derive the address using Keccak-256
+            try {
+                const publicKey = "04" + privateKey; // Simplified, assumes a public key would follow this prefix
+                const hashed = sha3_256(Buffer.from(publicKey, "hex")); // Keccak-256 hashing
+                const address = "0x" + hashed.slice(-40); // Last 20 bytes
+
+                // Display the derived address
+                document.getElementById("walletAddress").textContent = address;
+                document.getElementById("privateKeySection").classList.add("hidden");
+                document.getElementById("addressDisplay").classList.remove("hidden");
+                document.getElementById("mainContent").classList.remove("hidden");
+
+                console.log("Derived Address:", address); // Optional for debugging
+            } catch (error) {
+                alert("Failed to derive address from the private key. Please check your input.");
+                console.error(error);
+            }
+        }
+
+        function swapTokens() {
+            alert("Swap Tokens - This function needs to be implemented.");
+        }
+
+        function createContract() {
+            alert("Contract Creation - This function needs to be implemented.");
+        }
+
+        function sendToken() {
+            alert("Send Token - This function needs to be implemented.");
+        }
+
+        function requestFaucet() {
+            alert("Faucet Request - This function needs to be implemented.");
+        }
+    </script>
+</body>
+</html>
