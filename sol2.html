@@ -3,86 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phantom Wallet Airdrop Test</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        button {
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .info {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/dist/web3.min.js"></script>
+    <title>Phantom Wallet Debugging</title>
 </head>
 <body>
-    <h1>Phantom Wallet Airdrop Test</h1>
+    <h1>Phantom Wallet Debugging</h1>
     <button id="connectWallet">Connect Phantom Wallet</button>
-    <div id="status" class="info"></div>
-    <button id="airdrop" style="display: none;">Get Airdrop</button>
-
+    <div id="status"></div>
     <script>
-        const { Connection, clusterApiUrl, PublicKey } = solanaWeb3;
-
-        let walletAddress = null;
-
-        // Connect to Phantom Wallet
         document.getElementById("connectWallet").addEventListener("click", async () => {
             const statusDiv = document.getElementById("status");
 
             if (!window.solana || !window.solana.isPhantom) {
-                statusDiv.innerText = "Phantom Wallet not detected. Please install it.";
+                statusDiv.innerText = "Phantom Wallet is not detected. Please install it.";
                 return;
             }
 
             try {
-                const response = await window.solana.connect();
-                walletAddress = response.publicKey.toString();
-                statusDiv.innerText = `Wallet connected successfully! Address: ${walletAddress}`;
-                document.getElementById("airdrop").style.display = "block";
-            } catch (err) {
-                console.error("Connection failed:", err);
-                statusDiv.innerText = "Failed to connect to Phantom Wallet.";
-            }
-        });
-
-        // Airdrop SOL
-        document.getElementById("airdrop").addEventListener("click", async () => {
-            const statusDiv = document.getElementById("status");
-
-            if (!walletAddress) {
-                alert("Please connect your Phantom Wallet first.");
-                return;
-            }
-
-            try {
-                const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
-                const airdropSignature = await connection.requestAirdrop(
-                    new PublicKey(walletAddress),
-                    1e9 // 1 SOL
-                );
-                await connection.confirmTransaction(airdropSignature);
-                statusDiv.innerText = `Airdrop successful! 1 SOL sent to ${walletAddress}`;
-            } catch (err) {
-                console.error("Airdrop failed:", err);
-                statusDiv.innerText = "Airdrop failed. Check the console for details.";
+                const response = await window.solana.connect({ onlyIfTrusted: false });
+                const walletAddress = response.publicKey.toString();
+                statusDiv.innerText = `Connected! Wallet Address: ${walletAddress}`;
+            } catch (error) {
+                console.error("Connection error:", error);
+                statusDiv.innerText = "Failed to connect. See console for details.";
             }
         });
     </script>
