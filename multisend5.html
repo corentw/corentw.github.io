@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Ethereum Address from Private Key</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-sha3/dist/sha3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sha.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 800px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        h2 {
+            margin-top: 0;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .hidden {
+            display: none;
+        }
+        .address-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Generate Ethereum Address</h1>
+    </header>
+    <div class="container">
+        <!-- Private Key Input -->
+        <div id="privateKeySection">
+            <h2>Enter Private Key (SHA-256 Compliant)</h2>
+            <label for="privateKey">Private Key (64 hex characters):</label>
+            <input type="text" id="privateKey" placeholder="Enter your private key">
+            <button onclick="generateAddress()">Generate Address</button>
+        </div>
+
+        <!-- Display Address -->
+        <div id="addressDisplay" class="hidden">
+            <h2>Your Ethereum Address</h2>
+            <div class="address-box" id="walletAddress">Loading...</div>
+        </div>
+    </div>
+
+    <script>
+        function generateAddress() {
+            const privateKey = document.getElementById("privateKey").value.trim();
+
+            // Validate private key length and format (64 hex characters)
+            if (!privateKey || privateKey.length !== 64 || !/^[0-9a-fA-F]+$/.test(privateKey)) {
+                alert("Invalid private key. It must be 64 hex characters.");
+                return;
+            }
+
+            try {
+                // Step 1: Apply SHA-256 hash to the private key (this step is already assumed by the user)
+                const sha256Hash = sha256(privateKey);
+
+                // Step 2: Apply Keccak-256 hash to the SHA-256 hash
+                const keccak256Hash = sha3_256(Buffer.from(sha256Hash, "hex"));
+
+                // Step 3: Take the last 20 bytes (40 hex characters) for the Ethereum address
+                const address = "0x" + keccak256Hash.slice(-40); // Last 20 bytes
+
+                // Display the derived address
+                document.getElementById("walletAddress").textContent = address;
+                document.getElementById("privateKeySection").classList.add("hidden");
+                document.getElementById("addressDisplay").classList.remove("hidden");
+
+                console.log("Generated Ethereum Address:", address); // Debugging
+            } catch (error) {
+                alert("Failed to generate address from the private key. Please check your input.");
+                console.error(error);
+            }
+        }
+
+        function sha256(input) {
+            const sha256Hasher = new shajs.sha256();
+            sha256Hasher.update(input);
+            return sha256Hasher.digest('hex');
+        }
+    </script>
+</body>
+</html>
