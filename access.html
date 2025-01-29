@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Hasher</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0d0d0d;
+            color: #00ff99;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #00ff99;
+            background: #0d0d0d;
+            color: #00ff99;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #00ff99;
+            color: #0d0d0d;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #009966;
+        }
+        #output {
+            margin-top: 20px;
+            word-break: break-all;
+            background: #262626;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>corentw keyManager</h2>
+        <p>Gib genau 64 Zeichen ein, um auf deinen Adresse zuzugreifen:</p>
+        <input type="text" id="inputText" placeholder="64 Zeichen hier eingeben">
+        <br>
+        <button onclick="hashInput()">Hash generieren</button>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function hashInput() {
+            let input = document.getElementById("inputText").value;
+            let outputDiv = document.getElementById("output");
+
+            if (input.length !== 64) {
+                outputDiv.innerHTML = "<span style='color: red;'>Fehler: Die Eingabe muss genau 64 Zeichen lang sein!</span>";
+                return;
+            }
+
+            let hash = sha3_256(input);
+            let address = "0x" + hash.substring(0, 40);
+
+            outputDiv.innerHTML = "<strong>Keccak-256 Hash:</strong><br>" + hash +
+                                  "<br><br><strong>CRX Adresse:</strong><br>" + address;
+        }
+    </script>
+</body>
+</html>
