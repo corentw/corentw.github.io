@@ -57,8 +57,10 @@
         <p>Gib deinen privaten Schlüssel ein (bestehend aus 64 Zeichen), um vollen Zugriff auf deine Adresse zu erhalten:</p>
         <input type="text" id="inputText" placeholder="64 Zeichen hier eingeben">
         <br>
-        <button onclick="generateRandomHash()">zufälligen Schlüssel generieren</button><br>
         <button onclick="hashInput()">abrufen</button>
+        <br> oder <br
+        <button onclick="generateRandomHash()">zufälligen Schlüssel generieren</button>
+        <br>
         <div id="output"></div>
     </div>
 
@@ -68,12 +70,12 @@
             let outputDiv = document.getElementById("output");
 
             if (input.length !== 64) {
-                outputDiv.innerHTML = "<span style='color: red;'>Fehler: Die Eingabe muss genau 64 Zeichen lang sein!</span>";
+                outputDiv.innerHTML = "<span style='color: red;'>Fehler: Der private Schlüssel muss genau 64 Zeichen lang sein!</span>";
                 return;
             }
 
             let hash = sha3_256(input);
-            let address = "0x" + hash.substring(0, 40);
+            let address = "c1" + hash.substring(0, 40);
 
             outputDiv.innerHTML = "<strong>Keccak-256 Hash:</strong><br>" + hash +
                                   "<br><br><strong>CRX Adresse:</strong><br>" + address;
