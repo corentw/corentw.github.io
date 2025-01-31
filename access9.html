@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>corentw keyManager</title>
+
+    <!-- Icon-Bibliothek -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #00ff99;
+            --background-dark: rgba(13, 13, 13, 0.9);
+            --background-light: #1a1a1a;
+            --text: #00ff99;
+            --button-hover: #009966;
+            --button-active: #007b4f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: var(--background-dark);
+            color: var(--text);
+            text-align: center;
+            padding: 20px;
+            font-size: 16px;
+        }
+
+        .container {
+            background: rgba(26, 26, 26, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 255, 153, 0.5);
+            max-width: 450px;
+            margin: auto;
+            transition: all 0.3s ease-in-out;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        input, button {
+            width: 90%;
+            padding: 12px;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid var(--primary);
+            background-color: #0d0d0d;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        button {
+            cursor: pointer;
+            background: var(--primary);
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: var(--button-hover);
+            transform: scale(1.05);
+        }
+
+        button:active {
+            background: var(--button-active);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Wallet */
+        .wallet {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            color: var(--text);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(0); }
+        }
+
+        .wallet .wallet-header {
+            width: 100%;
+            background: var(--background-light);
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .wallet .balance {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: var(--primary);
+        }
+
+        .wallet .wallet-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .wallet .wallet-actions button {
+            width: 150px;
+            display: inline-block;
+            font-size: 18px;
+            padding: 12px;
+        }
+
+        .wallet .close-btn {
+            width: 100%;
+            background: #ff4444;
+            margin-top: 30px;
+            padding: 15px;
+            color: #fff;
+        }
+
+        .wallet .address-info {
+            margin-top: 15px;
+            font-size: 18px;
+            background: rgba(0, 255, 153, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        /* Popup styling */
+        .popup {
+            display: none;
+            background: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: var(--text);
+        }
+
+        .popup-content {
+            background: var(--background-light);
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .popup button {
+            margin: 10px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            .container, .wallet {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>corentw keyManager</h2>
+        <p>Gib deinen privaten Schlüssel ein (64 Zeichen), um deine Adresse zu erhalten:</p>
+        <input type="text" id="inputText" placeholder="64 Zeichen hier eingeben">
+        <button onclick="hashInput()">Abrufen</button>
+        <p>oder</p>
+        <button onclick="generateRandomHash()">Zufälligen Schlüssel generieren</button>
+        <div id="output"></div>
+        <button id="useAddressBtn" class="hidden" onclick="showWallet()">Wallet öffnen</button>
+    </div>
+
+    <!-- Wallet -->
+    <div id="wallet" class="wallet">
+        <div class="wallet-header">Meine Wallet</div>
+        <div class="balance" id="balance">0.00 CRX</div>
+        <div class="address-info">
+            Adresse: <span id="walletAddress">...</span>
+        </div>
+
+        <div class="wallet-actions">
+            <button onclick="showPopup('sendPopup')"><i class="fa-solid fa-paper-plane"></i> Senden</button>
+            <button onclick="claimFaucet()"><i class="fa-solid fa-gift"></i> Faucet</button>
+            <button onclick="showPopup('contractPopup')"><i class="fa-solid fa-file-contract"></i> Vertrag</button>
+        </div>
+        <button class="close-btn" onclick="closeWallet()">Schließen</button>
+    </div>
+
+    <!-- Send Popup -->
+    <div id="sendPopup" class="popup">
+        <div class="popup-content">
+            <h3>Senden</h3>
+            <input type="text" id="sendAddress" placeholder="Empfängeradresse">
+            <input type="text" id="sendAmount" placeholder="Betrag (CRX)">
+            <button onclick="sendTransaction()">Senden</button>
+            <button onclick="closePopup('sendPopup')">Abbrechen</button>
+        </div>
+    </div>
+
+    <!-- Contract Popup -->
+    <div id="contractPopup" class="popup">
+        <div class="popup-content">
+            <h3>Vertrag Erstellen</h3>
+            <textarea placeholder="Vertragscode hier eingeben..."></textarea>
+            <button onclick="createContract()">Erstellen</button>
+            <button onclick="closePopup('contractPopup')">Abbrechen</button>
+        </div>
+    </div>
+
+    <script>
+        let balance = 0.00;
+
+        function hashInput() {
+            let input = document.getElementById("inputText").value;
+            let outputDiv = document.getElementById("output");
+            let useAddressBtn = document.getElementById("useAddressBtn");
+
+            if (input.length !== 64) {
+                outputDiv.innerHTML = "<span style='color: red;'>Fehler: Der private Schlüssel muss genau 64 Zeichen lang sein!</span>";
+                return;
+            }
+
+            let hash = sha3_256(input);
+            let address = "c1" + hash.substring(0, 40);
+            let shortAddress = address.substring(0, 6) + "..." + address.slice(-6);
+            outputDiv.innerHTML = `<strong>Adresse:</strong><br>${shortAddress}`;
+            document.getElementById("walletAddress").innerText = shortAddress;
+            useAddressBtn.classList.remove("hidden");
+        }
+
+        function generateRandomHash() {
+            let randomData = crypto.getRandomValues(new Uint8Array(32));
+            let hexString = Array.from(randomData, byte => byte.toString(16).padStart(2, '0')).join('');
+            let sha256Hash = sha256(hexString);
+            document.getElementById("inputText").value = sha256Hash.substring(0, 64);
+            hashInput();
+        }
+
+        function showWallet() {
+            document.getElementById("wallet").style.display = "flex";
+        }
+
+        function closeWallet() {
+            document.getElementById("wallet").style.display = "none";
+        }
+
+        function claimFaucet() {
+            balance += 0.01;
+            document.getElementById("balance").innerText = balance.toFixed(2) + " CRX";
+            alert("0.01 CRX erhalten!");
+        }
+
+        function sendTransaction() {
+            let address = document.getElementById("sendAddress").value;
+            let amount = document.getElementById("sendAmount").value;
+            if (address && amount) {
+                alert(`Transaktion von ${amount} CRX an ${address} gesendet!`);
+                closePopup('sendPopup');
+            } else {
+                alert("Bitte Adresse und Betrag angeben!");
+            }
+        }
+
+        function showPopup(id) {
+            document.getElementById(id).style.display = "flex";
+        }
+
+        function closePopup(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        function createContract() {
+            alert("Vertrag erstellt!");
+            closePopup('contractPopup');
+        }
+    </script>
+</body>
+</html>
