@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Wallet Connection Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3.js/1.7.4/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.75.0/lib/index.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Phantom Wallet Connection Test</h1>
+    <button id="connectWallet">Connect Phantom Wallet</button>
+    <div id="status" class="info"></div>
+    <div id="balance" class="info"></div>
+
+    <script>
+        document.getElementById("connectWallet").addEventListener("click", async () => {
+            const statusDiv = document.getElementById("status");
+            const balanceDiv = document.getElementById("balance");
+
+            // Prüfe, ob Phantom Wallet verfügbar ist
+            if (!window.solana || !window.solana.isPhantom) {
+                statusDiv.innerText = "Phantom Wallet nicht gefunden. Bitte installiere die Erweiterung.";
+                return;
+            }
+
+            try {
+                // Verbindung zur Wallet herstellen
+                const response = await window.solana.connect();
+                const walletAddress = response.publicKey.toString();
+                statusDiv.innerText = `Erfolgreich verbunden! Wallet-Adresse: ${walletAddress}`;
+
+                // Solana RPC Verbindung herstellen
+                const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+
+                // Balance abfragen
+                const balance = await connection.getBalance(new solanaWeb3.PublicKey(walletAddress));
+                const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL; // SOL hat 1e9 Lamports
+                balanceDiv.innerText = `Balance: ${solBalance.toFixed(4)} SOL`;
+
+            } catch (error) {
+                console.error("Fehler bei der Verbindung mit Phantom Wallet:", error);
+                statusDiv.innerText = "Verbindung fehlgeschlagen. Bitte erneut versuchen.";
+            }
+        });
+    </script>
+</body>
+</html>
