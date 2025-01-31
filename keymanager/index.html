@@ -21,7 +21,7 @@
             display: inline-block;
             box-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
         }
-        input {
+        input, select, textarea {
             width: 80%;
             padding: 10px;
             font-size: 16px;
@@ -43,7 +43,7 @@
         button:hover {
             background: #009966;
         }
-        #output, #options {
+        #output, #options, .popup {
             margin-top: 20px;
             word-break: break-all;
             background: #262626;
@@ -52,6 +52,17 @@
         }
         .hidden {
             display: none;
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
+            width: 300px;
         }
     </style>
 </head>
@@ -68,22 +79,66 @@
         <div id="output"></div>
         <button id="useAddressBtn" class="hidden" onclick="showOptions()">Adresse benutzen</button>
         <div id="options" class="hidden">
+            <p>Balance: <span id="balance">0.00 CRX</span></p>
             <p>Wähle eine Aktion:</p>
-            <button onclick="performAction('swap')">Swap</button>
-            <button onclick="performAction('contract')">Contract Creation</button>
-            <button onclick="performAction('send')">Send</button>
-            <button onclick="performAction('faucet')">Faucet</button>
+            <button onclick="showPopup('swapPopup')">Swap</button>
+            <button onclick="showPopup('sendPopup')">Send</button>
+            <button onclick="showPopup('faucetPopup')">Faucet</button>
+            <button onclick="showPopup('contractPopup')">Contract Creation</button>
         </div>
     </div>
 
+    <!-- Swap Popup -->
+    <div id="swapPopup" class="popup hidden">
+        <h3>Swap</h3>
+        <p>Wähle Token:</p>
+        <select>
+            <option>CRX → ETH</option>
+            <option>CRX → BTC</option>
+            <option>CRX → USDT</option>
+        </select>
+        <br>
+        <input type="text" placeholder="Betrag eingeben">
+        <br>
+        <button onclick="alert('Swap durchgeführt!')">Swap bestätigen</button>
+        <button onclick="closePopup('swapPopup')">Schließen</button>
+    </div>
+
+    <!-- Send Popup -->
+    <div id="sendPopup" class="popup hidden">
+        <h3>Send</h3>
+        <input type="text" placeholder="Empfängeradresse" id="sendAddress">
+        <input type="text" placeholder="Betrag (CRX)" id="sendAmount">
+        <button onclick="sendTransaction()">Senden</button>
+        <button onclick="closePopup('sendPopup')">Schließen</button>
+    </div>
+
+    <!-- Faucet Popup -->
+    <div id="faucetPopup" class="popup hidden">
+        <h3>Faucet</h3>
+        <p>Klicke, um 0.01 CRX zu erhalten:</p>
+        <button onclick="claimFaucet()">CRX beanspruchen</button>
+        <button onclick="closePopup('faucetPopup')">Schließen</button>
+    </div>
+
+    <!-- Contract Creation Popup -->
+    <div id="contractPopup" class="popup hidden">
+        <h3>Contract Creation</h3>
+        <textarea placeholder="Vertragscode hier eingeben..."></textarea>
+        <br>
+        <button onclick="alert('Contract erstellt!')">Erstellen</button>
+        <button onclick="closePopup('contractPopup')">Schließen</button>
+    </div>
+
     <script>
+        let balance = 0.00; // Simulierter Kontostand
+
         function hashInput() {
             let input = document.getElementById("inputText").value;
             let outputDiv = document.getElementById("output");
             let useAddressBtn = document.getElementById("useAddressBtn");
             let optionsDiv = document.getElementById("options");
 
-            // Verstecke die Buttons und Optionen bei neuer Eingabe
             useAddressBtn.classList.add("hidden");
             optionsDiv.classList.add("hidden");
 
@@ -98,7 +153,6 @@
             outputDiv.innerHTML = "<strong>Keccak-256 Hash:</strong><br>" + hash +
                                   "<br><br><strong>CRX Adresse:</strong><br>" + address;
             
-            // Zeige den "Adresse benutzen"-Button an
             useAddressBtn.classList.remove("hidden");
         }
 
@@ -108,8 +162,6 @@
             let sha256Hash = sha256(hexString);
 
             document.getElementById("inputText").value = sha256Hash.substring(0, 64);
-            
-            // Automatisch abrufen nach Generierung
             hashInput();
         }
 
@@ -117,8 +169,22 @@
             document.getElementById("options").classList.remove("hidden");
         }
 
-        function performAction(action) {
-            alert("Aktion gewählt: " + action);
+        function showPopup(id) {
+            document.getElementById(id).classList.remove("hidden");
+        }
+
+        function closePopup(id) {
+            document.getElementById(id).classList.add("hidden");
+        }
+
+        function claimFaucet() {
+            balance += 0.01;
+            document.getElementById("balance").innerText = balance.toFixed(2) + " CRX";
+            alert("0.01 CRX erhalten!");
+        }
+
+        function sendTransaction() {
+            alert("Transaktion gesendet!");
         }
     </script>
 </body>
