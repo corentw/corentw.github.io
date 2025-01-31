@@ -1,1 +1,124 @@
-x
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>corentw keyManager</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0d0d0d;
+            color: #00ff99;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #00ff99;
+            background: #0d0d0d;
+            color: #00ff99;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #00ff99;
+            color: #0d0d0d;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 5px;
+        }
+        button:hover {
+            background: #009966;
+        }
+        #output, #options {
+            margin-top: 20px;
+            word-break: break-all;
+            background: #262626;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>corentw keyManager</h2>
+        <p>Gib deinen privaten Schlüssel ein (bestehend aus 64 Zeichen), um vollen Zugriff auf deine Adresse zu erhalten:</p>
+        <input type="text" id="inputText" placeholder="64 Zeichen hier eingeben">
+        <br>
+        <button onclick="hashInput()">abrufen</button>
+        <br> oder <br>
+        <button onclick="generateRandomHash()">zufälligen Schlüssel generieren</button>
+        <br>
+        <div id="output"></div>
+        <button id="useAddressBtn" class="hidden" onclick="showOptions()">Adresse benutzen</button>
+        <div id="options" class="hidden">
+            <p>Wähle eine Aktion:</p>
+            <button onclick="performAction('swap')">Swap</button>
+            <button onclick="performAction('contract')">Contract Creation</button>
+            <button onclick="performAction('send')">Send</button>
+            <button onclick="performAction('faucet')">Faucet</button>
+        </div>
+    </div>
+
+    <script>
+        function hashInput() {
+            let input = document.getElementById("inputText").value;
+            let outputDiv = document.getElementById("output");
+            let useAddressBtn = document.getElementById("useAddressBtn");
+            let optionsDiv = document.getElementById("options");
+
+            if (input.length !== 64) {
+                outputDiv.innerHTML = "<span style='color: red;'>Fehler: Der private Schlüssel muss genau 64 Zeichen lang sein!</span>";
+                useAddressBtn.classList.add("hidden");
+                optionsDiv.classList.add("hidden");
+                return;
+            }
+
+            let hash = sha3_256(input);
+            let address = "c1" + hash.substring(0, 40);
+
+            outputDiv.innerHTML = "<strong>Keccak-256 Hash:</strong><br>" + hash +
+                                  "<br><br><strong>CRX Adresse:</strong><br>" + address;
+            
+            // Zeige den "Adresse benutzen"-Button an
+            useAddressBtn.classList.remove("hidden");
+        }
+
+        function generateRandomHash() {
+            let randomData = crypto.getRandomValues(new Uint8Array(32));
+            let hexString = Array.from(randomData, byte => byte.toString(16).padStart(2, '0')).join('');
+            let sha256Hash = sha256(hexString);
+
+            document.getElementById("inputText").value = sha256Hash.substring(0, 64);
+            
+            // Automatisch abrufen nach Generierung
+            hashInput();
+        }
+
+        function showOptions() {
+            document.getElementById("options").classList.remove("hidden");
+        }
+
+        function performAction(action) {
+            alert("Aktion gewählt: " + action);
+        }
+    </script>
+</body>
+</html>
+
