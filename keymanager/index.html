@@ -83,10 +83,12 @@
             let useAddressBtn = document.getElementById("useAddressBtn");
             let optionsDiv = document.getElementById("options");
 
+            // Verstecke die Buttons und Optionen bei neuer Eingabe
+            useAddressBtn.classList.add("hidden");
+            optionsDiv.classList.add("hidden");
+
             if (input.length !== 64) {
                 outputDiv.innerHTML = "<span style='color: red;'>Fehler: Der private Schlüssel muss genau 64 Zeichen lang sein!</span>";
-                useAddressBtn.classList.add("hidden");
-                optionsDiv.classList.add("hidden");
                 return;
             }
 
@@ -121,4 +123,3 @@
     </script>
 </body>
 </html>
-
