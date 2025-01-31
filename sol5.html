@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phantom Wallet Connection</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.75.0/lib/index.umd.min.js"></script>
     <style>
         body {
@@ -45,29 +46,28 @@
             const statusDiv = document.getElementById("status");
             const balanceDiv = document.getElementById("balance");
 
-            // Prüfen, ob Phantom Wallet vorhanden ist
             if (!window.solana || !window.solana.isPhantom) {
                 statusDiv.innerText = "Phantom Wallet nicht gefunden. Bitte installiere die Erweiterung.";
                 return;
             }
 
             try {
-                // Verbindung zur Wallet herstellen
-                const response = await window.solana.connect();
+                // Verbindung mit der Phantom Wallet herstellen
+                const response = await window.solana.connect({ onlyIfTrusted: false });
                 const walletAddress = response.publicKey.toString();
-                statusDiv.innerText = `Verbunden! Wallet-Adresse: ${walletAddress}`;
+                statusDiv.innerText = `✅ Verbunden! Wallet-Adresse: ${walletAddress}`;
 
-                // Verbindung zur Solana Blockchain herstellen
+                // Verbindung zur Solana Blockchain herstellen (Mainnet)
                 const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
 
-                // Balance abfragen
+                // Wallet Balance abrufen
                 const balance = await connection.getBalance(new solanaWeb3.PublicKey(walletAddress));
                 const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
-                balanceDiv.innerText = `Balance: ${solBalance.toFixed(4)} SOL`;
+                balanceDiv.innerText = `💰 Balance: ${solBalance.toFixed(4)} SOL`;
 
             } catch (error) {
                 console.error("Fehler:", error);
-                statusDiv.innerText = "Verbindung fehlgeschlagen. Bitte erneut versuchen.";
+                statusDiv.innerText = "❌ Verbindung fehlgeschlagen. Bitte erneut versuchen.";
             }
         });
     </script>
