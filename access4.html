@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>corentw keyManager</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0d0d0d;
+            color: #00ff99;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
+        }
+        input, select, textarea {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #00ff99;
+            background: #0d0d0d;
+            color: #00ff99;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #00ff99;
+            color: #0d0d0d;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 5px;
+        }
+        button:hover {
+            background: #009966;
+        }
+        #output, #options, .popup {
+            margin-top: 20px;
+            word-break: break-all;
+            background: #262626;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .hidden {
+            display: none;
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>corentw keyManager</h2>
+        <p>Gib deinen privaten Schlüssel ein (bestehend aus 64 Zeichen), um vollen Zugriff auf deine Adresse zu erhalten:</p>
+        <input type="text" id="inputText" placeholder="64 Zeichen hier eingeben">
+        <br>
+        <button onclick="hashInput()">abrufen</button>
+        <br> oder <br>
+        <button onclick="generateRandomHash()">zufälligen Schlüssel generieren</button>
+        <br>
+        <div id="output"></div>
+        <button id="useAddressBtn" class="hidden" onclick="showOptions()">Adresse benutzen</button>
+        <div id="options" class="hidden">
+            <p>Balance: <span id="balance">0.00 CRX</span></p>
+            <p>Wähle eine Aktion:</p>
+            <button onclick="showPopup('swapPopup')">Swap</button>
+            <button onclick="showPopup('sendPopup')">Send</button>
+            <button onclick="showPopup('faucetPopup')">Faucet</button>
+            <button onclick="showPopup('contractPopup')">Contract Creation</button>
+        </div>
+    </div>
+
+    <!-- Swap Popup -->
+    <div id="swapPopup" class="popup hidden">
+        <h3>Swap</h3>
+        <p>Wähle Token:</p>
+        <select>
+            <option>CRX → ETH</option>
+            <option>CRX → BTC</option>
+            <option>CRX → USDT</option>
+        </select>
+        <br>
+        <input type="text" placeholder="Betrag eingeben">
+        <br>
+        <button onclick="alert('Swap durchgeführt!')">Swap bestätigen</button>
+        <button onclick="closePopup('swapPopup')">Schließen</button>
+    </div>
+
+    <!-- Send Popup -->
+    <div id="sendPopup" class="popup hidden">
+        <h3>Send</h3>
+        <input type="text" placeholder="Empfängeradresse" id="sendAddress">
+        <input type="text" placeholder="Betrag (CRX)" id="sendAmount">
+        <button onclick="sendTransaction()">Senden</button>
+        <button onclick="closePopup('sendPopup')">Schließen</button>
+    </div>
+
+    <!-- Faucet Popup -->
+    <div id="faucetPopup" class="popup hidden">
+        <h3>Faucet</h3>
+        <p>Klicke, um 0.01 CRX zu erhalten:</p>
+        <button onclick="claimFaucet()">CRX beanspruchen</button>
+        <button onclick="closePopup('faucetPopup')">Schließen</button>
+    </div>
+
+    <!-- Contract Creation Popup -->
+    <div id="contractPopup" class="popup hidden">
+        <h3>Contract Creation</h3>
+        <textarea placeholder="Vertragscode hier eingeben..."></textarea>
+        <br>
+        <button onclick="alert('Contract erstellt!')">Erstellen</button>
+        <button onclick="closePopup('contractPopup')">Schließen</button>
+    </div>
+
+    <script>
+        let balance = 0.00; // Simulierter Kontostand
+
+        function hashInput() {
+            let input = document.getElementById("inputText").value;
+            let outputDiv = document.getElementById("output");
+            let useAddressBtn = document.getElementById("useAddressBtn");
+            let optionsDiv = document.getElementById("options");
+
+            useAddressBtn.classList.add("hidden");
+            optionsDiv.classList.add("hidden");
+
+            if (input.length !== 64) {
+                outputDiv.innerHTML = "<span style='color: red;'>Fehler: Der private Schlüssel muss genau 64 Zeichen lang sein!</span>";
+                return;
+            }
+
+            let hash = sha3_256(input);
+            let address = "c1" + hash.substring(0, 40);
+
+            outputDiv.innerHTML = "<strong>Keccak-256 Hash:</strong><br>" + hash +
+                                  "<br><br><strong>CRX Adresse:</strong><br>" + address;
+            
+            useAddressBtn.classList.remove("hidden");
+        }
+
+        function generateRandomHash() {
+            let randomData = crypto.getRandomValues(new Uint8Array(32));
+            let hexString = Array.from(randomData, byte => byte.toString(16).padStart(2, '0')).join('');
+            let sha256Hash = sha256(hexString);
+
+            document.getElementById("inputText").value = sha256Hash.substring(0, 64);
+            hashInput();
+        }
+
+        function showOptions() {
+            document.getElementById("options").classList.remove("hidden");
+        }
+
+        function showPopup(id) {
+            document.getElementById(id).classList.remove("hidden");
+        }
+
+        function closePopup(id) {
+            document.getElementById(id).classList.add("hidden");
+        }
+
+        function claimFaucet() {
+            balance += 0.01;
+            document.getElementById("balance").innerText = balance.toFixed(2) + " CRX";
+            alert("0.01 CRX erhalten!");
+        }
+
+        function sendTransaction() {
+            alert("Transaktion gesendet!");
+        }
+    </script>
+</body>
+</html>
