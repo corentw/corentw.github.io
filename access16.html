@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>corentw keyManager - Extended</title>
+  
+  <!-- Icon-Bibliothek -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap">
+  <!-- SHA3 und SHA256 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+  <!-- Web3.js für MetaMask & Blockchain-Interaktion -->
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.7.5/dist/web3.min.js"></script>
+  
+  <style>
+    :root {
+      --primary: #00ff99;
+      --button-hover: #009966;
+      --background-dark: #0d0d0d;
+      --background-light: #1a1a1a;
+      --accent: #00cc88;
+      --text: #00ff99;
+      --transition-speed: 0.3s;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', Arial, sans-serif;
+    }
+    
+    body {
+      background: var(--background-dark);
+      color: var(--text);
+      text-align: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    
+    /* Hauptcontainer */
+    .container {
+      background: rgba(26, 26, 26, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0, 255, 153, 0.5);
+      max-width: 400px;
+      margin: 40px auto;
+      transition: all var(--transition-speed) ease-in-out;
+    }
+    
+    /* Einheitliche Stile für Input, Select & Textarea */
+    input, select, textarea {
+      width: 90%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid var(--primary);
+      background: var(--background-dark);
+      color: var(--text);
+      margin-bottom: 15px;
+      border-radius: 5px;
+      transition: border var(--transition-speed);
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    button {
+      width: 90%;
+      padding: 12px;
+      font-size: 16px;
+      background: var(--primary);
+      color: var(--background-dark);
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin: 10px auto;
+      transition: transform var(--transition-speed), background var(--transition-speed);
+      display: block;
+    }
+    
+    button:hover {
+      background: var(--button-hover);
+      transform: scale(1.05);
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    /* Netzwerk-Umschaltung */
+    .network-switch {
+      margin-bottom: 15px;
+    }
+    
+    /* Wallet Overlay */
+    .wallet {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--background-dark) 0%, var(--background-light) 100%);
+      color: var(--text);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      overflow-y: auto;
+      animation: slideIn 0.5s forwards;
+      z-index: 50;
+      padding-bottom: 40px;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .wallet-header {
+      width: 100%;
+      background: var(--background-light);
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--text);
+      border-bottom: 2px solid var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .wallet-header .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 28px;
+      color: var(--text);
+      cursor: pointer;
+      transition: color var(--transition-speed);
+    }
+    
+    .wallet-header .close-btn:hover {
+      color: #ff4444;
+    }
+    
+    .wallet-body {
+      width: 90%;
+      max-width: 800px;
+      margin: 20px auto;
+      text-align: left;
+      animation: fadeIn 0.5s var(--transition-speed) ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .wallet-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: var(--background-light);
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,255,153,0.3);
+    }
+    
+    .wallet-section h3 {
+      margin-bottom: 15px;
+      font-size: 20px;
+      border-bottom: 1px solid var(--primary);
+      padding-bottom: 5px;
+    }
+    
+    .balance {
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+    
+    .wallet-address {
+      font-size: 18px;
+      background: rgba(0, 255, 153, 0.1);
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      overflow: hidden;
+    }
+    
+    .wallet-address span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 70%;
+    }
+    
+    .wallet-address .copy-btn,
+    .wallet-address .qr-btn {
+      background: var(--primary);
+      color: var(--background-dark);
+      border: none;
+      padding: 6px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background var(--transition-speed);
+      font-size: 14px;
+      margin-left: 5px;
+    }
+    
+    .wallet-address .copy-btn:hover,
+    .wallet-address .qr-btn:hover {
+      background: var(--button-hover);
+    }
+    
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+    
+    .actions button {
+      flex: 1 1 180px;
+      padding: 12px;
+      font-size: 16px;
+      background: var(--primary);
+      color: var(--background-dark);
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all var(--transition-speed) ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .actions button:hover {
+      background: var(--button-hover);
+      transform: scale(1.05);
+    }
+    
+    /* Transaktionsverlauf */
+    .history {
+      max-height: 200px;
+      overflow-y: auto;
+      background: rgba(0,255,153,0.05);
+      border-radius: 8px;
+      padding: 10px;
+    }
+    
+    .history-entry {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0,255,153,0.2);
+      padding: 8px 0;
+      font-size: 14px;
+    }
+    
+    .history-entry:last-child {
+      border-bottom: none;
+    }
+    
+    /* Popup Grundlayout */
+    .popup {
+      display: none;
+      background: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 200;
+      animation: fadeIn 0.3s;
+    }
+    
+    .popup-content {
+      background: var(--background-light);
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,255,153,0.5);
+    }
+    
+    /* QR-Code Overlay */
+    .qr-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .qr-overlay img {
+      max-width: 250px;
+      margin-bottom: 20px;
+      animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Vorschau Token-Logo im Token-Popup */
+    #tokenLogoPreview {
+      max-width: 100px;
+      max-height: 100px;
+      margin: 10px auto;
+      display: none;
+      border-radius: 5px;
+    }
+    
+    /* Wallet-Verbindung Info (MetaMask) */
+    .wallet-connect {
+      margin-top: 15px;
+      background: var(--background-light);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,255,153,0.3);
+      text-align: left;
+      max-width: 400px;
+      margin: 20px auto;
+    }
+    
+    /* Token Übersicht im Wallet */
+    #tokenOverview {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .token-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      background: rgba(0,255,153,0.1);
+      border-radius: 5px;
+    }
+    .token-item img {
+      width: 30px;
+      height: 30px;
+      border-radius: 3px;
+    }
+    
+    @media (max-width: 480px) {
+      .container, .wallet-body {
+        width: 95%;
+      }
+      .actions button {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hauptseite -->
+  <div class="container">
+    <h2>corentw keyManager</h2>
+    <p>Wähle dein Netzwerk:</p>
+    <select id="networkSelect" onchange="switchNetwork()">
+      <option value="testnet">Testnet</option>
+      <option value="mainnet">Mainnet</option>
+    </select>
+    <p>Gib deinen privaten Schlüssel ein (64 Zeichen), um deine Adresse zu erhalten:</p>
+    <input type="text" id="inputText" placeholder="64 Zeichen hier eingeben">
+    <button onclick="hashInput()">Abrufen</button>
+    <p>oder</p>
+    <button onclick="generateRandomHash()">Zufälligen Schlüssel generieren</button>
+    <div id="output"></div>
+    <button id="useAddressBtn" class="hidden" onclick="showWallet()">Wallet öffnen</button>
+  </div>
+  
+  <!-- Wallet-Verbindungsinfo (MetaMask) -->
+  <div class="wallet-connect" id="walletConnect" style="display:none;">
+    <p><strong>Verbundene Wallet-Adresse:</strong> <span id="walletAddress"></span></p>
+    <p><strong>ETH-Balance:</strong> <span id="walletBalance"></span></p>
+    <button onclick="connectWallet()">Wallet neu verbinden</button>
+  </div>
+  
+  <!-- Wallet Overlay -->
+  <div id="wallet" class="wallet">
+    <div class="wallet-header">
+      <span>Meine Wallet</span>
+      <button class="close-btn" onclick="closeWallet()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="wallet-body">
+      <!-- Übersicht: Balance & Adresse -->
+      <div class="wallet-section">
+        <h3>Übersicht</h3>
+        <div class="balance" id="balance">0.00 CRX</div>
+        <div class="wallet-address">
+          <span id="walletAddressDisplay">...</span>
+          <div>
+            <button class="copy-btn" onclick="copyAddress()"><i class="fa-regular fa-copy"></i></button>
+            <button class="qr-btn" onclick="showQR()"><i class="fa-solid fa-qrcode"></i></button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Token Übersicht -->
+      <div class="wallet-section" id="tokenSection" style="display:none;">
+        <h3>Token Übersicht</h3>
+        <div id="tokenOverview">
+          <!-- Dynamische Token-Einträge -->
+        </div>
+      </div>
+      
+      <!-- Aktionen -->
+      <div class="wallet-section">
+        <h3>Aktionen</h3>
+        <div class="actions">
+          <button onclick="showPopup('sendPopup')"><i class="fa-solid fa-paper-plane"></i> Senden</button>
+          <button onclick="claimFaucet()"><i class="fa-solid fa-gift"></i> Faucet</button>
+          <button onclick="showPopup('contractPopup')"><i class="fa-solid fa-file-contract"></i> Vertrag</button>
+          <button onclick="showPopup('historyPopup')"><i class="fa-solid fa-list"></i> Verlauf</button>
+          <button onclick="showPopup('tokenPopup')"><i class="fa-solid fa-coins"></i> Token erstellen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Popup: Senden -->
+  <div id="sendPopup" class="popup">
+    <div class="popup-content">
+      <h3>Senden</h3>
+      <select id="assetSelect" onchange="assetChanged()">
+        <option value="CRX">CRX</option>
+      </select>
+      <!-- Falls ein Token ausgewählt wird, zeigen wir optional ein kleines Logo an -->
+      <div id="selectedTokenLogo" style="display:none; margin: 10px auto;">
+        <img id="assetLogo" src="" alt="Token Logo" style="width:40px; height:40px; border-radius:5px;">
+      </div>
+      <input type="text" id="sendAddress" placeholder="Empfängeradresse">
+      <input type="text" id="sendAmount" placeholder="Betrag">
+      <button onclick="sendTransaction()">Senden</button>
+      <button onclick="closePopup('sendPopup')">Abbrechen</button>
+    </div>
+  </div>
+  
+  <!-- Popup: Vertrag -->
+  <div id="contractPopup" class="popup">
+    <div class="popup-content">
+      <h3>Vertrag Erstellen</h3>
+      <textarea id="contractCode" placeholder="Vertragscode hier eingeben..." style="height:100px;"></textarea>
+      <button onclick="createContract()">Erstellen</button>
+      <button onclick="closePopup('contractPopup')">Abbrechen</button>
+    </div>
+  </div>
+  
+  <!-- Popup: Transaktionsverlauf -->
+  <div id="historyPopup" class="popup">
+    <div class="popup-content">
+      <h3>Transaktionsverlauf</h3>
+      <div class="history" id="txHistory">
+        <!-- Dynamische Einträge -->
+      </div>
+      <button onclick="closePopup('historyPopup')">Schließen</button>
+    </div>
+  </div>
+  
+  <!-- Popup: Token erstellen -->
+  <div id="tokenPopup" class="popup">
+    <div class="popup-content">
+      <h3>Eigenen Token erstellen</h3>
+      <p style="font-size: 14px;">Kosten: 0.01 CRX</p>
+      <input type="text" id="tokenName" placeholder="Token Name (z.B. MeinCoin)">
+      <input type="text" id="tokenSymbol" placeholder="Symbol (z.B. MCN)">
+      <input type="number" id="tokenSupply" placeholder="Gesamtmenge">
+      <input type="number" id="tokenDecimals" placeholder="Dezimalstellen (z.B. 18)" value="18">
+      <input type="file" id="tokenLogo" accept="image/*" onchange="previewLogo()">
+      <img id="tokenLogoPreview" alt="Logo Vorschau">
+      <button onclick="createToken()">Token erstellen</button>
+      <button onclick="closePopup('tokenPopup')">Abbrechen</button>
+    </div>
+  </div>
+  
+  <!-- QR-Code Overlay -->
+  <div id="qrOverlay" class="qr-overlay">
+    <img id="qrImage" src="" alt="QR-Code">
+    <button onclick="closeQR()">Schließen</button>
+  </div>
+  
+  <script>
+    /* Globale Variablen */
+    let balance = 0.00;               // CRX-Balance
+    let transactions = [];            // Transaktionsverlauf
+    let fullWalletAddress = "";       // Gespeicherte Adresse
+    let network = "testnet";          // Standard-Netzwerk
+    let web3;                       // Für MetaMask/Blockchain-Interaktion
+    let createdTokens = [];           // Array der erstellten Tokens
+
+    /* Funktionen aus dem ursprünglichen Code */
+    function hashInput() {
+      const input = document.getElementById("inputText").value;
+      const outputDiv = document.getElementById("output");
+      if (input.length !== 64) {
+        outputDiv.innerHTML = "<span style='color: red;'>Fehler: Der private Schlüssel muss genau 64 Zeichen lang sein!</span>";
+        return;
+      }
+      const hash = sha3_256(input);
+      const address = "c1" + hash.substring(0, 40);
+      fullWalletAddress = address;
+      const shortAddress = address.substring(0, 6) + "..." + address.slice(-6);
+      outputDiv.innerHTML = `<strong>Adresse:</strong><br>${address}`;
+      // Adresse in Wallet-Overlay anzeigen:
+      document.getElementById("walletAddressDisplay").innerText = shortAddress;
+      // Adresse in localStorage speichern
+      localStorage.setItem("walletAddress", address);
+      document.getElementById("useAddressBtn").classList.remove("hidden");
+    }
+
+    function generateRandomHash() {
+      const randomData = crypto.getRandomValues(new Uint8Array(32));
+      const hexString = Array.from(randomData, byte => byte.toString(16).padStart(2, '0')).join('');
+      document.getElementById("inputText").value = sha256(hexString).substring(0, 64);
+      hashInput();
+    }
+
+    /* Wallet Overlay Funktionen */
+    function showWallet() {
+      document.getElementById("wallet").style.display = "flex";
+      updateTokenOverview();
+      updateAssetOptions();
+    }
+
+    function closeWallet() {
+      document.getElementById("wallet").style.display = "none";
+    }
+
+    function claimFaucet() {
+      balance += 0.01;
+      document.getElementById("balance").innerText = balance.toFixed(2) + " CRX";
+      addTransaction(`Faucet: +0.01 CRX`);
+      alert("0.01 CRX erhalten!");
+    }
+
+    function sendTransaction() {
+      const address = document.getElementById("sendAddress").value;
+      const amount = parseFloat(document.getElementById("sendAmount").value);
+      const assetType = document.getElementById("assetSelect").value;
+      
+      if (!address || isNaN(amount) || amount <= 0) {
+        alert("Bitte gültige Adresse und Betrag angeben!");
+        return;
+      }
+      
+      if (assetType === "CRX") {
+        if (amount > balance) {
+          alert("Nicht genügend CRX!");
+          return;
+        }
+        balance -= amount;
+        document.getElementById("balance").innerText = balance.toFixed(2) + " CRX";
+        addTransaction(`Gesendet: ${amount.toFixed(2)} CRX an ${address}`);
+        alert(`Transaktion: ${amount.toFixed(2)} CRX an ${address} gesendet!`);
+      } else {
+        // Token-Senden: Suche das Token (über Symbol)
+        let token = createdTokens.find(t => t.symbol === assetType);
+        if (!token) {
+          alert("Token nicht gefunden!");
+          return;
+        }
+        if (amount > token.balance) {
+          alert("Nicht genügend Token-Balance!");
+          return;
+        }
+        token.balance -= amount;
+        addTransaction(`Gesendet: ${amount.toFixed(2)} ${token.symbol} an ${address}`);
+        alert(`Transaktion: ${amount.toFixed(2)} ${token.symbol} an ${address} gesendet!`);
+        updateTokenOverview();
+      }
+      closePopup("sendPopup");
+    }
+
+    function createContract() {
+      const code = document.getElementById("contractCode").value;
+      if (code.trim() === "") {
+        alert("Bitte Vertragscode eingeben!");
+        return;
+      }
+      addTransaction("Vertrag erstellt");
+      alert("Vertrag erstellt!");
+      closePopup("contractPopup");
+    }
+
+    function addTransaction(text) {
+      const timestamp = new Date().toLocaleString();
+      transactions.push({ text, timestamp });
+      updateHistory();
+    }
+
+    function updateHistory() {
+      const historyContainer = document.getElementById("txHistory");
+      historyContainer.innerHTML = "";
+      transactions.slice().reverse().forEach(tx => {
+        const entry = document.createElement("div");
+        entry.className = "history-entry";
+        entry.innerHTML = `<span>${tx.timestamp}</span><span>${tx.text}</span>`;
+        historyContainer.appendChild(entry);
+      });
+    }
+
+    function showPopup(id) {
+      document.getElementById(id).style.display = "flex";
+      if (id === "sendPopup") {
+        updateAssetOptions();
+      }
+    }
+
+    function closePopup(id) {
+      document.getElementById(id).style.display = "none";
+    }
+
+    // QR-Code Funktion über Google Chart API
+    function showQR() {
+      const address = fullWalletAddress || localStorage.getItem("walletAddress");
+      if (!address) {
+        alert("Keine Adresse verfügbar!");
+        return;
+      }
+      const qrUrl = `https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=${encodeURIComponent(address)}`;
+      document.getElementById("qrImage").src = qrUrl;
+      document.getElementById("qrOverlay").style.display = "flex";
+    }
+
+    function closeQR() {
+      document.getElementById("qrOverlay").style.display = "none";
+    }
+
+    function copyAddress() {
+      const address = fullWalletAddress || localStorage.getItem("walletAddress");
+      if (!address) {
+        alert("Keine Adresse vorhanden!");
+        return;
+      }
+      navigator.clipboard.writeText(address).then(() => {
+        alert("Adresse kopiert!");
+      });
+    }
+    
+    /* Erweiterte Funktionen: Netzwerk, Wallet (MetaMask) & Token */
+    function switchNetwork() {
+      network = document.getElementById("networkSelect").value;
+      alert("Netzwerk gewechselt zu: " + network);
+    }
+
+    async function connectWallet() {
+      if (window.ethereum) {
+        try {
+          web3 = new Web3(window.ethereum);
+          const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+          const account = accounts[0];
+          fullWalletAddress = account;
+          document.getElementById("walletAddress").innerText = account;
+          document.getElementById("walletAddressDisplay").innerText = account.substring(0, 6) + "..." + account.slice(-6);
+          document.getElementById("useAddressBtn").classList.remove("hidden");
+          document.getElementById("walletConnect").style.display = "block";
+          
+          const balanceWei = await web3.eth.getBalance(account);
+          const ethBalance = web3.utils.fromWei(balanceWei, 'ether');
+          document.getElementById("walletBalance").innerText = ethBalance + " ETH";
+        } catch (error) {
+          console.error(error);
+          alert("Fehler bei der Wallet-Verbindung!");
+        }
+      } else {
+        alert("Bitte installiere MetaMask!");
+      }
+    }
+
+    /* Token-Logo Vorschau im Token-Popup */
+    function previewLogo() {
+      const file = document.getElementById("tokenLogo").files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById("tokenLogoPreview");
+          preview.src = e.target.result;
+          preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    /* Token-Erstellung (Simulation & Anzeige) – kostet 0.01 CRX */
+    async function createToken() {
+      const name = document.getElementById("tokenName").value.trim();
+      const symbol = document.getElementById("tokenSymbol").value.trim();
+      const supply = document.getElementById("tokenSupply").value.trim();
+      const decimals = document.getElementById("tokenDecimals").value.trim();
+      const logoFile = document.getElementById("tokenLogo").files[0];
+      
+      if (!name || !symbol || !supply || !decimals) {
+        alert("Bitte alle Token-Daten eingeben!");
+        return;
+      }
+      if (balance < 0.01) {
+        alert("Nicht genügend CRX, um einen Token zu erstellen! (0.01 CRX benötigt)");
+        return;
+      }
+      
+      // Funktion, um den Token zu speichern und UI zu aktualisieren
+      const saveToken = (logoURL = "") => {
+        balance -= 0.01; // Kosten für Token-Erstellung abziehen
+        document.getElementById("balance").innerText = balance.toFixed(2) + " CRX";
+        // Erstelle ein Token-Objekt, das den gesamten Supply als Anfangs-Balance besitzt
+        const token = {
+          name,
+          symbol,
+          supply: parseFloat(supply),
+          decimals,
+          logoURL,
+          balance: parseFloat(supply)
+        };
+        createdTokens.push(token);
+        addTransaction(`Token erstellt: ${name} (${symbol})`);
+        alert(`Token "${name}" (${symbol}) erfolgreich erstellt!`);
+        resetTokenForm();
+        updateTokenOverview();
+        updateAssetOptions();
+      };
+      
+      if (logoFile) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const logoURL = e.target.result;
+          saveToken(logoURL);
+        };
+        reader.readAsDataURL(logoFile);
+      } else {
+        saveToken();
+      }
+    }
+
+    function resetTokenForm() {
+      document.getElementById("tokenName").value = "";
+      document.getElementById("tokenSymbol").value = "";
+      document.getElementById("tokenSupply").value = "";
+      document.getElementById("tokenDecimals").value = "18";
+      document.getElementById("tokenLogo").value = "";
+      document.getElementById("tokenLogoPreview").style.display = "none";
+      closePopup('tokenPopup');
+    }
+    
+    /* Aktualisiere die Token Übersicht im Wallet */
+    function updateTokenOverview() {
+      const tokenSection = document.getElementById("tokenSection");
+      const tokenOverview = document.getElementById("tokenOverview");
+      tokenOverview.innerHTML = "";
+      if (createdTokens.length === 0) {
+        tokenSection.style.display = "none";
+        return;
+      }
+      tokenSection.style.display = "block";
+      createdTokens.forEach(token => {
+        const tokenDiv = document.createElement("div");
+        tokenDiv.className = "token-item";
+        tokenDiv.innerHTML = `
+          ${token.logoURL ? `<img src="${token.logoURL}" alt="${token.symbol} Logo">` : ""}
+          <span><strong>${token.name} (${token.symbol})</strong> – Saldo: ${token.balance}</span>
+        `;
+        tokenOverview.appendChild(tokenDiv);
+      });
+    }
+    
+    /* Aktualisiere die Auswahloptionen im Senden-Popup */
+    function updateAssetOptions() {
+      const assetSelect = document.getElementById("assetSelect");
+      // Beginne mit der Basisoption CRX
+      assetSelect.innerHTML = `<option value="CRX">CRX</option>`;
+      createdTokens.forEach(token => {
+        assetSelect.innerHTML += `<option value="${token.symbol}">${token.name} (${token.symbol})</option>`;
+      });
+      // Falls im Senden-Popup ein Token ausgewählt war, aktualisiere auch dessen Logo
+      assetChanged();
+    }
+    
+    /* Zeige Logo im Senden-Popup, wenn ein Token ausgewählt ist */
+    function assetChanged() {
+      const assetSelect = document.getElementById("assetSelect");
+      const selectedValue = assetSelect.value;
+      const tokenLogoDiv = document.getElementById("selectedTokenLogo");
+      if (selectedValue === "CRX") {
+        tokenLogoDiv.style.display = "none";
+      } else {
+        const token = createdTokens.find(t => t.symbol === selectedValue);
+        if (token && token.logoURL) {
+          document.getElementById("assetLogo").src = token.logoURL;
+          tokenLogoDiv.style.display = "block";
+        } else {
+          tokenLogoDiv.style.display = "none";
+        }
+      }
+    }
+  </script>
+</body>
+</html>
