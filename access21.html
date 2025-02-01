@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>corentw keyManager - Extended mit Liquiditätspool</title>
+  
+  <!-- Icon-Bibliothek -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap">
+  <!-- SHA3 und SHA256 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+  
+  <style>
+    :root {
+      --primary: #00ff99;
+      --button-hover: #009966;
+      --background-dark: #0d0d0d;
+      --background-light: #1a1a1a;
+      --accent: #00cc88;
+      --text: #00ff99;
+      --transition-speed: 0.3s;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', Arial, sans-serif;
+    }
+    
+    body {
+      background: var(--background-dark);
+      color: var(--text);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container, .wallet-body {
+      background: rgba(26, 26, 26, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0, 255, 153, 0.5);
+      max-width: 400px;
+      margin: 40px auto;
+    }
+    
+    input, select, textarea {
+      width: 90%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid var(--primary);
+      background: var(--background-dark);
+      color: var(--text);
+      margin-bottom: 15px;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 90%;
+      padding: 12px;
+      font-size: 16px;
+      background: var(--primary);
+      color: var(--background-dark);
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+      margin: 10px auto;
+    }
+
+    button:hover {
+      background: var(--button-hover);
+    }
+
+    .hidden {
+      display: none;
+    }
+    
+    .wallet-section {
+      margin-bottom: 20px;
+      padding: 20px;
+      background: var(--background-light);
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,255,153,0.3);
+    }
+
+    .wallet-address {
+      background: rgba(0, 255, 153, 0.1);
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: space-around;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Hauptcontainer -->
+  <div class="container">
+    <h2>corentw keyManager</h2>
+    <input type="text" id="inputText" placeholder="Gib deinen privaten Schlüssel ein (64 Zeichen)">
+    <button onclick="hashInput()">Adresse abrufen</button>
+    <button onclick="generateRandomHash()">Zufälligen Schlüssel generieren</button>
+    <div id="output" class="wallet-address"></div>
+    <button id="useAddressBtn" class="hidden" onclick="showWallet()">Wallet öffnen</button>
+  </div>
+
+  <!-- Wallet Overlay -->
+  <div id="wallet" class="wallet-body hidden">
+    <h3>Meine Wallet</h3>
+    <div class="wallet-section">
+      <strong>CRX Balance:</strong> <span id="balance">0.00 CRX</span>
+    </div>
+    
+    <div class="wallet-section">
+      <h4>Token erstellen</h4>
+      <input type="text" id="tokenName" placeholder="Token Name">
+      <input type="text" id="tokenSymbol" placeholder="Token Symbol">
+      <input type="number" id="tokenSupply" placeholder="Gesamtmenge">
+      <button onclick="createToken()">Token erstellen</button>
+    </div>
+
+    <div class="wallet-section">
+      <h4>Liquidität hinzufügen</h4>
+      <select id="liquidityTokenSelect"></select>
+      <input type="number" id="liquidityCRX" placeholder="CRX Betrag">
+      <input type="number" id="liquidityToken" placeholder="Token Betrag">
+      <button onclick="addLiquidity()">Liquidität hinzufügen</button>
+    </div>
+
+    <div class="wallet-section">
+      <h4>Swap durchführen</h4>
+      <select id="swapFrom"></select>
+      <select id="swapTo"></select>
+      <input type="number" id="swapAmount" placeholder="Betrag">
+      <button onclick="performSwap()">Swap durchführen</button>
+    </div>
+
+    <div class="wallet-section">
+      <h4>Liquiditätspool Übersicht</h4>
+      <div id="poolOverview"></div>
+    </div>
+  </div>
+
+  <script>
+    // Globale Variablen
+    let balance = 0.00;
+    let fullWalletAddress = "";
+    let createdTokens = [];
+    let liquidityPool = { CRX: 0, tokens: {} };
+
+    function hashInput() {
+      const input = document.getElementById("inputText").value;
+      const outputDiv = document.getElementById("output");
+      if (input.length !== 64) {
+        outputDiv.innerHTML = "<span style='color: red;'>Fehler: Der private Schlüssel muss genau 64 Zeichen lang sein!</span>";
+        return;
+      }
+      const hash = sha3_256(input);
+      const address = "c1" + hash.substring(0, 40);
+      fullWalletAddress = address;
+      outputDiv.innerHTML = `<strong>Adresse:</strong> ${address}`;
+      document.getElementById("useAddressBtn").classList.remove("hidden");
+    }
+
+    function generateRandomHash() {
+      const randomData = crypto.getRandomValues(new Uint8Array(32));
+      const hexString = Array.from(randomData, byte => byte.toString(16).padStart(2, '0')).join('');
+      document.getElementById("inputText").value = sha256(hexString).substring(0, 64);
+      hashInput();
+    }
+
+    function showWallet() {
+      document.getElementById("wallet").classList.remove("hidden");
+      updateTokenSelectOptions();
+    }
+
+    function createToken() {
+      const name = document.getElementById("tokenName").value.trim();
+      const symbol = document.getElementById("tokenSymbol").value.trim();
+      const supply = parseFloat(document.getElementById("tokenSupply").value.trim());
+
+      if (!name || !symbol || isNaN(supply) || supply <= 0) {
+        alert("Bitte alle Token-Daten korrekt eingeben!");
+        return;
+      }
+
+      createdTokens.push({ name, symbol, balance: supply });
+      alert(`Token "${name}" (${symbol}) erfolgreich erstellt!`);
+      updateTokenSelectOptions();
+    }
+
+    function updateTokenSelectOptions() {
+      const liquiditySelect = document.getElementById("liquidityTokenSelect");
+      const swapFrom = document.getElementById("swapFrom");
+      const swapTo = document.getElementById("swapTo");
+
+      liquiditySelect.innerHTML = "";
+      swapFrom.innerHTML = "<option value='CRX'>CRX</option>";
+      swapTo.innerHTML = "<option value='CRX'>CRX</option>";
+
+      createdTokens.forEach(token => {
+        const option = `<option value="${token.symbol}">${token.name} (${token.symbol})</option>`;
+        liquiditySelect.innerHTML += option;
+        swapFrom.innerHTML += option;
+        swapTo.innerHTML += option;
+      });
+    }
+
+    function addLiquidity() {
+      const tokenSymbol = document.getElementById("liquidityTokenSelect").value;
+      const crxAmount = parseFloat(document.getElementById("liquidityCRX").value);
+      const tokenAmount = parseFloat(document.getElementById("liquidityToken").value);
+
+      if (isNaN(crxAmount) || crxAmount <= 0 || isNaN(tokenAmount) || tokenAmount <= 0) {
+        alert("Bitte gültige Beträge eingeben!");
+        return;
+      }
+
+      const token = createdTokens.find(t => t.symbol === tokenSymbol);
+      if (!token || token.balance < tokenAmount || balance < crxAmount) {
+        alert("Nicht genügend Mittel für die Liquidität!");
+        return;
+      }
+
+      balance -= crxAmount;
+      token.balance -= tokenAmount;
+
+      liquidityPool.CRX += crxAmount;
+      liquidityPool.tokens[tokenSymbol] = (liquidityPool.tokens[tokenSymbol] || 0) + tokenAmount;
+
+      alert("Liquidität erfolgreich hinzugefügt!");
+      updatePoolOverview();
+    }
+
+    function performSwap() {
+      const fromAsset = document.getElementById("swapFrom").value;
+      const toAsset = document.getElementById("swapTo").value;
+      const amount = parseFloat(document.getElementById("swapAmount").value);
+
+      if (fromAsset === toAsset || isNaN(amount) || amount <= 0) {
+        alert("Ungültige Swap-Daten!");
+        return;
+      }
+
+      if (fromAsset === 'CRX') {
+        if (balance < amount || !liquidityPool.tokens[toAsset]) {
+          alert("Nicht genügend CRX oder Liquidität für den Swap!");
+          return;
+        }
+
+        balance -= amount;
+        const tokenReceived = (amount / liquidityPool.CRX) * liquidityPool.tokens[toAsset];
+        liquidityPool.CRX += amount;
+        liquidityPool.tokens[toAsset] -= tokenReceived;
+
+        const token = createdTokens.find(t => t.symbol === toAsset);
+        token.balance += tokenReceived;
+        alert(`Swap abgeschlossen: ${amount} CRX gegen ${tokenReceived.toFixed(2)} ${toAsset}`);
+      } else {
+        const token = createdTokens.find(t => t.symbol === fromAsset);
+        if (!token || token.balance < amount || liquidityPool.CRX <= 0) {
+          alert("Nicht genügend Token-Balance oder Liquidität für den Swap!");
+          return;
+        }
+
+        const crxReceived = (amount / liquidityPool.tokens[fromAsset]) * liquidityPool.CRX;
+        token.balance -= amount;
+        liquidityPool.tokens[fromAsset] += amount;
+        liquidityPool.CRX -= crxReceived;
+
+        balance += crxReceived;
+        alert(`Swap abgeschlossen: ${amount} ${fromAsset} gegen ${crxReceived.toFixed(2)} CRX`);
+      }
+
+      updatePoolOverview();
+    }
+
+    function updatePoolOverview() {
+      const poolDiv = document.getElementById("poolOverview");
+      poolDiv.innerHTML = `<p>CRX im Pool: ${liquidityPool.CRX.toFixed(2)}</p>`;
+      for (const [symbol, amount] of Object.entries(liquidityPool.tokens)) {
+        poolDiv.innerHTML += `<p>${symbol} im Pool: ${amount.toFixed(2)}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
