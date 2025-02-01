@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>corentw keyManager</title>
+  
+  <!-- Icon-Bibliothek -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap">
+  <!-- SHA3 und SHA256 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #00ff99;
+      --button-hover: #009966;
+      --background-dark: #0d0d0d;
+      --background-light: #1a1a1a;
+      --accent: #00cc88;
+      --text: #00ff99;
+      --transition-speed: 0.3s;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', Arial, sans-serif;
+    }
+
+    body {
+      background: var(--background-dark);
+      color: var(--text);
+      text-align: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      background: rgba(26, 26, 26, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0, 255, 153, 0.5);
+      max-width: 400px;
+      margin: 40px auto;
+      transition: all var(--transition-speed) ease-in-out;
+    }
+
+    button {
+      width: 90%;
+      padding: 12px;
+      font-size: 16px;
+      background: var(--primary);
+      color: var(--background-dark);
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin: 10px auto;
+      transition: transform var(--transition-speed), background var(--transition-speed);
+      display: block;
+    }
+
+    button:hover {
+      background: var(--button-hover);
+      transform: scale(1.05);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Netzwerk-Umschaltung */
+    .network-switch {
+      margin: 20px 0;
+      font-size: 16px;
+    }
+
+    select {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid var(--primary);
+      background: var(--background-dark);
+      color: var(--text);
+    }
+
+    /* Token-Erstellung */
+    .token-container {
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--background-light);
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,255,153,0.5);
+    }
+
+    .token-container input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: var(--background-dark);
+      border: 1px solid var(--primary);
+      color: var(--text);
+      border-radius: 5px;
+    }
+
+    .token-container label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>corentw keyManager</h2>
+    <p>Wähle dein Netzwerk:</p>
+    <select id="networkSelect">
+      <option value="testnet">Testnet</option>
+      <option value="mainnet">Mainnet</option>
+    </select>
+
+    <p>Gib deinen privaten Schlüssel ein (64 Zeichen), um deine Adresse zu erhalten:</p>
+    <input type="text" id="inputText" placeholder="64 Zeichen hier eingeben">
+    <button onclick="hashInput()">Abrufen</button>
+    <p>oder</p>
+    <button onclick="generateRandomHash()">Zufälligen Schlüssel generieren</button>
+    <div id="output"></div>
+  </div>
+
+  <!-- Token-Erstellung -->
+  <div class="token-container">
+    <h3>Eigenen Token erstellen</h3>
+    <label for="tokenName">Token Name:</label>
+    <input type="text" id="tokenName" placeholder="z.B. MeinCoin">
+
+    <label for="tokenSymbol">Symbol:</label>
+    <input type="text" id="tokenSymbol" placeholder="z.B. MCN">
+
+    <label for="tokenSupply">Gesamtmenge:</label>
+    <input type="number" id="tokenSupply" placeholder="z.B. 1000000">
+
+    <label for="tokenLogo">Token Logo:</label>
+    <input type="file" id="tokenLogo" accept="image/*">
+
+    <button onclick="createToken()">Token erstellen</button>
+  </div>
+
+  <script>
+    function hashInput() {
+      const input = document.getElementById("inputText").value;
+      if (input.length !== 64) {
+        alert("Fehler: Der private Schlüssel muss genau 64 Zeichen lang sein!");
+        return;
+      }
+      const hash = sha3_256(input);
+      const address = "c1" + hash.substring(0, 40);
+      document.getElementById("output").innerHTML = `<strong>Adresse:</strong> ${address}`;
+    }
+
+    function generateRandomHash() {
+      const randomData = crypto.getRandomValues(new Uint8Array(32));
+      const hexString = Array.from(randomData, byte => byte.toString(16).padStart(2, '0')).join('');
+      document.getElementById("inputText").value = sha256(hexString).substring(0, 64);
+      hashInput();
+    }
+
+    function createToken() {
+      const name = document.getElementById("tokenName").value;
+      const symbol = document.getElementById("tokenSymbol").value;
+      const supply = document.getElementById("tokenSupply").value;
+      const logo = document.getElementById("tokenLogo").files[0];
+
+      if (!name || !symbol || !supply) {
+        alert("Bitte alle Token-Daten eingeben!");
+        return;
+      }
+
+      alert(`Token ${name} (${symbol}) mit ${supply} Einheiten erfolgreich erstellt!`);
+    }
+  </script>
+
+</body>
+</html>
