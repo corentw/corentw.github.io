@@ -14,90 +14,46 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
   <!-- Web3.js für MetaMask & Blockchain-Interaktion -->
   <script src="https://cdn.jsdelivr.net/npm/web3@1.7.5/dist/web3.min.js"></script>
-  
+
   <style>
-    :root {
-      --primary: #00ff99;
-      --button-hover: #009966;
-      --background-dark: #0d0d0d;
-      --background-light: #1a1a1a;
-      --accent: #00cc88;
-      --text: #00ff99;
-      --transition-speed: 0.3s;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Roboto', Arial, sans-serif;
-    }
-
     body {
-      background: var(--background-dark);
-      color: var(--text);
+      background: #0d0d0d;
+      color: #00ff99;
       text-align: center;
+      font-family: 'Roboto', Arial, sans-serif;
       padding: 20px;
-      overflow-x: hidden;
     }
-
-    .container, .wallet-body {
+    
+    .container {
       background: rgba(26, 26, 26, 0.95);
       padding: 30px;
       border-radius: 15px;
       box-shadow: 0 0 25px rgba(0, 255, 153, 0.5);
       max-width: 400px;
       margin: 40px auto;
-      transition: all var(--transition-speed) ease-in-out;
-    }
-
-    input, select, textarea {
-      width: 90%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid var(--primary);
-      background: var(--background-dark);
-      color: var(--text);
-      margin-bottom: 15px;
-      border-radius: 5px;
-      transition: border var(--transition-speed);
     }
 
     button {
       width: 90%;
       padding: 12px;
       font-size: 16px;
-      background: var(--primary);
-      color: var(--background-dark);
+      background: #00ff99;
+      color: #0d0d0d;
       border: none;
       cursor: pointer;
       border-radius: 10px;
       margin: 10px auto;
-      transition: transform var(--transition-speed), background var(--transition-speed);
-      display: block;
-      box-shadow: 0 2px 5px rgba(0, 255, 153, 0.3);
-    }
-
-    button:hover {
-      background: var(--button-hover);
-      transform: scale(1.05);
-    }
-
-    .actions {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 10px;
     }
 
     .wallet {
+      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, var(--background-dark) 0%, var(--background-light) 100%);
-      color: var(--text);
-      display: none;
+      background: #1a1a1a;
+      color: #00ff99;
       flex-direction: column;
       align-items: center;
       overflow-y: auto;
@@ -107,96 +63,123 @@
 
     .wallet-header {
       width: 100%;
-      background: var(--background-light);
+      background: #262626;
       padding: 20px;
       font-size: 24px;
       font-weight: bold;
-      color: var(--text);
-      border-bottom: 2px solid var(--primary);
       display: flex;
       justify-content: space-between;
-      align-items: center;
+    }
+
+    .wallet-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 10px;
+    }
+
+    .balance {
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .actions button {
+      padding: 8px;
+      font-size: 12px;
+      background: #00ff99;
+      color: #0d0d0d;
+      border-radius: 10px;
     }
 
     .popup {
       display: none;
-      background: rgba(0, 0, 0, 0.8);
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+      background: rgba(0, 0, 0, 0.8);
       justify-content: center;
       align-items: center;
-      z-index: 200;
     }
 
     .popup-content {
-      background: var(--background-light);
+      background: #1a1a1a;
       padding: 20px;
       border-radius: 10px;
       width: 90%;
       max-width: 400px;
       text-align: center;
-      box-shadow: 0 0 15px rgba(0,255,153,0.5);
     }
 
-    .liquidity-pool-item {
+    .token-item {
       display: flex;
-      justify-content: space-between;
-      background: rgba(0,255,153,0.1);
+      flex-direction: column;
+      align-items: center;
       padding: 10px;
+      background: rgba(0,255,153,0.1);
       border-radius: 5px;
       margin-bottom: 10px;
     }
-
   </style>
 </head>
 <body>
+
   <div class="container">
     <h2>corentw keyManager</h2>
     <button onclick="showWallet()">Wallet öffnen</button>
   </div>
 
-  <!-- Wallet Overlay -->
   <div id="wallet" class="wallet">
     <div class="wallet-header">
       <span>Meine Wallet</span>
-      <button onclick="closeWallet()">Schließen</button>
+      <button onclick="closeWallet()">X</button>
     </div>
-    <div class="wallet-body">
+    
+    <div class="wallet-section">
+      <h3>Übersicht</h3>
+      <div class="balance" id="balance">0.00 CRX</div>
+    </div>
+
+    <div class="wallet-section">
+      <h3>Aktionen</h3>
       <div class="actions">
-        <button onclick="showPopup('liquidityPoolPopup')">
-          <i class="fa-solid fa-water"></i>
-          <span>Liquidity Pool</span>
-        </button>
+        <button onclick="showPopup('liquidityPopup')">Liquidity hinzufügen</button>
       </div>
+    </div>
+
+    <div class="wallet-section" id="tokenSection">
+      <h3>Token Übersicht</h3>
+      <div id="tokenOverview"></div>
     </div>
   </div>
 
-  <!-- Popup: Liquidity Pool -->
-  <div id="liquidityPoolPopup" class="popup">
+  <div id="liquidityPopup" class="popup">
     <div class="popup-content">
-      <h3>Liquidity Pool</h3>
-      <select id="tokenSelect"></select>
-      <input type="number" id="liquidityAmount" placeholder="Betrag (Token)">
-      <input type="number" id="liquidityCRX" placeholder="Betrag (CRX)">
-      <button onclick="addLiquidity()">Liquidität hinzufügen</button>
-      <button onclick="closePopup('liquidityPoolPopup')">Schließen</button>
-      <h4>Aktuelle Pools</h4>
-      <div id="liquidityPoolOverview"></div>
+      <h3>Liquidität hinzufügen</h3>
+      <select id="liquidityToken"></select>
+      <input type="text" id="liquidityAmount" placeholder="CRX-Wert pro Token">
+      <button onclick="setTokenValue()">Festlegen</button>
+      <button onclick="closePopup('liquidityPopup')">Abbrechen</button>
     </div>
   </div>
 
   <script>
-    let balance = 10.00; 
-    let createdTokens = [];
-    let liquidityPools = [];
+    let createdTokens = [{ name: "BeispielToken", symbol: "BTK", balance: 100 }];
+    let tokenLiquidity = {};
 
     function showWallet() {
       document.getElementById("wallet").style.display = "flex";
-      updateTokenSelect();
-      updateLiquidityPoolOverview();
+      updateTokenOverview();
     }
 
     function closeWallet() {
@@ -205,54 +188,54 @@
 
     function showPopup(id) {
       document.getElementById(id).style.display = "flex";
+      if (id === "liquidityPopup") {
+        loadTokenOptions();
+      }
     }
 
     function closePopup(id) {
       document.getElementById(id).style.display = "none";
     }
 
-    function updateTokenSelect() {
-      const tokenSelect = document.getElementById("tokenSelect");
-      tokenSelect.innerHTML = "";
+    function loadTokenOptions() {
+      const select = document.getElementById("liquidityToken");
+      select.innerHTML = "";
       createdTokens.forEach(token => {
-        tokenSelect.innerHTML += `<option value="${token.symbol}">${token.name} (${token.symbol})</option>`;
+        select.innerHTML += `<option value="${token.symbol}">${token.name} (${token.symbol})</option>`;
       });
     }
 
-    function addLiquidity() {
-      const tokenSymbol = document.getElementById("tokenSelect").value;
-      const tokenAmount = parseFloat(document.getElementById("liquidityAmount").value);
-      const crxAmount = parseFloat(document.getElementById("liquidityCRX").value);
+    function setTokenValue() {
+      const tokenSymbol = document.getElementById("liquidityToken").value;
+      const crxValue = parseFloat(document.getElementById("liquidityAmount").value);
 
-      if (!tokenSymbol || isNaN(tokenAmount) || isNaN(crxAmount) || tokenAmount <= 0 || crxAmount <= 0) {
-        alert("Bitte gültige Beträge eingeben!");
+      if (isNaN(crxValue) || crxValue <= 0) {
+        alert("Bitte einen gültigen Wert eingeben!");
         return;
       }
 
-      let pool = liquidityPools.find(p => p.symbol === tokenSymbol);
-      if (pool) {
-        pool.tokenAmount += tokenAmount;
-        pool.crxAmount += crxAmount;
-      } else {
-        liquidityPools.push({ symbol: tokenSymbol, tokenAmount, crxAmount });
-      }
-
-      updateLiquidityPoolOverview();
-      alert(`Liquidität für ${tokenSymbol} hinzugefügt!`);
+      tokenLiquidity[tokenSymbol] = crxValue;
+      updateTokenOverview();
+      alert(`Liquidität für ${tokenSymbol} auf ${crxValue} CRX gesetzt!`);
+      closePopup("liquidityPopup");
     }
 
-    function updateLiquidityPoolOverview() {
-      const poolOverview = document.getElementById("liquidityPoolOverview");
-      poolOverview.innerHTML = "";
+    function updateTokenOverview() {
+      const overview = document.getElementById("tokenOverview");
+      overview.innerHTML = "";
 
-      liquidityPools.forEach(pool => {
-        const poolDiv = document.createElement("div");
-        poolDiv.className = "liquidity-pool-item";
-        poolDiv.innerHTML = `
-          <span>${pool.symbol}</span>
-          <span>${pool.tokenAmount.toFixed(2)} Token / ${pool.crxAmount.toFixed(2)} CRX</span>
-        `;
-        poolOverview.appendChild(poolDiv);
+      createdTokens.forEach(token => {
+        const crxValue = tokenLiquidity[token.symbol] || 0;
+        const usdValue = (crxValue * 0.285368).toFixed(4);
+        const totalUsd = (token.balance * usdValue).toFixed(2);
+
+        overview.innerHTML += `
+          <div class="token-item">
+            <strong>${token.name} (${token.symbol})</strong>
+            <p>Saldo: ${token.balance}</p>
+            <p>Wert: ${crxValue} CRX ≈ ${usdValue} USD</p>
+            <p>Gesamt: ${totalUsd} USD</p>
+          </div>`;
       });
     }
   </script>
