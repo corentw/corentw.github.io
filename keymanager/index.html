@@ -406,6 +406,12 @@
         width: 95%;
       }
     }
+  .close-btn {
+    width:auto;
+    padding:2px;
+    height:auto;
+    font-size:16px;
+  }
   </style>
 </head>
 <body>
@@ -429,7 +435,7 @@
   <!-- Wallet-Verbindungsinfo (MetaMask) -->
   <div class="wallet-connect" id="walletConnect" style="display:none;">
     <p><strong>Verbundene Wallet-Adresse:</strong> <span id="walletAddress"></span></p>
-    <p><strong>ETH-Balance:</strong> <span id="walletBalance"></span></p>
+    <p><strong>CRX-Balance:</strong> <span id="walletBalance"></span></p>
     <button onclick="connectWallet()">Wallet neu verbinden</button>
   </div>
   
@@ -442,7 +448,6 @@
     <div class="wallet-body">
       <!-- Übersicht: Balance & Adresse -->
       <div class="wallet-section">
-        <h3>Übersicht</h3>
         <div class="balance" id="balance">0.00 CRX</div>
         <div class="wallet-address">
           <span id="walletAddressDisplay">...</span>
@@ -455,7 +460,6 @@
       
       <!-- Token Übersicht -->
       <div class="wallet-section" id="tokenSection" style="display:none;">
-        <h3>Token Übersicht</h3>
         <div id="tokenOverview">
           <!-- Dynamische Token-Einträge -->
         </div>
@@ -463,7 +467,6 @@
       
       <!-- Professionelles Aktionen-Menü -->
       <div class="wallet-section">
-        <h3>Aktionen</h3>
         <div class="actions">
           <!-- Senden -->
           <button onclick="showPopup('sendPopup')" title="Sende CRX oder Tokens">
