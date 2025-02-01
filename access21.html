@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>corentw keyManager - Extended mit Liquiditätspool</title>
+  <title>corentw keyManager - Extended</title>
   
   <!-- Icon-Bibliothek -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -12,6 +12,8 @@
   <!-- SHA3 und SHA256 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha3/0.8.0/sha3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+  <!-- Web3.js für MetaMask & Blockchain-Interaktion -->
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.7.5/dist/web3.min.js"></script>
   
   <style>
     :root {
@@ -23,19 +25,20 @@
       --text: #00ff99;
       --transition-speed: 0.3s;
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: 'Roboto', Arial, sans-serif;
     }
-    
+
     body {
       background: var(--background-dark);
       color: var(--text);
       text-align: center;
       padding: 20px;
+      overflow-x: hidden;
     }
 
     .container, .wallet-body {
@@ -45,8 +48,9 @@
       box-shadow: 0 0 25px rgba(0, 255, 153, 0.5);
       max-width: 400px;
       margin: 40px auto;
+      transition: all var(--transition-speed) ease-in-out;
     }
-    
+
     input, select, textarea {
       width: 90%;
       padding: 10px;
@@ -56,6 +60,7 @@
       color: var(--text);
       margin-bottom: 15px;
       border-radius: 5px;
+      transition: border var(--transition-speed);
     }
 
     button {
@@ -68,226 +73,187 @@
       cursor: pointer;
       border-radius: 10px;
       margin: 10px auto;
+      transition: transform var(--transition-speed), background var(--transition-speed);
+      display: block;
+      box-shadow: 0 2px 5px rgba(0, 255, 153, 0.3);
     }
 
     button:hover {
       background: var(--button-hover);
+      transform: scale(1.05);
     }
 
-    .hidden {
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+    }
+
+    .wallet {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--background-dark) 0%, var(--background-light) 100%);
+      color: var(--text);
       display: none;
+      flex-direction: column;
+      align-items: center;
+      overflow-y: auto;
+      z-index: 50;
+      padding-bottom: 40px;
     }
-    
-    .wallet-section {
-      margin-bottom: 20px;
-      padding: 20px;
+
+    .wallet-header {
+      width: 100%;
       background: var(--background-light);
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,255,153,0.3);
-    }
-
-    .wallet-address {
-      background: rgba(0, 255, 153, 0.1);
-      padding: 10px;
-      border-radius: 8px;
-      margin: 10px 0;
-    }
-
-    .action-buttons {
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--text);
+      border-bottom: 2px solid var(--primary);
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
+      align-items: center;
     }
+
+    .popup {
+      display: none;
+      background: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+    }
+
+    .popup-content {
+      background: var(--background-light);
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,255,153,0.5);
+    }
+
+    .liquidity-pool-item {
+      display: flex;
+      justify-content: space-between;
+      background: rgba(0,255,153,0.1);
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
   </style>
 </head>
-
 <body>
-  <!-- Hauptcontainer -->
   <div class="container">
     <h2>corentw keyManager</h2>
-    <input type="text" id="inputText" placeholder="Gib deinen privaten Schlüssel ein (64 Zeichen)">
-    <button onclick="hashInput()">Adresse abrufen</button>
-    <button onclick="generateRandomHash()">Zufälligen Schlüssel generieren</button>
-    <div id="output" class="wallet-address"></div>
-    <button id="useAddressBtn" class="hidden" onclick="showWallet()">Wallet öffnen</button>
+    <button onclick="showWallet()">Wallet öffnen</button>
   </div>
 
   <!-- Wallet Overlay -->
-  <div id="wallet" class="wallet-body hidden">
-    <h3>Meine Wallet</h3>
-    <div class="wallet-section">
-      <strong>CRX Balance:</strong> <span id="balance">0.00 CRX</span>
+  <div id="wallet" class="wallet">
+    <div class="wallet-header">
+      <span>Meine Wallet</span>
+      <button onclick="closeWallet()">Schließen</button>
     </div>
-    
-    <div class="wallet-section">
-      <h4>Token erstellen</h4>
-      <input type="text" id="tokenName" placeholder="Token Name">
-      <input type="text" id="tokenSymbol" placeholder="Token Symbol">
-      <input type="number" id="tokenSupply" placeholder="Gesamtmenge">
-      <button onclick="createToken()">Token erstellen</button>
+    <div class="wallet-body">
+      <div class="actions">
+        <button onclick="showPopup('liquidityPoolPopup')">
+          <i class="fa-solid fa-water"></i>
+          <span>Liquidity Pool</span>
+        </button>
+      </div>
     </div>
+  </div>
 
-    <div class="wallet-section">
-      <h4>Liquidität hinzufügen</h4>
-      <select id="liquidityTokenSelect"></select>
-      <input type="number" id="liquidityCRX" placeholder="CRX Betrag">
-      <input type="number" id="liquidityToken" placeholder="Token Betrag">
+  <!-- Popup: Liquidity Pool -->
+  <div id="liquidityPoolPopup" class="popup">
+    <div class="popup-content">
+      <h3>Liquidity Pool</h3>
+      <select id="tokenSelect"></select>
+      <input type="number" id="liquidityAmount" placeholder="Betrag (Token)">
+      <input type="number" id="liquidityCRX" placeholder="Betrag (CRX)">
       <button onclick="addLiquidity()">Liquidität hinzufügen</button>
-    </div>
-
-    <div class="wallet-section">
-      <h4>Swap durchführen</h4>
-      <select id="swapFrom"></select>
-      <select id="swapTo"></select>
-      <input type="number" id="swapAmount" placeholder="Betrag">
-      <button onclick="performSwap()">Swap durchführen</button>
-    </div>
-
-    <div class="wallet-section">
-      <h4>Liquiditätspool Übersicht</h4>
-      <div id="poolOverview"></div>
+      <button onclick="closePopup('liquidityPoolPopup')">Schließen</button>
+      <h4>Aktuelle Pools</h4>
+      <div id="liquidityPoolOverview"></div>
     </div>
   </div>
 
   <script>
-    // Globale Variablen
-    let balance = 0.00;
-    let fullWalletAddress = "";
+    let balance = 10.00; 
     let createdTokens = [];
-    let liquidityPool = { CRX: 0, tokens: {} };
-
-    function hashInput() {
-      const input = document.getElementById("inputText").value;
-      const outputDiv = document.getElementById("output");
-      if (input.length !== 64) {
-        outputDiv.innerHTML = "<span style='color: red;'>Fehler: Der private Schlüssel muss genau 64 Zeichen lang sein!</span>";
-        return;
-      }
-      const hash = sha3_256(input);
-      const address = "c1" + hash.substring(0, 40);
-      fullWalletAddress = address;
-      outputDiv.innerHTML = `<strong>Adresse:</strong> ${address}`;
-      document.getElementById("useAddressBtn").classList.remove("hidden");
-    }
-
-    function generateRandomHash() {
-      const randomData = crypto.getRandomValues(new Uint8Array(32));
-      const hexString = Array.from(randomData, byte => byte.toString(16).padStart(2, '0')).join('');
-      document.getElementById("inputText").value = sha256(hexString).substring(0, 64);
-      hashInput();
-    }
+    let liquidityPools = [];
 
     function showWallet() {
-      document.getElementById("wallet").classList.remove("hidden");
-      updateTokenSelectOptions();
+      document.getElementById("wallet").style.display = "flex";
+      updateTokenSelect();
+      updateLiquidityPoolOverview();
     }
 
-    function createToken() {
-      const name = document.getElementById("tokenName").value.trim();
-      const symbol = document.getElementById("tokenSymbol").value.trim();
-      const supply = parseFloat(document.getElementById("tokenSupply").value.trim());
-
-      if (!name || !symbol || isNaN(supply) || supply <= 0) {
-        alert("Bitte alle Token-Daten korrekt eingeben!");
-        return;
-      }
-
-      createdTokens.push({ name, symbol, balance: supply });
-      alert(`Token "${name}" (${symbol}) erfolgreich erstellt!`);
-      updateTokenSelectOptions();
+    function closeWallet() {
+      document.getElementById("wallet").style.display = "none";
     }
 
-    function updateTokenSelectOptions() {
-      const liquiditySelect = document.getElementById("liquidityTokenSelect");
-      const swapFrom = document.getElementById("swapFrom");
-      const swapTo = document.getElementById("swapTo");
+    function showPopup(id) {
+      document.getElementById(id).style.display = "flex";
+    }
 
-      liquiditySelect.innerHTML = "";
-      swapFrom.innerHTML = "<option value='CRX'>CRX</option>";
-      swapTo.innerHTML = "<option value='CRX'>CRX</option>";
+    function closePopup(id) {
+      document.getElementById(id).style.display = "none";
+    }
 
+    function updateTokenSelect() {
+      const tokenSelect = document.getElementById("tokenSelect");
+      tokenSelect.innerHTML = "";
       createdTokens.forEach(token => {
-        const option = `<option value="${token.symbol}">${token.name} (${token.symbol})</option>`;
-        liquiditySelect.innerHTML += option;
-        swapFrom.innerHTML += option;
-        swapTo.innerHTML += option;
+        tokenSelect.innerHTML += `<option value="${token.symbol}">${token.name} (${token.symbol})</option>`;
       });
     }
 
     function addLiquidity() {
-      const tokenSymbol = document.getElementById("liquidityTokenSelect").value;
+      const tokenSymbol = document.getElementById("tokenSelect").value;
+      const tokenAmount = parseFloat(document.getElementById("liquidityAmount").value);
       const crxAmount = parseFloat(document.getElementById("liquidityCRX").value);
-      const tokenAmount = parseFloat(document.getElementById("liquidityToken").value);
 
-      if (isNaN(crxAmount) || crxAmount <= 0 || isNaN(tokenAmount) || tokenAmount <= 0) {
+      if (!tokenSymbol || isNaN(tokenAmount) || isNaN(crxAmount) || tokenAmount <= 0 || crxAmount <= 0) {
         alert("Bitte gültige Beträge eingeben!");
         return;
       }
 
-      const token = createdTokens.find(t => t.symbol === tokenSymbol);
-      if (!token || token.balance < tokenAmount || balance < crxAmount) {
-        alert("Nicht genügend Mittel für die Liquidität!");
-        return;
-      }
-
-      balance -= crxAmount;
-      token.balance -= tokenAmount;
-
-      liquidityPool.CRX += crxAmount;
-      liquidityPool.tokens[tokenSymbol] = (liquidityPool.tokens[tokenSymbol] || 0) + tokenAmount;
-
-      alert("Liquidität erfolgreich hinzugefügt!");
-      updatePoolOverview();
-    }
-
-    function performSwap() {
-      const fromAsset = document.getElementById("swapFrom").value;
-      const toAsset = document.getElementById("swapTo").value;
-      const amount = parseFloat(document.getElementById("swapAmount").value);
-
-      if (fromAsset === toAsset || isNaN(amount) || amount <= 0) {
-        alert("Ungültige Swap-Daten!");
-        return;
-      }
-
-      if (fromAsset === 'CRX') {
-        if (balance < amount || !liquidityPool.tokens[toAsset]) {
-          alert("Nicht genügend CRX oder Liquidität für den Swap!");
-          return;
-        }
-
-        balance -= amount;
-        const tokenReceived = (amount / liquidityPool.CRX) * liquidityPool.tokens[toAsset];
-        liquidityPool.CRX += amount;
-        liquidityPool.tokens[toAsset] -= tokenReceived;
-
-        const token = createdTokens.find(t => t.symbol === toAsset);
-        token.balance += tokenReceived;
-        alert(`Swap abgeschlossen: ${amount} CRX gegen ${tokenReceived.toFixed(2)} ${toAsset}`);
+      let pool = liquidityPools.find(p => p.symbol === tokenSymbol);
+      if (pool) {
+        pool.tokenAmount += tokenAmount;
+        pool.crxAmount += crxAmount;
       } else {
-        const token = createdTokens.find(t => t.symbol === fromAsset);
-        if (!token || token.balance < amount || liquidityPool.CRX <= 0) {
-          alert("Nicht genügend Token-Balance oder Liquidität für den Swap!");
-          return;
-        }
-
-        const crxReceived = (amount / liquidityPool.tokens[fromAsset]) * liquidityPool.CRX;
-        token.balance -= amount;
-        liquidityPool.tokens[fromAsset] += amount;
-        liquidityPool.CRX -= crxReceived;
-
-        balance += crxReceived;
-        alert(`Swap abgeschlossen: ${amount} ${fromAsset} gegen ${crxReceived.toFixed(2)} CRX`);
+        liquidityPools.push({ symbol: tokenSymbol, tokenAmount, crxAmount });
       }
 
-      updatePoolOverview();
+      updateLiquidityPoolOverview();
+      alert(`Liquidität für ${tokenSymbol} hinzugefügt!`);
     }
 
-    function updatePoolOverview() {
-      const poolDiv = document.getElementById("poolOverview");
-      poolDiv.innerHTML = `<p>CRX im Pool: ${liquidityPool.CRX.toFixed(2)}</p>`;
-      for (const [symbol, amount] of Object.entries(liquidityPool.tokens)) {
-        poolDiv.innerHTML += `<p>${symbol} im Pool: ${amount.toFixed(2)}</p>`;
-      }
+    function updateLiquidityPoolOverview() {
+      const poolOverview = document.getElementById("liquidityPoolOverview");
+      poolOverview.innerHTML = "";
+
+      liquidityPools.forEach(pool => {
+        const poolDiv = document.createElement("div");
+        poolDiv.className = "liquidity-pool-item";
+        poolDiv.innerHTML = `
+          <span>${pool.symbol}</span>
+          <span>${pool.tokenAmount.toFixed(2)} Token / ${pool.crxAmount.toFixed(2)} CRX</span>
+        `;
+        poolOverview.appendChild(poolDiv);
+      });
     }
   </script>
 </body>
