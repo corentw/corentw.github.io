@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON abrufen, bearbeiten und speichern</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        label { display: block; margin-top: 10px; }
+        input, button { padding: 8px; margin-top: 5px; }
+        button { cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>JSON-Datei bearbeiten</h1>
+
+    <!-- JSON-Datei hochladen -->
+    <label for="jsonFile">JSON-Datei hochladen:</label>
+    <input type="file" id="jsonFile" accept=".json" onchange="loadJSON(event)">
+
+    <!-- Formular zum Bearbeiten der JSON-Daten -->
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Name eingeben">
+
+    <label for="age">Alter:</label>
+    <input type="number" id="age" placeholder="Alter eingeben">
+
+    <label for="email">E-Mail:</label>
+    <input type="email" id="email" placeholder="E-Mail eingeben">
+
+    <!-- Speichern der bearbeiteten JSON-Daten -->
+    <button onclick="saveJSON()">Geänderte JSON speichern</button>
+
+    <script>
+        let jsonData = {}; // Speichert die geladenen JSON-Daten
+
+        // Funktion zum Laden der JSON-Datei
+        function loadJSON(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        jsonData = JSON.parse(e.target.result); // JSON parsen
+                        // Felder mit JSON-Daten füllen
+                        document.getElementById('name').value = jsonData.name || '';
+                        document.getElementById('age').value = jsonData.age || '';
+                        document.getElementById('email').value = jsonData.email || '';
+                    } catch (error) {
+                        alert("Ungültige JSON-Datei!");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Funktion zum Speichern der geänderten JSON-Daten
+        function saveJSON() {
+            // Aktualisierte Daten aus dem Formular
+            jsonData.name = document.getElementById('name').value;
+            jsonData.age = document.getElementById('age').value;
+            jsonData.email = document.getElementById('email').value;
+
+            // JSON-String erstellen
+            const jsonString = JSON.stringify(jsonData, null, 4);
+
+            // Download starten
+            const blob = new Blob([jsonString], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'geändert.json'; // Neuer Dateiname
+            document.body.appendChild(a);
+            a.click();
+
+            // Aufräumen
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+
+</body>
+</html>
