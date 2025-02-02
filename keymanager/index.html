@@ -430,13 +430,14 @@
     <img src="corentw_keymanager_logo.png" class="keymanager_logo">
     <br>
     <h2>corentw keyManager</h2>
-    <p>Wähle dein Netzwerk:</p>
+    <br>
+    <p>Netzwerk auswahl:</p>
     <select id="networkSelect" onchange="switchNetwork()">
       <option value="testnet">Testnet</option>
       <option value="mainnet">Mainnet</option>
     </select>
-    <p>Gib deinen privaten Schlüssel ein (64 Zeichen), um deine Adresse zu erhalten:</p>
-    <input type="text" id="inputText" placeholder="64 Zeichen hier eingeben">
+    <p>Gib deinen privaten Schlüssel ein (64 Zeichen), um Zugriff auf deine Adresse zu erhalten:</p>
+    <input type="text" id="inputText" placeholder="64Bit-Key hier eingeben">
     <button onclick="hashInput()">Abrufen</button>
     <p>oder</p>
     <button onclick="generateRandomHash()">Zufälligen Schlüssel generieren</button>
