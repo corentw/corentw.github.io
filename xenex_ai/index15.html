@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Xenex AI - Cutting-edge AI-powered cryptocurrency with unique blockchain features, interactive UI, and high scalability.">
+    <meta name="keywords" content="Xenex AI, Cryptocurrency, Blockchain, Presale, Token, AI">
+    <meta name="author" content="Xenex AI Team">
+    <title>Xenex AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script> <!-- 3D library -->
+    <script src="https://unpkg.com/particles.js"></script> <!-- Particles.js library -->
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ffcc;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.5s ease;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00ffcc;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0, 255, 204, 0.5);
+        }
+
+        .buy-now {
+            display: inline-block;
+            padding: 15px 30px;
+            margin-top: 20px;
+            background: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 5px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .buy-now:hover {
+            transform: scale(1.1);
+            background: #00cca3;
+        }
+
+        /* Parallax Scrolling Effect */
+        .parallax {
+            position: relative;
+            background-image: url('https://cdn.pixabay.com/photo/2017/12/27/00/25/abstract-3043539_960_720.jpg');
+            height: 100vh;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            z-index: 1;
+            color: #fff;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeInUp 2s ease-out;
+        }
+
+        .parallax h1 {
+            font-size: 3rem;
+            letter-spacing: 2px;
+        }
+
+        /* Floating Coin Animation */
+        .floating-coin {
+            width: 120px;
+            height: 120px;
+            background: url('img/coin-model.gif') center center no-repeat;
+            background-size: contain;
+            position: absolute;
+            top: 30%;
+            animation: floatingCoin 5s infinite ease-in-out;
+        }
+
+        @keyframes floatingCoin {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-40px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Progress Bar for Presale Funding */
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background-color: #333;
+            border-radius: 5px;
+            margin: 20px 0;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            background-color: #00ffcc;
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* Crypto Stats Dashboard */
+        .stats-dashboard {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 50px;
+            padding: 40px 20px;
+            background-color: #111;
+            border-radius: 10px;
+        }
+
+        .stats-box {
+            text-align: center;
+            padding: 30px;
+            background-color: #222;
+            border-radius: 10px;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .stats-box:hover {
+            transform: scale(1.1);
+        }
+
+        /* Chatbot Button */
+        .chatbot-btn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: #00ffcc;
+            border: none;
+            border-radius: 50%;
+            padding: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0); }
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            color: #fff;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .modal-close {
+            background-color: #00ffcc;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .modal-close:hover {
+            background-color: #00cca3;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Xenex AI</h1>
+        <button class="language-selector" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </header>
+
+    <section class="parallax">
+        <h1>Welcome to the Future of Blockchain</h1>
+        <p>AI-powered, secure, and scalable</p>
+    </section>
+
+    <section class="floating-coin"></section>
+
+    <section class="progress-bar">
+        <div class="progress-bar-inner" style="width: 70%;"></div>
+    </section>
+
+    <section class="stats-dashboard">
+        <div class="stats-box">
+            <h3>Current Price</h3>
+            <p>$0.1</p>
+        </div>
+        <div class="stats-box">
+            <h3>Presale Progress</h3>
+            <p>70%</p>
+        </div>
+    </section>
+
+    <section class="countdown-section">
+        <h2>Presale Countdown</h2>
+        <div id="countdown"></div>
+    </section>
+
+    <button class="chatbot-btn" onclick="openChatbot()">💬</button>
+
+    <footer>
+        <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
+    </footer>
+
+    <div id="token-modal" class="modal">
+        <div class="modal-content">
+            <h3>Why Xenex AI Coin?</h3>
+            <p>Xenex AI Coin is a revolutionary cryptocurrency optimized through AI.</p>
+            <button class="modal-close" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Countdown Timer
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const end = new Date("March 1, 2025").getTime();
+            const distance = end - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        setInterval(updateCountdown, 1000);
+
+        // Chatbot
+        function openChatbot() {
+            alert("Chatbot is opening!");
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Modal Functions
+        function openModal() {
+            document.getElementById('token-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('token-modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
