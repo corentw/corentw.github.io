@@ -1,73 +1,54 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat mit KI</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        #chat {
-            max-width: 500px;
-            margin: auto;
-            background: #f1f1f1;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .message {
-            margin-bottom: 10px;
-        }
-        .user-message {
-            text-align: right;
-            color: #4CAF50;
-        }
-        .bot-message {
-            text-align: left;
-            color: #2196F3;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat mit KI</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #chat {
+      max-width: 500px;
+      margin: auto;
+      background: #f1f1f1;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .message { margin-bottom: 10px; }
+    .user-message { text-align: right; color: #4CAF50; }
+    .bot-message { text-align: left; color: #2196F3; }
+  </style>
 </head>
 <body>
-
-<div id="chat">
+  <div id="chat">
     <div class="message bot-message">Hallo! Wie kann ich dir helfen?</div>
     <input type="text" id="userInput" placeholder="Gib hier deine Nachricht ein" />
     <button onclick="sendMessage()">Senden</button>
-</div>
+  </div>
 
-<script>
+  <script>
     function sendMessage() {
-        let userInput = document.getElementById('userInput').value;
-        if (userInput) {
-            appendMessage(userInput, 'user-message');
-            fetch('chat.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message: userInput })
-            })
-            .then(response => response.json())
-            .then(data => {
-                appendMessage(data.reply, 'bot-message');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
+      let userInput = document.getElementById('userInput').value;
+      if (userInput) {
+        appendMessage(userInput, 'user-message');
+        fetch('chat.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userInput })
+        })
+        .then(response => response.json())
+        .then(data => { appendMessage(data.reply, 'bot-message'); })
+        .catch(error => { console.error('Error:', error); });
+      }
     }
 
     function appendMessage(message, className) {
-        let div = document.createElement('div');
-        div.classList.add('message', className);
-        div.innerHTML = message;
-        document.getElementById('chat').appendChild(div);
-        document.getElementById('userInput').value = ''; // clear input
+      let div = document.createElement('div');
+      div.classList.add('message', className);
+      div.innerHTML = message;
+      document.getElementById('chat').appendChild(div);
+      document.getElementById('userInput').value = '';
     }
-</script>
-
+  </script>
 </body>
 </html>
