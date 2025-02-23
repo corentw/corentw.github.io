@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KI-Chat mit Lernen und Animation</title>
+  <title>KI-Chat mit Lernen und Web-Durchsuchung</title>
   <style>
     body { font-family: 'Arial', sans-serif; background: #f3f4f6; margin: 0; padding: 0; }
     #chat-container { max-width: 800px; margin: auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
@@ -36,6 +36,7 @@
       <button class="option-button" onclick="sendMessage('Wetter')">Wetter</button>
       <button class="option-button" onclick="sendMessage('Bitcoin')">Bitcoin-Preis</button>
       <button class="option-button" onclick="sendMessage('Nachrichten')">Nachrichten</button>
+      <button class="option-button" onclick="sendMessage('Web durchsuchen')">Web durchsuchen</button>
     </div>
   </div>
 
@@ -46,14 +47,12 @@
       "query_count": 0
     };
 
-    // Initialisieren der Datenbank im LocalStorage
     if (!localStorage.getItem('database')) {
       localStorage.setItem('database', JSON.stringify(database));
     } else {
       database = JSON.parse(localStorage.getItem('database'));
     }
 
-    // Funktion, um die Nachricht zu senden
     function sendMessage(userInput = '') {
       const input = userInput || document.getElementById('userInput').value;
       if (input) {
@@ -62,14 +61,12 @@
       }
     }
 
-    // Event-Handler für das Drücken der Enter-Taste
     function handleEnter(event) {
       if (event.key === 'Enter') {
         sendMessage();
       }
     }
 
-    // Nachricht in den Chat einfügen
     function appendMessage(message, className) {
       let div = document.createElement('div');
       div.classList.add('message', className);
@@ -79,32 +76,30 @@
       document.getElementById('userInput').value = '';
     }
 
-    // Verarbeiten der Nachricht und der Abfragen
     function processMessage(userMessage) {
       const learnedResponse = getLearnedResponse(userMessage);
       if (learnedResponse) {
         appendMessage(learnedResponse, 'bot-message');
       } else {
-        // API-Abfragen basierend auf Schlüsselwörtern
         if (userMessage.toLowerCase().includes('wetter')) {
           getWeatherData(userMessage);
         } else if (userMessage.toLowerCase().includes('bitcoin')) {
           getBitcoinPrice(userMessage);
         } else if (userMessage.toLowerCase().includes('nachrichten')) {
           getNewsData();
+        } else if (userMessage.toLowerCase().includes('web durchsuchen')) {
+          getWebSearchData(userMessage);
         } else {
-          appendMessage("Ich kann nur nach Wetter, Bitcoin-Preis oder Nachrichten fragen.", 'bot-message');
+          appendMessage("Ich kann nur nach Wetter, Bitcoin-Preis, Nachrichten oder Web-Suchen fragen.", 'bot-message');
         }
       }
     }
 
-    // Überprüfen, ob eine gelernte Antwort existiert
     function getLearnedResponse(userMessage) {
       const normalizedMessage = userMessage.toLowerCase().trim();
       return database.learned_data[normalizedMessage] || null;
     }
 
-    // Wetter-Daten holen
     function getWeatherData(userMessage) {
       const city = userMessage.match(/wetter in (\w+)/i);
       if (city) {
@@ -125,7 +120,6 @@
       }
     }
 
-    // Bitcoin-Preis holen
     function getBitcoinPrice() {
       fetch('https://api.coindesk.com/v1/bpi/currentprice/BTC.json')
         .then(response => response.json())
@@ -137,7 +131,6 @@
         .catch(error => appendMessage('Fehler beim Abrufen der Bitcoin-Daten.', 'bot-message'));
     }
 
-    // Nachrichten holen
     function getNewsData() {
       fetch('https://newsapi.org/v2/top-headlines?country=de&apiKey=dein-api-schlüssel')
         .then(response => response.json())
@@ -152,7 +145,23 @@
         .catch(error => appendMessage('Fehler beim Abrufen der Nachrichten.', 'bot-message'));
     }
 
-    // Speichern der Daten in der Datenbank
+    function getWebSearchData(userMessage) {
+      const query = userMessage.replace('web durchsuchen', '').trim();
+      if (!query) {
+        appendMessage("Bitte gib an, was du suchen möchtest.", 'bot-message');
+        return;
+      }
+
+      fetch(`https://api.duckduckgo.com/?q=${query}&format=json`)
+        .then(response => response.json())
+        .then(data => {
+          const result = data.RelatedTopics[0]?.Text || "Keine Ergebnisse gefunden.";
+          saveToDatabase(userMessage, result);
+          appendMessage(result, 'bot-message');
+        })
+        .catch(error => appendMessage('Fehler beim Durchsuchen des Webs.', 'bot-message'));
+    }
+
     function saveToDatabase(question, answer) {
       const normalizedQuestion = question.toLowerCase().trim();
       const newEntry = { 
