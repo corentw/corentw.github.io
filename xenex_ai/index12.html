@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Xenex AI - The future of Alien-AI blockchain with high scalability, lightning-fast transactions, and AI-powered investment strategies.">
+    <meta name="keywords" content="Xenex AI, Blockchain, Cryptocurrency, Presale, Tokens, AI">
+    <meta name="author" content="Xenex AI Team">
+    <title>Xenex AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ffcc;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00ffcc;
+            letter-spacing: 2px;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: url('https://cdn.pixabay.com/photo/2017/12/27/00/25/abstract-3043539_960_720.jpg') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeInUp 2s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            0% { transform: translateY(100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .hero img {
+            width: 200px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .buy-now {
+            display: inline-block;
+            padding: 15px 30px;
+            margin-top: 20px;
+            background: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 5px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .buy-now:hover {
+            transform: scale(1.1);
+            background: #00cca3;
+        }
+
+        /* Interactive 3D Coin */
+        .interactive-coin {
+            width: 200px;
+            height: 200px;
+            background: url('img/coin-model.gif') center center no-repeat;
+            background-size: contain;
+            margin-top: 50px;
+            animation: rotateCoin 6s infinite linear;
+        }
+
+        @keyframes rotateCoin {
+            0% { transform: rotateY(0); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        /* Presale Progress */
+        .progress-bar {
+            background-color: #444;
+            border-radius: 10px;
+            height: 30px;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            background-color: #00ffcc;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Countdown Timer */
+        .countdown-section {
+            background-color: #111;
+            padding: 80px 20px;
+            text-align: center;
+            background: url('https://i.gifer.com/6ioZ.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .countdown-timer {
+            font-size: 2rem;
+            margin-top: 20px;
+            color: #00ffcc;
+        }
+
+        /* Chatbot */
+        .chatbot-btn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: #00ffcc;
+            border: none;
+            border-radius: 50%;
+            padding: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            color: #fff;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .modal-content h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background-color: #00ffcc;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .modal-close:hover {
+            background-color: #00cca3;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Xenex AI</h1>
+        <button class="language-selector" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </header>
+
+    <section class="hero">
+        <img src="img/logo.png" alt="Xenex AI Logo">
+        <h2>The Future of Alien-AI Blockchain</h2>
+        <h3>A cutting-edge, secure, and decentralized cryptocurrency</h3>
+        <a class="buy-now" href="#token-info">Buy Now</a>
+    </section>
+
+    <section class="interactive-coin"></section>
+
+    <section class="progress-bar">
+        <span style="width: 40%;"></span>
+    </section>
+
+    <section class="countdown-section" id="presale-highlights">
+        <h2>Presale Countdown</h2>
+        <div id="presale-timer" class="countdown-timer">Loading...</div>
+    </section>
+
+    <button class="chatbot-btn" onclick="openChatbot()">💬</button>
+
+    <footer>
+        <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
+    </footer>
+
+    <div class="modal" id="token-modal">
+        <div class="modal-content">
+            <h3>Token Info</h3>
+            <p>Details about the token, presale info, and more...</p>
+            <button class="modal-close" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Functionality for the chatbot, countdown, modal, etc.
+        AOS.init();
+
+        // Countdown timer functionality
+        function updateCountdown() {
+            const countdown = document.getElementById('presale-timer');
+            let time = 10 * 60 * 1000; // 10 minutes countdown
+            const timerInterval = setInterval(() => {
+                const minutes = Math.floor(time / 60000);
+                const seconds = Math.floor((time % 60000) / 1000);
+                countdown.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                time -= 1000;
+                if (time <= 0) {
+                    clearInterval(timerInterval);
+                    countdown.textContent = "Presale Ended";
+                }
+            }, 1000);
+        }
+        updateCountdown();
+
+        // Chatbot open/close
+        function openChatbot() {
+            alert('Opening chatbot...');
+        }
+
+        // Modal functionality
+        function openModal() {
+            document.getElementById('token-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('token-modal').style.display = 'none';
+        }
+
+        // Toggle Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
