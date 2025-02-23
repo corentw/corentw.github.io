@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI-Chat - Frage & Antwort mit Web-Durchsuchung</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #chat-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        #chat-box {
+            height: 400px;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f1f1f1;
+            border-top: 1px solid #ddd;
+            flex-grow: 1;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            max-width: 80%;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: #e0f7fa;
+            color: #333;
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background-color: #b3e5fc;
+            color: #333;
+            align-self: flex-start;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            background-color: #fff;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-evenly;
+            padding: 10px;
+        }
+
+        .action-button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+        }
+
+        .action-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="chat-container">
+        <h1>KI-Chat - Frage & Antwort</h1>
+        <div id="chat-box"></div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Stelle eine Frage..." onkeydown="handleEnter(event)">
+            <button onclick="sendMessage()">Senden</button>
+        </div>
+        <div class="action-buttons">
+            <button class="action-button" onclick="sendQuickMessage('Web durchsuchen')">Web durchsuchen</button>
+            <button class="action-button" onclick="sendQuickMessage('Was ist KI?')">Was ist KI?</button>
+        </div>
+    </div>
+
+    <script>
+        let database = {
+            "learned_data": {},
+            "web_data": []
+        };
+
+        // Lade bestehende Datenbank
+        if (localStorage.getItem('database')) {
+            database = JSON.parse(localStorage.getItem('database'));
+        }
+
+        // Benutzer-Nachricht senden
+        function sendMessage(userInput = '') {
+            const input = userInput || document.getElementById('userInput').value;
+            if (input) {
+                appendMessage(input, 'user-message');
+                processUserMessage(input);
+                document.getElementById('userInput').value = '';
+            }
+        }
+
+        // "Enter"-Taste als Senden verwenden
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Nachricht anzeigen
+        function appendMessage(message, className) {
+            const div = document.createElement('div');
+            div.classList.add('message', className);
+            div.innerHTML = message;
+            document.getElementById('chat-box').appendChild(div);
+            document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+        }
+
+        // Nachricht des Nutzers verarbeiten
+        function processUserMessage(userMessage) {
+            const learnedResponse = getLearnedResponse(userMessage);
+            if (learnedResponse) {
+                appendMessage(learnedResponse, 'bot-message');
+            } else {
+                handleWebSearch(userMessage);
+            }
+        }
+
+        // Lernantworten zurückgeben
+        function getLearnedResponse(userMessage) {
+            const normalizedMessage = userMessage.toLowerCase().trim();
+            return database.learned_data[normalizedMessage] || null;
+        }
+
+        // Web durchsuchen und Antwort anzeigen
+        function handleWebSearch(userMessage) {
+            if (userMessage.toLowerCase().includes('web durchsuchen')) {
+                const query = userMessage.replace('web durchsuchen', '').trim();
+                if (!query) {
+                    appendMessage("Bitte gib etwas an, was du suchen möchtest.", 'bot-message');
+                    return;
+                }
+
+                fetch(`https://api.duckduckgo.com/?q=${query}&format=json`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const result = data.RelatedTopics[0]?.Text || "Keine Ergebnisse gefunden.";
+                        saveToDatabase(userMessage, result);
+                        appendMessage(result, 'bot-message');
+                    })
+                    .catch(() => appendMessage('Fehler beim Abrufen der Web-Daten.', 'bot-message'));
+            } else {
+                appendMessage("Ich habe deine Frage nicht verstanden. Versuche es mit 'Web durchsuchen'.", 'bot-message');
+            }
+        }
+
+        // Schnelle Nachrichten senden
+        function sendQuickMessage(query) {
+            sendMessage(query);
+        }
+
+        // Speichern von Daten in der Datenbank
+        function saveToDatabase(question, answer) {
+            const normalizedQuestion = question.toLowerCase().trim();
+            const newEntry = { 
+                question: question, 
+                answer: answer, 
+                timestamp: new Date().toISOString() 
+            };
+
+            database.learned_data[normalizedQuestion] = answer;
+            database.web_data.push(newEntry);
+
+            // Speichern der Datenbank im LocalStorage
+            localStorage.setItem('database', JSON.stringify(database));
+        }
+
+    </script>
+
+</body>
+</html>
