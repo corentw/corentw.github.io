@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovative Blockchain-Lösungen</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px 20px;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        nav ul li:hover {
+            color: #ff8c00;
+        }
+
+        .search-bar input {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: none;
+        }
+
+        .hamburger-menu {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger-menu span {
+            display: block;
+            width: 30px;
+            height: 4px;
+            background-color: white;
+            margin: 6px 0;
+            transition: 0.4s;
+        }
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            background: url('https://source.unsplash.com/random/1920x1080?space') center/cover no-repeat;
+            background-attachment: fixed;
+            transition: background 0.5s ease;
+        }
+
+        .hero h1 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: white;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+            animation: fadeIn 2s ease-out;
+        }
+
+        .hero h2 {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: white;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .cta-btn {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            background-color: #ff8c00;
+            border: none;
+            font-size: 1.2rem;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .section {
+            padding: 80px 20px;
+            text-align: center;
+            background-color: #111;
+            margin-top: 80px;
+        }
+
+        .section h2 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: #ff8c00;
+        }
+
+        .section p {
+            font-size: 1.2rem;
+            color: #ccc;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 40px;
+        }
+
+        .features div {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 25px;
+            width: 30%;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .features div:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .cta {
+            margin-top: 50px;
+        }
+
+        .cta button {
+            background-color: #ff8c00;
+            border: none;
+            padding: 18px 35px;
+            font-size: 1.2rem;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta button:hover {
+            transform: scale(1.1);
+        }
+
+        footer {
+            background-color: #111;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        footer .social-icons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        footer .social-icons a {
+            margin: 0 15px;
+            font-size: 1.5rem;
+            color: #ff8c00;
+            transition: color 0.3s ease;
+        }
+
+        footer .social-icons a:hover {
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .modal-content {
+            background-color: white;
+            color: black;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 80%;
+        }
+
+        .close-btn {
+            font-size: 1.5rem;
+            color: #ff8c00;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .features div {
+                width: 80%;
+                margin-bottom: 20px;
+            }
+
+            .hamburger-menu {
+                display: block;
+                cursor: pointer;
+            }
+
+            nav ul {
+                display: none;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul li {
+                margin: 15px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <nav>
+            <h1>Blockchain Solutions</h1>
+            <div class="hamburger-menu" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul>
+                <li>Home</li>
+                <li>Über uns</li>
+                <li>Technologie</li>
+                <li>Dienstleistungen</li>
+                <li>Kontakt</li>
+            </ul>
+            <div class="search-bar">
+                <input type="text" placeholder="Suche...">
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Die Zukunft der Blockchain-Technologie</h1>
+        <h2>Entwickeln Sie mit uns die Blockchain-Innovationen von morgen.</h2>
+        <button class="cta-btn">Jetzt starten</button>
+    </section>
+
+    <!-- Über uns -->
+    <section class="section">
+        <h2>Über uns</h2>
+        <p>Wir sind ein führendes Unternehmen, das sich auf innovative Blockchain-Technologien spezialisiert hat. Wir bieten Lösungen für verschiedene Branchen, von Finanzdienstleistungen bis hin zu Supply Chain Management. Unser Ziel ist es, die Technologie so zu gestalten, dass sie für alle zugänglich und nachhaltig ist.</p>
+    </section>
+
+    <!-- Unsere Technologie -->
+    <section class="section">
+        <h2>Unsere Technologie</h2>
+        <p>Unsere Blockchain-Lösungen bieten eine Kombination aus hoher Sicherheit, Skalierbarkeit und Effizienz. Wir nutzen die neueste Verschlüsselungstechnik, um Ihre Daten zu schützen, und bieten eine Plattform, die mit Ihrem Unternehmen wächst.</p>
+    </section>
+
+    <!-- Unsere Dienstleistungen -->
+    <section class="section">
+        <h2>Unsere Dienstleistungen</h2>
+        <div class="features">
+            <div>
+                <h3>Blockchain Entwicklung</h3>
+                <p>Maßgeschneiderte Lösungen, die auf Ihre Unternehmensbedürfnisse abgestimmt sind.</p>
+            </div>
+            <div>
+                <h3>Dezentrale Apps</h3>
+                <p>Entwicklung von dezentralen Anwendungen für eine sicherere und transparentere Zukunft.</p>
+            </div>
+            <div>
+                <h3>Smart Contracts</h3>
+                <p>Automatisierte, vertrauenswürdige Verträge, die Transaktionen ohne Vermittler ermöglichen.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Blockchain Solutions. Alle Rechte vorbehalten.</p>
+        <div class="social-icons">
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">LinkedIn</a>
+        </div>
+    </footer>
+
+    <!-- AOS JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init();
+
+        // Hamburger Menü
+        function toggleMenu() {
+            const menu = document.querySelector('nav ul');
+            menu.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
