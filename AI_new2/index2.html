@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI-Chat - Intelligente Web-Suche & Lernen</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #chat-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        h1 {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            margin: 0;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        #chat-box {
+            height: 400px;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f1f1f1;
+            border-top: 1px solid #ddd;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 12px;
+            max-width: 80%;
+            font-size: 14px;
+            word-wrap: break-word;
+            background-color: #e0f7fa;
+            color: #333;
+        }
+
+        .bot-message {
+            background-color: #b3e5fc;
+            align-self: flex-start;
+        }
+
+        .user-message {
+            background-color: #c8e6c9;
+            align-self: flex-end;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            background-color: #fff;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .quick-actions {
+            display: flex;
+            justify-content: space-evenly;
+            padding: 10px 20px;
+        }
+
+        .action-button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+        }
+
+        .action-button:hover {
+            background-color: #218838;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h1>KI-Chat - Intelligente Interaktion</h1>
+        <div id="chat-box"></div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Schreibe eine Nachricht..." onkeydown="handleEnter(event)">
+            <button onclick="sendMessage()">Senden</button>
+        </div>
+        <div class="quick-actions">
+            <button class="action-button" onclick="sendQuickMessage('Wetter')">Wetter</button>
+            <button class="action-button" onclick="sendQuickMessage('Bitcoin')">Bitcoin Preis</button>
+            <button class="action-button" onclick="sendQuickMessage('Nachrichten')">Nachrichten</button>
+            <button class="action-button" onclick="sendQuickMessage('Web durchsuchen')">Web durchsuchen</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialisierung der Datenbank (Speicherung in localStorage)
+        let database = {
+            "web_data": [],
+            "learned_data": {},
+            "query_count": 0
+        };
+
+        // Laden der bestehenden Datenbank
+        if (localStorage.getItem('database')) {
+            database = JSON.parse(localStorage.getItem('database'));
+        }
+
+        // Funktion zum Senden von Nachrichten
+        function sendMessage(userInput = '') {
+            const input = userInput || document.getElementById('userInput').value;
+            if (input) {
+                appendMessage(input, 'user-message');
+                processMessage(input);
+                document.getElementById('userInput').value = '';
+            }
+        }
+
+        // Funktion für "Enter" Tastendruck
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Nachricht anzeigen
+        function appendMessage(message, className) {
+            const div = document.createElement('div');
+            div.classList.add('message', className);
+            div.innerHTML = message;
+            document.getElementById('chat-box').appendChild(div);
+            document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
+        }
+
+        // Verarbeitung von Benutzeranfragen
+        function processMessage(userMessage) {
+            const learnedResponse = getLearnedResponse(userMessage);
+            if (learnedResponse) {
+                appendMessage(learnedResponse, 'bot-message');
+            } else {
+                handleSpecialQueries(userMessage);
+            }
+        }
+
+        // Antworten basierend auf gespeicherten Daten
+        function getLearnedResponse(userMessage) {
+            const normalizedMessage = userMessage.toLowerCase().trim();
+            return database.learned_data[normalizedMessage] || null;
+        }
+
+        // Spezielle Abfragen wie Wetter, Bitcoin, etc.
+        function handleSpecialQueries(userMessage) {
+            if (userMessage.toLowerCase().includes('wetter')) {
+                getWeatherData(userMessage);
+            } else if (userMessage.toLowerCase().includes('bitcoin')) {
+                getBitcoinPrice();
+            } else if (userMessage.toLowerCase().includes('nachrichten')) {
+                getNewsData();
+            } else if (userMessage.toLowerCase().includes('web durchsuchen')) {
+                getWebSearchData(userMessage);
+            } else {
+                appendMessage("Ich verstehe nicht, was du meinst. Versuche es mit 'Wetter', 'Bitcoin' oder 'Web durchsuchen'.", 'bot-message');
+            }
+        }
+
+        // Wetterdaten abrufen
+        function getWeatherData(userMessage) {
+            const city = userMessage.match(/wetter in (\w+)/i);
+            if (city) {
+                fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city[1]}&appid=dein-api-schlüssel&units=metric&lang=de`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const weatherInfo = `Aktuelles Wetter in ${city[1]}: ${data.weather[0].description}, ${data.main.temp}°C`;
+                        saveToDatabase(userMessage, weatherInfo);
+                        appendMessage(weatherInfo, 'bot-message');
+                    })
+                    .catch(() => appendMessage('Fehler beim Abrufen der Wetterdaten.', 'bot-message'));
+            } else {
+                appendMessage("Bitte gib die Stadt an (z.B. 'Wetter in Berlin').", 'bot-message');
+            }
+        }
+
+        // Bitcoin Preis abrufen
+        function getBitcoinPrice() {
+            fetch('https://api.coindesk.com/v1/bpi/currentprice/BTC.json')
+                .then(response => response.json())
+                .then(data => {
+                    const bitcoinPrice = `Aktueller Bitcoin-Preis: ${data.bpi.USD.rate} USD`;
+                    saveToDatabase('Bitcoin Preis', bitcoinPrice);
+                    appendMessage(bitcoinPrice, 'bot-message');
+                })
+                .catch(() => appendMessage('Fehler beim Abrufen der Bitcoin-Daten.', 'bot-message'));
+        }
+
+        // Nachrichten abrufen
+        function getNewsData() {
+            fetch('https://newsapi.org/v2/top-headlines?country=de&apiKey=dein-api-schlüssel')
+                .then(response => response.json())
+                .then(data => {
+                    let newsInfo = 'Top Nachrichten:\n';
+                    data.articles.slice(0, 3).forEach(article => {
+                        newsInfo += `${article.title} - ${article.description}\n`;
+                    });
+                    saveToDatabase('Nachrichten', newsInfo);
+                    appendMessage(newsInfo.replace(/\n/g, '<br>'), 'bot-message');
+                })
+                .catch(() => appendMessage('Fehler beim Abrufen der Nachrichten.', 'bot-message'));
+        }
+
+        // Web durchsuchen
+        function getWebSearchData(userMessage) {
+            const query = userMessage.replace('web durchsuchen', '').trim();
+            if (!query) {
+                appendMessage("Bitte gib an, was du suchen möchtest.", 'bot-message');
+                return;
+            }
+            fetch(`https://api.duckduckgo.com/?q=${query}&format=json`)
+                .then(response => response.json())
+                .then(data => {
+                    const result = data.RelatedTopics[0]?.Text || "Keine Ergebnisse gefunden.";
+                    saveToDatabase(userMessage, result);
+                    appendMessage(result, 'bot-message');
+                })
+                .catch(() => appendMessage('Fehler beim Durchsuchen des Webs.', 'bot-message'));
+        }
+
+        // Schnellantworten
+        function sendQuickMessage(query) {
+            sendMessage(query);
+        }
+
+        // Speichern von Antworten in der Datenbank
+        function saveToDatabase(question, answer) {
+            const normalizedQuestion = question.toLowerCase().trim();
+            const newEntry = { 
+                question: question, 
+                answer: answer, 
+                timestamp: new Date().toISOString() 
+            };
+            database.web_data.push(newEntry);
+            database.learned_data[normalizedQuestion] = answer;
+            database.query_count++;
+            localStorage.setItem('database', JSON.stringify(database));
+        }
+    </script>
+</body>
+</html>
