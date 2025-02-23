@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xenex AI Coin</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ffcc;
+            overflow-x: hidden;
+            animation: fadeIn 2s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 1.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        .hero {
+            height: 100vh;
+            background: url('img/xenex_background.gif') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .hero img {
+            width: 150px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .token-info {
+            text-align: center;
+            padding: 50px;
+            background: #111;
+            color: #fff;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .token-info h2 {
+            color: #00ffcc;
+        }
+
+        .buy-now {
+            display: inline-block;
+            padding: 15px 30px;
+            margin-top: 20px;
+            background: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 5px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .buy-now:hover {
+            transform: scale(1.1);
+            background: #00cca3;
+        }
+
+        .countdown-section {
+            background-color: #111;
+            padding: 80px 20px;
+            text-align: center;
+            background: url('https://i.gifer.com/6ioZ.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Xenex AI Coin</h1>
+        <button class="language-selector" onclick="toggleLanguage()">Sprache: Deutsch</button>
+    </header>
+
+    <section class="hero">
+        <img src="img/logo.png" alt="Xenex AI Logo">
+        <h2 id="hero-title">Die Zukunft der Alien-KI Blockchain</h2>
+        <h3 id="hero-subtitle">Eine hochmoderne, sichere und dezentrale Kryptowährung</h3>
+        <a class="buy-now" href="#token-info">Jetzt kaufen</a>
+    </section>
+
+    <section class="token-info" id="token-info">
+        <h2>Warum Xenex AI Coin?</h2>
+        <p>Xenex AI Coin ist eine revolutionäre Kryptowährung, die durch künstliche Intelligenz optimiert wird.</p>
+        <ul>
+            <li>🌟 Ultra-sichere Blockchain-Technologie</li>
+            <li>🚀 Hohe Skalierbarkeit und blitzschnelle Transaktionen</li>
+            <li>🧠 KI-gesteuerte Investitionsstrategien</li>
+            <li>🔥 Limitierte Token-Anzahl für maximale Wertsteigerung</li>
+        </ul>
+        <a class="buy-now" href="#">Token sichern</a>
+    </section>
+
+    <section class="countdown-section">
+        <h2 id="countdown-title">Presale Countdown</h2>
+        <div class="countdown-timer" id="countdown"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Xenex AI. Alle Rechte vorbehalten.</p>
+    </footer>
+
+    <script>
+        const presaleStages = [
+            { date: "March 1, 2025", price: 0.1 },
+            { date: "April 1, 2025", price: 0.2 },
+            { date: "May 1, 2025", price: 0.3 },
+            { date: "June 1, 2025", price: 0.4 },
+            { date: "July 1, 2025", price: 0.5 },
+            { date: "August 1, 2025", price: 0.6 },
+            { date: "September 1, 2025", price: 0.7 },
+            { date: "October 30, 2026", price: 1.0 }
+        ];
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            let nextStage = presaleStages.find(stage => new Date(stage.date).getTime() > now);
+            if (!nextStage) return;
+            
+            const countdownDate = new Date(nextStage.date).getTime();
+            const distance = countdownDate - now;
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById("countdown").innerHTML = `Nächster Presale-Preis: ${nextStage.price} $ - in ${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
