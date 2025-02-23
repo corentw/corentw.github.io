@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovative Blockchain-Lösungen</title>
+    <style>
+        /* Allgemeine Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: white;
+        }
+        h1, h2, h3 {
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Hero-Bereich mit Weltall-Animation */
+        .hero {
+            position: relative;
+            height: 100vh;
+            background: url('https://cdn.pixabay.com/photo/2020/03/05/12/14/space-4906471_960_720.jpg') no-repeat center center/cover;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://cdn.pixabay.com/photo/2019/11/09/13/11/galaxy-4601497_960_720.jpg') no-repeat center center/cover;
+            animation: spaceAnimation 60s linear infinite;
+            opacity: 0.4;
+        }
+        @keyframes spaceAnimation {
+            0% { background-position: 0 0; }
+            100% { background-position: -2000px -2000px; }
+        }
+        .hero h1 {
+            font-size: 3rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Abschnitte */
+        .section {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ff8c00;
+        }
+
+        .section p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .cta {
+            margin-top: 40px;
+        }
+        .cta button {
+            background-color: #ff8c00;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Features */
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 40px;
+        }
+        .features div {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            width: 30%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+        .features div:hover {
+            transform: translateY(-10px);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* Responsives Design */
+        @media (max-width: 768px) {
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+            .features div {
+                width: 80%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Willkommen bei unserer innovativen Blockchain-Plattform</h1>
+    </header>
+
+    <!-- Hero-Bereich mit animiertem Weltall -->
+    <section class="hero">
+        <h1>Die Zukunft der Blockchain-Technologie</h1>
+    </section>
+
+    <!-- Über uns -->
+    <section class="section">
+        <h2>Über uns</h2>
+        <p>Wir bieten fortschrittliche, skalierbare und sichere Blockchain-Lösungen für Unternehmen jeder Größe. Unsere Plattform nutzt die neueste Technologie, um Ihnen leistungsstarke Tools und Funktionen zu bieten, die Ihre Bedürfnisse im digitalen Zeitalter erfüllen.</p>
+    </section>
+
+    <!-- Unsere Features -->
+    <section class="section">
+        <h2>Unsere Features</h2>
+        <div class="features">
+            <div>
+                <h3>Skalierbarkeit</h3>
+                <p>Unsere Blockchain-Plattform wächst mit Ihrem Unternehmen, sodass Sie sicher sein können, dass Sie auch in Zukunft problemlos skalieren können.</p>
+            </div>
+            <div>
+                <h3>Höchste Sicherheit</h3>
+                <p>Dank fortschrittlicher Sicherheitsprotokolle sind Ihre Daten und Transaktionen jederzeit bestens geschützt.</p>
+            </div>
+            <div>
+                <h3>Benutzerfreundlichkeit</h3>
+                <p>Unsere Plattform bietet eine einfache und intuitive Benutzeroberfläche, die es Ihnen ermöglicht, ohne technische Vorkenntnisse effektiv zu arbeiten.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta">
+        <h2>Bereit, den nächsten Schritt zu machen?</h2>
+        <p>Starten Sie jetzt und entdecken Sie, wie Blockchain Ihr Unternehmen revolutionieren kann.</p>
+        <button>Jetzt starten</button>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Unsere Blockchain-Plattform. Alle Rechte vorbehalten.</p>
+    </footer>
+
+</body>
+</html>
