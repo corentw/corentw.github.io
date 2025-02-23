@@ -3,31 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KI-Chat (Automatisches Lernen)</title>
+  <title>KI-Chat mit Lernen und Animation</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; }
-    #chat {
-      max-width: 600px;
-      margin: auto;
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .message { margin-bottom: 10px; padding: 10px; border-radius: 5px; }
-    .user-message { text-align: right; background-color: #e1ffc7; }
-    .bot-message { text-align: left; background-color: #e0f0ff; }
-    input[type="text"] { padding: 10px; width: 80%; margin-right: 10px; border-radius: 5px; }
-    button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; }
+    body { font-family: 'Arial', sans-serif; background: #f3f4f6; margin: 0; padding: 0; }
+    #chat-container { max-width: 800px; margin: auto; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+    h1 { text-align: center; color: #007bff; margin-bottom: 20px; }
+    #chat-box { height: 400px; overflow-y: auto; padding: 10px; background: #f9f9f9; border-radius: 5px; box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1); }
+    .message { padding: 10px 15px; border-radius: 10px; margin-bottom: 10px; animation: fadeIn 0.5s ease-in-out; }
+    .user-message { background-color: #e0f7fa; align-self: flex-end; max-width: 60%; }
+    .bot-message { background-color: #b3e5fc; align-self: flex-start; max-width: 60%; }
+    input[type="text"] { padding: 10px; width: 80%; border-radius: 5px; border: 1px solid #ccc; font-size: 14px; }
+    button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: pointer; }
     button:hover { background-color: #0056b3; }
-    .option-button { margin-top: 10px; }
+    #options { display: flex; justify-content: space-between; margin-top: 20px; }
+    .option-button { padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
+    .option-button:hover { background-color: #218838; }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
-  <div id="chat">
-    <div class="message bot-message">Hallo! Ich kann nach Wetter, Bitcoin-Preis, Nachrichten und mehr suchen. Womit soll ich beginnen?</div>
+  <div id="chat-container">
+    <h1>KI-Chat</h1>
+    <div id="chat-box"></div>
     <div>
-      <input type="text" id="userInput" placeholder="Gib hier deine Nachricht ein" />
+      <input type="text" id="userInput" placeholder="Gib hier deine Nachricht ein" onkeydown="handleEnter(event)" />
       <button onclick="sendMessage()">Senden</button>
     </div>
     <div id="options">
@@ -35,25 +37,23 @@
       <button class="option-button" onclick="sendMessage('Bitcoin')">Bitcoin-Preis</button>
       <button class="option-button" onclick="sendMessage('Nachrichten')">Nachrichten</button>
     </div>
-    <div id="status"></div>
   </div>
 
   <script>
-    // Datenbank im LocalStorage speichern
     let database = {
       "web_data": [],
-      "query_count": 0,
-      "learned_data": {}  // Hier speichern wir gelerntes Wissen
+      "learned_data": {},
+      "query_count": 0
     };
 
-    // Initialisieren, wenn noch keine Daten vorhanden sind
+    // Initialisieren der Datenbank im LocalStorage
     if (!localStorage.getItem('database')) {
       localStorage.setItem('database', JSON.stringify(database));
     } else {
       database = JSON.parse(localStorage.getItem('database'));
     }
 
-    // Nachricht senden
+    // Funktion, um die Nachricht zu senden
     function sendMessage(userInput = '') {
       const input = userInput || document.getElementById('userInput').value;
       if (input) {
@@ -62,42 +62,49 @@
       }
     }
 
-    // Nachricht im Chat anzeigen
+    // Event-Handler für das Drücken der Enter-Taste
+    function handleEnter(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+
+    // Nachricht in den Chat einfügen
     function appendMessage(message, className) {
       let div = document.createElement('div');
       div.classList.add('message', className);
       div.innerHTML = message;
-      document.getElementById('chat').appendChild(div);
+      document.getElementById('chat-box').appendChild(div);
+      document.getElementById('chat-box').scrollTop = document.getElementById('chat-box').scrollHeight;
       document.getElementById('userInput').value = '';
     }
 
-    // Nachricht verarbeiten
+    // Verarbeiten der Nachricht und der Abfragen
     function processMessage(userMessage) {
-      // Prüfen, ob wir bereits etwas gelernt haben, das zur Anfrage passt
       const learnedResponse = getLearnedResponse(userMessage);
       if (learnedResponse) {
         appendMessage(learnedResponse, 'bot-message');
       } else {
-        // Wenn keine Antwort gefunden wurde, API-Anfragen ausführen
-        if (userMessage.toLowerCase().includes("wetter")) {
+        // API-Abfragen basierend auf Schlüsselwörtern
+        if (userMessage.toLowerCase().includes('wetter')) {
           getWeatherData(userMessage);
-        } else if (userMessage.toLowerCase().includes("bitcoin")) {
+        } else if (userMessage.toLowerCase().includes('bitcoin')) {
           getBitcoinPrice(userMessage);
-        } else if (userMessage.toLowerCase().includes("nachrichten")) {
+        } else if (userMessage.toLowerCase().includes('nachrichten')) {
           getNewsData();
         } else {
-          appendMessage("Ich kann nur nach dem Wetter, Bitcoin-Preis oder Nachrichten fragen.", 'bot-message');
+          appendMessage("Ich kann nur nach Wetter, Bitcoin-Preis oder Nachrichten fragen.", 'bot-message');
         }
       }
     }
 
-    // Prüfen, ob wir eine passende, gelernte Antwort haben
+    // Überprüfen, ob eine gelernte Antwort existiert
     function getLearnedResponse(userMessage) {
       const normalizedMessage = userMessage.toLowerCase().trim();
       return database.learned_data[normalizedMessage] || null;
     }
 
-    // Wetter-Daten abrufen (OpenWeatherMap API)
+    // Wetter-Daten holen
     function getWeatherData(userMessage) {
       const city = userMessage.match(/wetter in (\w+)/i);
       if (city) {
@@ -118,19 +125,19 @@
       }
     }
 
-    // Bitcoin-Preis-Daten abrufen (CoinDesk API)
-    function getBitcoinPrice(userMessage) {
+    // Bitcoin-Preis holen
+    function getBitcoinPrice() {
       fetch('https://api.coindesk.com/v1/bpi/currentprice/BTC.json')
         .then(response => response.json())
         .then(data => {
           const bitcoinPrice = `Aktueller Bitcoin-Preis: ${data.bpi.USD.rate} USD`;
-          saveToDatabase(userMessage, bitcoinPrice);
+          saveToDatabase('Bitcoin Preis', bitcoinPrice);
           appendMessage(bitcoinPrice, 'bot-message');
         })
         .catch(error => appendMessage('Fehler beim Abrufen der Bitcoin-Daten.', 'bot-message'));
     }
 
-    // Nachrichten-Daten abrufen (News API)
+    // Nachrichten holen
     function getNewsData() {
       fetch('https://newsapi.org/v2/top-headlines?country=de&apiKey=dein-api-schlüssel')
         .then(response => response.json())
@@ -154,23 +161,9 @@
         timestamp: new Date().toISOString() 
       };
       database.web_data.push(newEntry);
-
-      // Lernen: Speichern der Antwort für zukünftige ähnliche Anfragen
       database.learned_data[normalizedQuestion] = answer;
-
       database.query_count++;
       localStorage.setItem('database', JSON.stringify(database));
-    }
-
-    // Speichern der Daten als JSON-Datei
-    function saveJsonData() {
-      const jsonData = JSON.stringify(database, null, 2);
-      const blob = new Blob([jsonData], { type: 'application/json' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `web_data_${new Date().toISOString()}.json`;
-      link.click();
-      appendMessage('Daten wurden als JSON-Datei gespeichert.', 'bot-message');
     }
   </script>
 </body>
