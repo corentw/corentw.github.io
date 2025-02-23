@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Xenex AI - Cutting-edge AI-powered cryptocurrency with unique blockchain features, interactive UI, and high scalability.">
+    <meta name="keywords" content="Xenex AI, Cryptocurrency, Blockchain, Presale, Token, AI">
+    <meta name="author" content="Xenex AI Team">
+    <title>Xenex AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script> <!-- 3D Library -->
+    <script src="https://unpkg.com/particles.js"></script> <!-- Particles.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js for graphs -->
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ffcc;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.5s ease;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00ffcc;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 5px rgba(0, 255, 204, 0.5);
+        }
+
+        /* Hover Effects */
+        .buy-now, .stats-box {
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .buy-now:hover, .stats-box:hover {
+            transform: scale(1.1);
+            background-color: #00cca3;
+        }
+
+        /* 3D Token Animation */
+        .token-container {
+            width: 200px;
+            height: 200px;
+            margin-top: 50px;
+            perspective: 1000px;
+        }
+
+        .token {
+            width: 100%;
+            height: 100%;
+            background: url('img/xenex_token.gif') no-repeat center;
+            background-size: contain;
+            transform-style: preserve-3d;
+            animation: rotateToken 10s infinite linear;
+        }
+
+        @keyframes rotateToken {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        /* Live Token Graph */
+        .graph-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #222;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background-color: #333;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            background-color: #00ffcc;
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            padding: 40px 20px;
+        }
+
+        .testimonial-card {
+            background-color: #111;
+            color: #fff;
+            width: 30%;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: scale(1.05);
+        }
+
+        /* Chatbot Button */
+        .chatbot-btn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: #00ffcc;
+            border: none;
+            border-radius: 50%;
+            padding: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            color: #fff;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .modal-close {
+            background-color: #00ffcc;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Xenex AI</h1>
+        <button class="language-selector" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </header>
+
+    <!-- 3D Token Rotation -->
+    <section class="token-container">
+        <div class="token"></div>
+    </section>
+
+    <!-- Graph Section -->
+    <section class="graph-container">
+        <h2>Token Price Graph</h2>
+        <canvas id="tokenGraph"></canvas>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="testimonial-card">
+            <h3>Investor #1</h3>
+            <p>"Xenex AI is transforming the way we think about cryptocurrency!"</p>
+        </div>
+        <div class="testimonial-card">
+            <h3>Investor #2</h3>
+            <p>"Best presale investment I've ever made!"</p>
+        </div>
+        <div class="testimonial-card">
+            <h3>Investor #3</h3>
+            <p>"Great community and amazing growth potential."</p>
+        </div>
+    </section>
+
+    <!-- Chatbot Button -->
+    <button class="chatbot-btn" onclick="openChatbot()">💬</button>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
+    </footer>
+
+    <div id="token-modal" class="modal">
+        <div class="modal-content">
+            <h3>Why Xenex AI Coin?</h3>
+            <p>Xenex AI Coin is a revolutionary cryptocurrency optimized through AI.</p>
+            <button class="modal-close" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // 3D Token Rotation
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create a rotating cube for now (Replace with Token Model later)
+        const geometry = new THREE.BoxGeometry();
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ffcc });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Token Price Graph (Chart.js)
+        const ctx = document.getElementById('tokenGraph').getContext('2d');
+        const tokenGraph = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                datasets: [{
+                    label: 'Xenex AI Token Price',
+                    data: [0.1, 0.15, 0.2, 0.3, 0.5, 1],
+                    borderColor: '#00ffcc',
+                    backgroundColor: 'rgba(0, 255, 204, 0.2)',
+                    borderWidth: 1
+                }]
+            }
+        });
+
+        // Modal Functions
+        function openModal() {
+            document.getElementById('token-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('token-modal').style.display = 'none';
+        }
+        
+        // Chatbot
+        function openChatbot() {
+            alert("Chatbot is opening!");
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
