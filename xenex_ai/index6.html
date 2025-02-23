@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Xenex AI - The future of Alien-AI blockchain with high scalability, lightning-fast transactions, and AI-powered investment strategies.">
+    <meta name="keywords" content="Xenex AI, Blockchain, Cryptocurrency, Presale, Tokens, AI">
+    <meta name="author" content="Xenex AI Team">
+    <title>Xenex AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ffcc;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .hero {
+            height: 100vh;
+            background: url('img/xenex_background.gif') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeInUp 2s ease-out;
+        }
+
+        .hero img {
+            width: 150px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .buy-now {
+            display: inline-block;
+            padding: 15px 30px;
+            margin-top: 20px;
+            background: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 5px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .buy-now:hover {
+            transform: scale(1.1);
+            background: #00cca3;
+        }
+
+        .countdown-section {
+            background-color: #111;
+            padding: 80px 20px;
+            text-align: center;
+            background: url('https://i.gifer.com/6ioZ.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+            margin-top: 50px;
+        }
+
+        .presale-highlights {
+            background: #111;
+            padding: 40px 20px;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            margin-top: 40px;
+        }
+
+        .progress-bar {
+            background-color: #444;
+            border-radius: 10px;
+            height: 30px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            background-color: #00ffcc;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 50%;
+            padding: 20px;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        /* FAQs Section */
+        .faq-section {
+            background-color: #111;
+            padding: 50px 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .faq-section h2 {
+            font-size: 2rem;
+            color: #00ffcc;
+        }
+
+        .faq-item {
+            margin: 20px 0;
+            font-size: 1.2rem;
+        }
+
+        .faq-item a {
+            color: #00ffcc;
+            text-decoration: none;
+        }
+
+        .faq-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Team Section */
+        .team-section {
+            padding: 80px 20px;
+            text-align: center;
+            background-color: #111;
+            color: #fff;
+        }
+
+        .team-member {
+            display: inline-block;
+            margin: 20px;
+            width: 200px;
+            text-align: center;
+        }
+
+        .team-member img {
+            width: 150px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        /* Sticky Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Xenex AI</h1>
+        <button class="language-selector" onclick="toggleLanguage()">Switch to Light Mode</button>
+    </header>
+
+    <section class="hero">
+        <img src="img/logo.png" alt="Xenex AI Logo">
+        <h2>The Future of Alien-AI Blockchain</h2>
+        <h3>A cutting-edge, secure, and decentralized cryptocurrency</h3>
+        <a class="buy-now" href="#token-info">Buy Now</a>
+    </section>
+
+    <section class="token-info" id="token-info">
+        <h2>Why Xenex AI Coin?</h2>
+        <p>Xenex AI Coin is a revolutionary cryptocurrency optimized by artificial intelligence.</p>
+        <ul>
+            <li>🌟 Ultra-secure blockchain technology</li>
+            <li>🚀 High scalability and lightning-fast transactions</li>
+            <li>🧠 AI-powered investment strategies</li>
+            <li>🔥 Limited token supply for maximum value growth</li>
+        </ul>
+        <a class="buy-now" href="#">Secure Your Token</a>
+    </section>
+
+    <section class="presale-highlights">
+        <h3>Presale Highlights</h3>
+        <ul>
+            <li>🚀 Stage 1: March 1, 2025 - Price: $0.1</li>
+            <li>🚀 Stage 2: April 1, 2025 - Price: $0.2</li>
+            <li>🚀 Stage 3: May 1, 2025 - Price: $0.3</li>
+            <li>🔥 Early Investors Get the Best Deal!</li>
+            <li>🎯 Limited Supply - Get Your Tokens Before They're Gone!</li>
+        </ul>
+        <div class="progress-bar">
+            <span style="width: 25%;"></span>
+        </div>
+    </section>
+
+    <section class="countdown-section">
+        <h2 id="countdown-title">Presale Countdown</h2>
+        <div class="countdown-timer" id="countdown"></div>
+    </section>
+
+    <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <a href="#faq1">What is Xenex AI?</a>
+        </div>
+        <div class="faq-item">
+            <a href="#faq2">How can I participate in the presale?</a>
+        </div>
+        <div class="faq-item">
+            <a href="#faq3">What is the benefit of investing in Xenex AI?</a>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <h2>Meet The Team</h2>
+        <div class="team-member">
+            <img src="img/team-member1.jpg" alt="Team Member 1">
+            <h3>John Doe</h3>
+            <p>CEO & Founder</p>
+        </div>
+        <div class="team-member">
+            <img src="img/team-member2.jpg" alt="Team Member 2">
+            <h3>Jane Smith</h3>
+            <p>CTO</p>
+        </div>
+    </section>
+
+    <div class="fab" onclick="window.location.href='#token-info';">💰</div>
+
+    <footer>
+        <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const presaleStages = [
+            { date: "March 1, 2025", price: 0.1 },
+            { date: "April 1, 2025", price: 0.2 },
+            { date: "May 1, 2025", price: 0.3 },
+            { date: "June 1, 2025", price: 0.4 },
+            { date: "July 1, 2025", price: 0.5 },
+            { date: "August 1, 2025", price: 0.6 },
+            { date: "September 1, 2025", price: 0.7 },
+            { date: "October 30, 2026", price: 1.0 }
+        ];
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            let nextStage = presaleStages.find(stage => new Date(stage.date).getTime() > now);
+            if (!nextStage) return;
+            
+            const countDownDate = new Date(nextStage.date).getTime();
+            const distance = countDownDate - now;
+            
+            if (distance < 0) return;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        setInterval(updateCountdown, 1000);
+
+        function toggleLanguage() {
+            const body = document.querySelector("body");
+            body.style.backgroundColor = body.style.backgroundColor === "black" ? "#fff" : "black";
+        }
+    </script>
+</body>
+</html>
