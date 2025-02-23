@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain-Technologie</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #ff8c00;
+            margin: 0;
+            display: inline-block;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li:hover {
+            color: #ff8c00;
+        }
+
+        .cta-btn {
+            padding: 12px 25px;
+            background-color: #ff8c00;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .countdown {
+            font-size: 3rem;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #ff8c00;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
+            background: url('https://images.unsplash.com/photo-1466393032270-bb4a5e8e7f3d?crop=entropy&cs=tinysrgb&fit=max&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDk5fHxyb3NrZXQlfGVufDB8fHx8fDE2MzM2MTE5Mzk&ixlib=rb-1.2.1&q=80&w=1080') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .hero h2 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero h3 {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            font-weight: 300;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero .cta-btn {
+            padding: 15px 30px;
+            font-size: 1.3rem;
+        }
+
+        /* Countdown Section */
+        .countdown-section {
+            background-color: #111;
+            padding: 80px 20px;
+            text-align: center;
+            background: url('https://images.unsplash.com/photo-1484997748191-c5a0b9e98976?crop=entropy&cs=tinysrgb&fit=max&ixid=MXwyMDg3OXwwfDF8c2VhcmNofDg5fHdyZWFyZ3JvdW5kfGVufDB8fHx8fDE2MzM2MjM3NzM&ixlib=rb-1.2.1&q=80&w=1080') no-repeat center center;
+            background-size: cover;
+            color: white;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .countdown-title {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #ff8c00;
+        }
+
+        .countdown-timer {
+            font-size: 2.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            color: #ff8c00;
+        }
+
+        .countdown-timer div {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 80px 20px;
+            background-color: #111;
+            text-align: center;
+            background: url('https://images.unsplash.com/photo-1506748686210-1ef3c1f1c800?crop=entropy&cs=tinysrgb&fit=max&ixid=MXwyMDg3OXwwfDF8c2VhcmNofDM2fHxlbnZpcm9ubWVudHwzZXx8fDB8fHwxNjMzNjA3NzM&ixlib=rb-1.2.1&q=80&w=1080') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        .features-section h2 {
+            font-size: 3rem;
+            margin-bottom: 40px;
+            color: #ff8c00;
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .features div {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+            width: 30%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .features div:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #111;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        footer p {
+            margin-bottom: 20px;
+        }
+
+        footer .social-icons a {
+            margin: 0 15px;
+            color: #ff8c00;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        footer .social-icons a:hover {
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .features div {
+                width: 80%;
+                margin-bottom: 20px;
+            }
+
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+
+            .hero h3 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <nav>
+            <h1>Blockchain Solutions</h1>
+            <ul>
+                <li>Home</li>
+                <li>About</li>
+                <li>Services</li>
+                <li>Contact</li>
+            </ul>
+            <button class="cta-btn">Get Started</button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h2>Building Tomorrow's Blockchain Solutions</h2>
+        <h3>Empowering businesses with secure, scalable, and decentralized technologies</h3>
+        <button class="cta-btn">Start Today</button>
+    </section>
+
+    <!-- Pre-Sale Countdown Section -->
+    <section class="countdown-section">
+        <h2 class="countdown-title">Presale Countdown</h2>
+        <div class="countdown-timer">
+            <div id="days">00</div>:<div id="hours">00</div>:<div id="minutes">00</div>:<div id="seconds">00</div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <h2>Our Core Features</h2>
+        <div class="features">
+            <div>
+                <h3>Smart Contracts</h3>
+                <p>Automating transactions and processes for a seamless user experience.</p>
+            </div>
+            <div>
+                <h3>Blockchain Development</h3>
+                <p>Creating custom solutions tailored to your specific business needs.</p>
+            </div>
+            <div>
+                <h3>Security</h3>
+                <p>Ensuring the highest level of data protection with cutting-edge encryption techniques.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Blockchain Solutions. All rights reserved.</p>
+        <div class="social-icons">
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">LinkedIn</a>
+        </div>
+    </footer>
+
+    <!-- Countdown Timer Script -->
+    <script>
+        const countdownDate = new Date("March 1, 2025 00:00:00").getTime();
+
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerHTML = days;
+            document.getElementById("hours").innerHTML = hours;
+            document.getElementById("minutes").innerHTML = minutes;
+            document.getElementById("seconds").innerHTML = seconds;
+
+            if (distance < 0) {
+                clearInterval(x);
+                document.querySelector(".countdown-timer").innerHTML = "Presale Started!";
+            }
+        }, 1000);
+    </script>
+
+    <!-- AOS Library for Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+</html>
