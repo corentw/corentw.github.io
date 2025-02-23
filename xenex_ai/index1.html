@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xenex AI Coin</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ffcc;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #00ffcc;
+        }
+
+        .language-selector {
+            cursor: pointer;
+            padding: 10px 20px;
+            background-color: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .language-selector:hover {
+            transform: scale(1.1);
+        }
+
+        .hero {
+            height: 100vh;
+            background: url('xenex_background.gif') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .hero h2 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #00ffcc;
+        }
+
+        .countdown-section {
+            text-align: center;
+            padding: 80px 20px;
+            background-color: #111;
+        }
+
+        .countdown-timer {
+            font-size: 2.5rem;
+            color: #00ffcc;
+        }
+
+        .features-section {
+            padding: 80px 20px;
+            background-color: #222;
+            text-align: center;
+        }
+
+        .features div {
+            background-color: rgba(0, 255, 204, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 255, 204, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .features div:hover {
+            transform: translateY(-10px);
+        }
+
+        footer {
+            background-color: #111;
+            padding: 40px 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Xenex AI Coin</h1>
+        <button class="language-selector" onclick="toggleLanguage()">Sprache: Deutsch</button>
+    </header>
+
+    <section class="hero">
+        <h2 id="hero-title">Die Zukunft der Alien-KI Blockchain</h2>
+        <h3 id="hero-subtitle">Eine hochmoderne, sichere und dezentrale Kryptowährung</h3>
+    </section>
+
+    <section class="countdown-section">
+        <h2 id="countdown-title">Presale Countdown</h2>
+        <div class="countdown-timer" id="countdown"></div>
+    </section>
+
+    <section class="features-section">
+        <h2 id="features-title">Warum Xenex AI?</h2>
+        <div>
+            <h3 id="feature-1-title">Dezentrale KI</h3>
+            <p id="feature-1-text">Unsere Blockchain wird von einer autonomen KI gesteuert.</p>
+        </div>
+        <div>
+            <h3 id="feature-2-title">Sicherheit</h3>
+            <p id="feature-2-text">Hochmoderne Verschlüsselung und Anonymität.</p>
+        </div>
+        <div>
+            <h3 id="feature-3-title">Skalierbarkeit</h3>
+            <p id="feature-3-text">Nahtlose und schnelle Transaktionen weltweit.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Xenex AI. Alle Rechte vorbehalten.</p>
+    </footer>
+
+    <script>
+        const countdownDate = new Date("March 1, 2025 00:00:00").getTime();
+
+        setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+        }, 1000);
+
+        function toggleLanguage() {
+            const currentLang = document.querySelector('.language-selector');
+            if (currentLang.innerText.includes('Deutsch')) {
+                currentLang.innerText = 'Language: English';
+                document.getElementById('hero-title').innerText = 'The Future of Alien AI Blockchain';
+                document.getElementById('hero-subtitle').innerText = 'A cutting-edge, secure, and decentralized cryptocurrency';
+                document.getElementById('countdown-title').innerText = 'Presale Countdown';
+                document.getElementById('features-title').innerText = 'Why Xenex AI?';
+                document.getElementById('feature-1-title').innerText = 'Decentralized AI';
+                document.getElementById('feature-1-text').innerText = 'Our blockchain is controlled by an autonomous AI.';
+                document.getElementById('feature-2-title').innerText = 'Security';
+                document.getElementById('feature-2-text').innerText = 'State-of-the-art encryption and anonymity.';
+                document.getElementById('feature-3-title').innerText = 'Scalability';
+                document.getElementById('feature-3-text').innerText = 'Seamless and fast transactions worldwide.';
+            } else {
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
