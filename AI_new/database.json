@@ -10,5 +10,11 @@
     "last_checked": "2025-02-23T12:00:00",
     "temperature": "22°C",
     "conditions": "Sonnig"
-  }
+  },
+  "learned": [
+    {
+      "question": "was ist php?",
+      "answer": "PHP ist eine serverseitige Skriptsprache."
+    }
+  ]
 }
