@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat mit KI (JavaScript)</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #chat {
+      max-width: 500px;
+      margin: auto;
+      background: #f1f1f1;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .message { margin-bottom: 10px; }
+    .user-message { text-align: right; color: #4CAF50; }
+    .bot-message { text-align: left; color: #2196F3; }
+  </style>
+</head>
+<body>
+  <div id="chat">
+    <div class="message bot-message">Hallo! Wie kann ich dir helfen?</div>
+    <input type="text" id="userInput" placeholder="Gib hier deine Nachricht ein" />
+    <button onclick="sendMessage()">Senden</button>
+  </div>
+
+  <script>
+    // JSON-Datenbank (kann auch aus einer Datei geladen werden, aber hier direkt im Code)
+    let database = {
+      "greeting": "Hallo! Wie kann ich dir helfen?",
+      "default": "Es tut mir leid, ich verstehe das nicht. Kannst du es anders formulieren?",
+      "how_are_you": "Mir geht's gut, danke der Nachfrage! Wie geht es dir?",
+      "learned": [
+        {
+          "question": "was ist php?",
+          "answer": "PHP ist eine serverseitige Skriptsprache."
+        }
+      ]
+    };
+
+    // Speichern der Datenbank in LocalStorage, wenn noch nicht vorhanden
+    if (!localStorage.getItem('database')) {
+      localStorage.setItem('database', JSON.stringify(database));
+    } else {
+      database = JSON.parse(localStorage.getItem('database'));
+    }
+
+    function sendMessage() {
+      let userInput = document.getElementById('userInput').value;
+      if (userInput) {
+        appendMessage(userInput, 'user-message');
+        processMessage(userInput);
+      }
+    }
+
+    function appendMessage(message, className) {
+      let div = document.createElement('div');
+      div.classList.add('message', className);
+      div.innerHTML = message;
+      document.getElementById('chat').appendChild(div);
+      document.getElementById('userInput').value = '';
+    }
+
+    function processMessage(userMessage) {
+      // Wenn die Nachricht mit "lerne:" beginnt, wird sie als Lernbefehl behandelt
+      if (userMessage.toLowerCase().startsWith('lerne:')) {
+        let content = userMessage.substring(6).trim();
+        let [question, answer] = content.split("Antwort:").map(item => item.trim());
+
+        if (question && answer) {
+          // Neues Q/A Paar lernen
+          database.learned.push({ question: question.toLowerCase(), answer: answer });
+          localStorage.setItem('database', JSON.stringify(database));
+          appendMessage("Neue Lerninformation gespeichert.", 'bot-message');
+          return;
+        }
+      }
+
+      // Überprüfen, ob die Frage schon in den gelernten Daten existiert
+      let response = getLearnedResponse(userMessage);
+      if (response) {
+        appendMessage(response, 'bot-message');
+        return;
+      }
+
+      // Standardantworten
+      if (userMessage.toLowerCase().includes('hallo')) {
+        appendMessage(database.greeting, 'bot-message');
+      } else if (userMessage.toLowerCase().includes('wie geht')) {
+        appendMessage(database.how_are_you, 'bot-message');
+      } else {
+        appendMessage(database.default, 'bot-message');
+      }
+    }
+
+    function getLearnedResponse(userMessage) {
+      // Suche nach einer passenden Antwort in den gelernten Daten
+      for (let pair of database.learned) {
+        if (userMessage.toLowerCase().includes(pair.question)) {
+          return pair.answer;
+        }
+      }
+      return null; // Keine passende Antwort gefunden
+    }
+  </script>
+</body>
+</html>
 
