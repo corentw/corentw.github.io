@@ -1,0 +1,14 @@
+{
+  "greeting": "Hallo! Wie kann ich dir helfen?",
+  "default": "Es tut mir leid, ich verstehe das nicht. Kannst du es anders formulieren?",
+  "how_are_you": "Mir geht's gut, danke der Nachfrage! Wie geht es dir?",
+  "bitcoin_price": {
+    "last_checked": "2025-02-23T12:00:00",
+    "price": "$26,500"
+  },
+  "weather": {
+    "last_checked": "2025-02-23T12:00:00",
+    "temperature": "22°C",
+    "conditions": "Sonnig"
+  }
+}
