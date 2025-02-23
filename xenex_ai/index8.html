@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Xenex AI - The future of Alien-AI blockchain with high scalability, lightning-fast transactions, and AI-powered investment strategies.">
+    <meta name="keywords" content="Xenex AI, Blockchain, Cryptocurrency, Presale, Tokens, AI">
+    <meta name="author" content="Xenex AI Team">
+    <title>Xenex AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ffcc;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .hero {
+            height: 100vh;
+            background: url('img/xenex_background.gif') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeInUp 2s ease-out;
+        }
+
+        .hero img {
+            width: 150px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .buy-now {
+            display: inline-block;
+            padding: 15px 30px;
+            margin-top: 20px;
+            background: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 5px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .buy-now:hover {
+            transform: scale(1.1);
+            background: #00cca3;
+        }
+
+        .countdown-section {
+            background-color: #111;
+            padding: 80px 20px;
+            text-align: center;
+            background: url('https://i.gifer.com/6ioZ.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+            margin-top: 50px;
+        }
+
+        .presale-highlights {
+            background: #111;
+            padding: 40px 20px;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            margin-top: 40px;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        .progress-bar {
+            background-color: #444;
+            border-radius: 10px;
+            height: 30px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            background-color: #00ffcc;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 50%;
+            padding: 20px;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #333;
+            padding: 30px;
+            border-radius: 8px;
+            color: white;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .modal-header, .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close-btn {
+            background: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+        }
+
+        .testimonials-section {
+            padding: 80px 20px;
+            text-align: center;
+            background-color: #111;
+            color: #fff;
+        }
+
+        .testimonial {
+            margin: 20px;
+            font-size: 1.2rem;
+        }
+
+        .team-section {
+            padding: 80px 20px;
+            text-align: center;
+            background-color: #111;
+            color: #fff;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.8);
+            padding: 15px;
+            text-align: center;
+            z-index: 2000;
+        }
+
+        .navbar a {
+            color: #00ffcc;
+            font-size: 1.2rem;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Xenex AI</h1>
+        <button class="language-selector" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </header>
+
+    <div class="navbar">
+        <a href="#hero">Home</a>
+        <a href="#token-info">Token Info</a>
+        <a href="#presale-highlights">Presale</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#team">Team</a>
+    </div>
+
+    <section class="hero" id="hero">
+        <img src="img/logo.png" alt="Xenex AI Logo">
+        <h2>The Future of Alien-AI Blockchain</h2>
+        <h3>A cutting-edge, secure, and decentralized cryptocurrency</h3>
+        <a class="buy-now" href="#token-info">Buy Now</a>
+    </section>
+
+    <section class="token-info" id="token-info">
+        <h2>Why Xenex AI Coin?</h2>
+        <p>Xenex AI Coin is a revolutionary cryptocurrency powered by artificial intelligence.</p>
+        <ul>
+            <li>🌟 Ultra-secure blockchain technology</li>
+            <li>🚀 High scalability and lightning-fast transactions</li>
+            <li>🧠 AI-powered investment strategies</li>
+            <li>🔥 Limited token supply for maximum value appreciation</li>
+        </ul>
+        <a class="buy-now" href="#">Secure Tokens</a>
+    </section>
+
+    <section class="presale-highlights" id="presale-highlights">
+        <h2>Presale Stages</h2>
+        <div class="progress-bar">
+            <span style="width: 50%;"></span>
+        </div>
+        <p>50% of tokens sold in the presale! Don't miss out.</p>
+        <a class="buy-now" href="#">Buy Now</a>
+    </section>
+
+    <section class="countdown-section">
+        <h2>Presale Countdown</h2>
+        <div class="countdown-timer" id="countdown"></div>
+    </section>
+
+    <section class="testimonials-section" id="testimonials">
+        <h2>User Testimonials</h2>
+        <div class="testimonial">"Xenex AI has been a game-changer in the cryptocurrency world!" - John D.</div>
+        <div class="testimonial">"I love the AI-powered strategies. Can't wait for the presale!" - Jane S.</div>
+    </section>
+
+    <section class="team-section" id="team">
+        <h2>Meet the Team</h2>
+        <div class="team-member">
+            <img src="img/team-member1.jpg" alt="Team Member">
+            <p>John Doe - CEO</p>
+        </div>
+        <div class="team-member">
+            <img src="img/team-member2.jpg" alt="Team Member">
+            <p>Jane Doe - CTO</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
+    </footer>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>How to Buy Xenex AI Coin</h2>
+                <button class="close-btn" onclick="closeModal()">X</button>
+            </div>
+            <div class="modal-body">
+                <ol>
+                    <li>Connect your wallet.</li>
+                    <li>Choose the amount of Xenex AI to purchase.</li>
+                    <li>Confirm the transaction.</li>
+                </ol>
+            </div>
+            <div class="modal-footer">
+                <button class="buy-now" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDarkMode() {
+            const body = document.querySelector("body");
+            body.style.backgroundColor = body.style.backgroundColor === "black" ? "#fff" : "black";
+        }
+
+        function openModal() {
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        const presaleStages = [
+            { date: "March 1, 2025", price: 0.1 },
+            { date: "April 1, 2025", price: 0.2 },
+            { date: "May 1, 2025", price: 0.3 },
+            { date: "June 1, 2025", price: 0.4 },
+            { date: "July 1, 2025", price: 0.5 },
+            { date: "August 1, 2025", price: 0.6 },
+            { date: "September 1, 2025", price: 0.7 },
+            { date: "October 30, 2026", price: 1.0 }
+        ];
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            let nextStage = presaleStages.find(stage => new Date(stage.date).getTime() > now);
+            if (!nextStage) return;
+
+            const countdownDate = new Date(nextStage.date).getTime();
+            const distance = countdownDate - now;
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
