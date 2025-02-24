@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Xenex AI - The future of Alien-AI blockchain with high scalability, lightning-fast transactions, and AI-powered investment strategies.">
+    <meta name="keywords" content="Xenex AI, Blockchain, Cryptocurrency, Presale, Tokens, AI">
+    <meta name="author" content="Xenex AI Team">
+    <title>Xenex AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ffcc;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Header with animated menu */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #00ffcc;
+        }
+
+        .navbar {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: #00ffcc;
+            font-size: 1.2rem;
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .navbar a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background: #00ffcc;
+            transition: all 0.3s ease-in-out;
+            transform: translateX(-50%);
+        }
+
+        .navbar a:hover {
+            color: #00cca3;
+        }
+
+        .navbar a:hover::after {
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .navbar {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: rgba(10, 10, 10, 0.9);
+                text-align: center;
+                padding: 20px;
+            }
+
+            .navbar.show {
+                display: flex;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: url('img/xenex_background.gif') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeInUp 2s ease-out;
+        }
+
+        .hero img {
+            width: 150px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .buy-now {
+            display: inline-block;
+            padding: 15px 30px;
+            margin-top: 20px;
+            background: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 5px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .buy-now:hover {
+            transform: scale(1.1);
+            background: #00cca3;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 50%;
+            padding: 20px;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        /* Countdown Timer */
+        .countdown-section {
+            text-align: center;
+            padding: 50px;
+            background-color: #111;
+            color: white;
+            margin-top: 50px;
+        }
+
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Xenex AI</h1>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <nav class="navbar">
+            <a href="#hero">Home</a>
+            <a href="#token-info">Token Info</a>
+            <a href="#presale-highlights">Presale</a>
+            <a href="#faq">FAQ</a>
+            <a href="#team">Team</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="hero" data-aos="fade-up">
+        <img src="img/logo.png" alt="Xenex AI Logo">
+        <h2>The Future of Alien-AI Blockchain</h2>
+        <h3>A cutting-edge, secure, and decentralized cryptocurrency</h3>
+        <a class="buy-now" href="#token-info">Buy Now</a>
+    </section>
+
+    <section class="countdown-section" id="countdown-section" data-aos="fade-in">
+        <h2>Presale Countdown</h2>
+        <div id="countdown"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        AOS.init(); // Initialize animations
+
+        function toggleMenu() {
+            document.querySelector(".navbar").classList.toggle("show");
+        }
+
+        function updateCountdown() {
+            const presaleDate = new Date("March 1, 2025").getTime();
+            const now = new Date().getTime();
+            const timeLeft = presaleDate - now;
+
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
