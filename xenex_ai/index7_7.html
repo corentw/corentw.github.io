@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Xenex AI - Die Zukunft von Blockchain und Künstlicher Intelligenz, schnelle Transaktionen, und innovative KI-gesteuerte Investitionsstrategien.">
+    <meta name="keywords" content="Xenex AI, Blockchain, Kryptowährung, Token, Presale, Künstliche Intelligenz">
+    <meta name="author" content="Xenex AI Team">
+    <title>Xenex AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ffcc;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #00ffcc;
+            transition: transform 0.3s ease;
+        }
+
+        header h1:hover {
+            transform: scale(1.1);
+        }
+
+        .language-selector {
+            font-size: 1.2rem;
+            background: none;
+            color: #00ffcc;
+            border: 1px solid #00ffcc;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .language-selector:hover {
+            transform: scale(1.05);
+            background-color: rgba(0, 255, 204, 0.1);
+        }
+
+        .navbar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.8);
+            z-index: 2000;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .navbar a {
+            color: #00ffcc;
+            font-size: 1.2rem;
+            margin: 10px 0;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #fff;
+            transform: scale(1.1);
+            text-decoration: underline;
+        }
+
+        .hamburger-menu {
+            display: none;
+            font-size: 2rem;
+            color: #00ffcc;
+            cursor: pointer;
+        }
+
+        .hero {
+            height: 100vh;
+            background: url('img/xenex_background.gif') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeInUp 2s ease-out;
+            position: relative;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        .hero h2, .hero h3 {
+            color: white;
+            font-size: 3rem;
+            margin: 10px 0;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .hero img {
+            width: 150px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .buy-now {
+            padding: 15px 30px;
+            background: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 5px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .buy-now:hover {
+            transform: scale(1.1);
+            background: #00cca3;
+            box-shadow: 0 4px 12px rgba(0, 255, 204, 0.5);
+        }
+
+        /* Countdown Section */
+        .countdown-section {
+            background-color: #111;
+            padding: 80px 20px;
+            text-align: center;
+            background: url('https://i.gifer.com/6ioZ.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+            margin-top: 50px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .countdown-timer {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            background-color: #444;
+            border-radius: 10px;
+            height: 30px;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            background-color: #00ffcc;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Presale Highlights */
+        .presale-highlights {
+            background: #111;
+            padding: 60px 20px;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            margin-top: 40px;
+            animation: slideIn 1s ease-out;
+        }
+
+        .presale-highlights ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .presale-highlights ul li {
+            margin: 15px 0;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .presale-highlights ul li:hover {
+            background-color: rgba(0, 255, 204, 0.1);
+            cursor: pointer;
+            transform: translateY(-5px);
+        }
+
+        /* Team Section */
+        .team-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            padding: 80px 20px;
+            text-align: center;
+            background-color: #111;
+            color: white;
+        }
+
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .team-member img:hover {
+            transform: scale(1.1);
+        }
+
+        .team-member h3 {
+            font-size: 1.5rem;
+            margin: 10px 0;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 60px 20px;
+            background-color: #111;
+            color: white;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            margin-top: 40px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .faq-section h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+        }
+
+        .faq-item h3 {
+            font-size: 1.6rem;
+            color: #00ffcc;
+        }
+
+        .faq-item p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .hero h3 {
+                font-size: 1.2rem;
+            }
+
+            .buy-now {
+                font-size: 1.2rem;
+            }
+
+            .hamburger-menu {
+                display: block;
+            }
+
+            .navbar {
+                display: flex;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: rgba(10, 10, 10, 0.9);
+                padding: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar a {
+                margin: 10px 0;
+            }
+
+            .team-section {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Xenex AI</h1>
+        <button class="language-selector" onclick="toggleLanguage()">Sprache Umstellen</button>
+        <div class="hamburger-menu" onclick="toggleNavbar()">
+            <i class="fas fa-bars"></i>
+        </div>
+    </header>
+
+    <div class="navbar">
+        <a href="#hero">Home</a>
+        <a href="#about">Über uns</a>
+        <a href="#token-info">Token Infos</a>
+        <a href="#presale-highlights">Presale</a>
+        <a href="#faq">FAQ</a>
+        <a href="#team">Team</a>
+    </div>
+
+    <section class="hero" id="hero">
+        <h2>Willkommen bei Xenex AI</h2>
+        <h3>Die Zukunft der Krypto-Welt, unterstützt durch Künstliche Intelligenz</h3>
+        <img src="img/logo.png" alt="Xenex AI Logo">
+        <a href="#presale-highlights" class="buy-now">Jetzt Presale Betreten</a>
+    </section>
+
+    <section id="about" class="about-section">
+        <h2>Über Xenex AI</h2>
+        <p>Xenex AI ist ein Blockchain-Projekt, das Künstliche Intelligenz nutzt, um innovative Lösungen für schnelle, sichere Transaktionen zu bieten.</p>
+        <p>Unsere AI-gesteuerten Systeme bieten einzigartige Möglichkeiten, das Krypto-Investment zu revolutionieren.</p>
+        <a href="#presale-highlights" class="buy-now">Jetzt Presale Betreten</a>
+    </section>
+
+    <section id="presale-highlights" class="presale-highlights">
+        <h2>Presale Highlights</h2>
+        <ul>
+            <li>Maximale Supply: 100 Millionen Token</li>
+            <li>Presale Rabatt: 30%</li>
+            <li>Token Preis: 0.10 USD</li>
+            <li>Token Nutzen: KI-gesteuerte Investitionen</li>
+        </ul>
+    </section>
+
+    <section id="faq" class="faq-section">
+        <h2>Häufig gestellte Fragen (FAQ)</h2>
+        <div class="faq-item">
+            <h3>Was ist Xenex AI?</h3>
+            <p>Xenex AI ist ein revolutionäres Blockchain-Projekt, das Künstliche Intelligenz in den Kryptomarkt integriert.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Wie kann ich am Presale teilnehmen?</h3>
+            <p>Über unseren sicheren Presale-Portal können Sie Token kaufen und von einem Rabatt profitieren.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Warum ist Xenex AI einzigartig?</h3>
+            <p>Xenex AI kombiniert Blockchain-Sicherheit mit den Vorteilen von Künstlicher Intelligenz für smartere Krypto-Investitionen.</p>
+        </div>
+    </section>
+
+    <section class="team-section" id="team">
+        <h2>Unser Team</h2>
+        <div class="team-member" data-aos="fade-up">
+            <img src="img/team1.jpg" alt="Team Mitglied">
+            <p>John Doe</p>
+            <p>CEO</p>
+        </div>
+        <div class="team-member" data-aos="fade-up" data-aos-delay="200">
+            <img src="img/team2.jpg" alt="Team Mitglied">
+            <p>Jane Smith</p>
+            <p>CTO</p>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS (Animate on Scroll)
+        AOS.init();
+
+        // Toggle Navbar visibility on small screens
+        function toggleNavbar() {
+            const navbar = document.querySelector(".navbar");
+            navbar.style.display = navbar.style.display === "block" ? "none" : "block";
+        }
+
+        // Switch Language Function
+        function toggleLanguage() {
+            alert("Sprachwechsel Funktion wird bald verfügbar sein.");
+        }
+    </script>
+</body>
+
+</html>
