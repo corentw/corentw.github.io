@@ -123,6 +123,29 @@
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
 
         .buy-now {
             display: inline-block;
@@ -206,6 +229,36 @@
     <section class="countdown-section" id="countdown-section" data-aos="fade-in">
         <h2>Presale Countdown</h2>
         <div id="countdown"></div>
+    </section>
+
+    <section id="faq" class="faq-section">
+        <h2>Frequently Asked Questions (FAQ)</h2>
+        <div class="faq-item">
+            <h3>What is Xenex AI?</h3>
+            <p>Xenex AI is a decentralized blockchain project powered by artificial intelligence, designed to facilitate fast transactions and implement advanced AI-based investment strategies.</p>
+        </div>
+        <div class="faq-item">
+            <h3>How can I participate in the presale?</h3>
+            <p>You can participate in the Xenex AI presale by purchasing tokens through our secure presale platform. Check the countdown timer for the exact start date!</p>
+        </div>
+        <div class="faq-item">
+            <h3>What makes Xenex AI different?</h3>
+            <p>Xenex AI combines the security and decentralization of blockchain with the power of artificial intelligence to create a next-gen investment tool for crypto users.</p>
+        </div>
+    </section>
+
+    <section class="team-section" id="team">
+        <h2>Meet Our Team</h2>
+        <div class="team-member" data-aos="fade-up">
+            <img src="img/team1.jpg" alt="Team Member">
+            <p>John Doe</p>
+            <p>CEO</p>
+        </div>
+        <div class="team-member" data-aos="fade-up" data-aos-delay="200">
+            <img src="img/team2.jpg" alt="Team Member">
+            <p>Jane Smith</p>
+            <p>CTO</p>
+        </div>
     </section>
 
     <footer>
