@@ -347,6 +347,86 @@
     text-shadow: 0 0 10px rgba(0, 255, 204, 0.8);
 }
 
+
+
+/* FAQ Section */
+.faq-section {
+    background: linear-gradient(135deg, #0a0a0a, #111);
+    padding: 60px 20px;
+    text-align: center;
+    color: #00ffcc;
+    animation: fadeInUp 2s ease-in-out;
+}
+
+.faq-title {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-shadow: 0 0 15px rgba(0, 255, 204, 0.8);
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.faq-item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(0, 255, 204, 0.3);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease-in-out;
+}
+
+.faq-item:hover {
+    background: rgba(0, 255, 204, 0.2);
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+}
+
+.faq-question {
+    font-size: 1.4rem;
+    margin: 0;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.faq-answer {
+    display: none;
+    font-size: 1.2rem;
+    margin-top: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    transition: opacity 0.4s ease-in-out;
+}
+
+/* Glitch Animation */
+.faq-question:hover {
+    color: #00cca3;
+    text-shadow: 0 0 5px #00cca3, 0 0 10px #00cca3, 0 0 15px #00cca3;
+}
+
+/* Animation for Answer */
+.faq-answer.show {
+    display: block;
+    animation: slideDown 0.5s ease-in-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
     </style>
 </head>
 <body>
@@ -404,20 +484,42 @@
     </section>
 
     <section id="faq" class="faq-section" data-aos="fade-up">
-        <h2>Frequently Asked Questions (FAQ)</h2>
-        <div class="faq-item">
-            <h3>What is Xenex AI?</h3>
-            <p>Xenex AI is a decentralized blockchain project powered by artificial intelligence, designed to facilitate fast transactions and implement advanced AI-based investment strategies.</p>
+    <h2 class="faq-title">Frequently Asked Questions (FAQ)</h2>
+    
+    <div class="faq-container">
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">🔹 What is Xenex AI?</h3>
+            <p class="faq-answer">Xenex AI is a decentralized blockchain project powered by artificial intelligence, designed for high-speed transactions and AI-based investment strategies.</p>
         </div>
-        <div class="faq-item">
-            <h3>How can I participate in the presale?</h3>
-            <p>You can participate in the Xenex AI presale by purchasing tokens through our secure presale platform. Check the countdown timer for the exact start date!</p>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">🚀 How can I participate in the presale?</h3>
+            <p class="faq-answer">You can join the Xenex AI presale by purchasing tokens through our secure platform. The countdown timer shows when the next price increase occurs.</p>
         </div>
-        <div class="faq-item">
-            <h3>What makes Xenex AI different?</h3>
-            <p>Xenex AI combines the security and decentralization of blockchain with the power of artificial intelligence to create a next-gen investment tool for crypto users.</p>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">🤖 What makes Xenex AI different?</h3>
+            <p class="faq-answer">Xenex AI merges blockchain security with AI intelligence, offering the most advanced decentralized investment technology.</p>
         </div>
-    </section>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">💳 What payment methods are accepted?</h3>
+            <p class="faq-answer">You can purchase tokens using credit/debit cards, cryptocurrencies like BTC & ETH, and other payment gateways.</p>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">🔐 Is Xenex AI secure?</h3>
+            <p class="faq-answer">Absolutely! Our blockchain is built with top-tier security protocols to ensure safe and fast transactions.</p>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">📈 How can I track my token holdings?</h3>
+            <p class="faq-answer">You can monitor your Xenex AI tokens directly through our dashboard or any blockchain explorer.</p>
+        </div>
+
+    </div>
+</section>
+
 
     <section class="team-section" id="team">
         <h2>Meet Our Team</h2>
@@ -517,6 +619,18 @@ updateCountdown(); // Sofort starten
             const button = document.querySelector('.light-selector');
             button.textContent = document.body.classList.contains('light-mode') ? 'Switch to Dark Mode' : 'Switch to Light Mode';
         }
+
+      function toggleFAQ(element) {
+    let answer = element.querySelector('.faq-answer');
+    
+    if (answer.classList.contains('show')) {
+        answer.classList.remove('show');
+    } else {
+        document.querySelectorAll('.faq-answer').forEach((ans) => ans.classList.remove('show'));
+        answer.classList.add('show');
+    }
+}
+
 
     </script>
 </body>
