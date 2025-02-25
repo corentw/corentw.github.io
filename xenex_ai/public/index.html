@@ -21,6 +21,9 @@
             overflow-x: hidden;
             transition: background-color 0.3s ease;
         }
+        .fcolor {
+            color: #00ffcc;
+        }
 
         /* Header with animated menu */
         header {
@@ -250,10 +253,11 @@
             background-color: #f1f1f1;
         }
 
-        .light-mode .buy-now {
+        .light-mode .buy-now .fcolor {
             background-color: #333;
             color: #fff;
         }
+
 
         .light-selector {
             background-color: #00ffcc;
@@ -295,13 +299,13 @@
         <h2>Buy XNX in presale now!</h2>
 
         <div id="countdown" class="countdown-container">
-          <div class="time-box"><span id="days">00</span><small>Days</small></div>
-          <div class="time-box"><span id="hours">00</span><small>Hours</small></div>
-          <div class="time-box"><span id="minutes">00</span><small>Minutes</small></div>
-          <div class="time-box"><span id="seconds">00</span><small>Seconds</small></div>
+          <div class="time-box"><span id="days">00</span><small class="fcolor">Days</small></div>
+          <div class="time-box"><span id="hours">00</span><small class="fcolor">Hours</small></div>
+          <div class="time-box"><span id="minutes">00</span><small class="fcolor">Minutes</small></div>
+          <div class="time-box"><span id="seconds">00</span><small class="fcolor">Seconds</small></div>
         </div>
         <br>
-        <h3>Until the next price increase</h3>
+        <h3 class="fcolor">Until the next price increase</h3>
         <br>
         USD raised: $1,458,501.91
         <br>
