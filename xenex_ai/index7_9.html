@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Xenex AI - The future of Alien-AI blockchain with high scalability, lightning-fast transactions, and AI-powered investment strategies.">
+    <meta name="keywords" content="Xenex AI, Blockchain, Cryptocurrency, Presale, Tokens, AI">
+    <meta name="author" content="Xenex AI Team">
+    <title>Xenex AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ffcc;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+        .fcolor {
+            color: #00ffcc;
+        }
+
+        /* Header with animated menu */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 92%;
+            padding: 4px 4%;
+            background: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.5s ease;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #00ffcc;
+        }
+
+        .navbar {
+            display: flex;
+            gap: 10px;
+        }
+
+        .navbar a {
+            color: #00ffcc;
+            font-size: 1.2rem;
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .navbar a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background: #00ffcc;
+            transition: all 0.3s ease-in-out;
+            transform: translateX(-50%);
+        }
+
+        .navbar a:hover {
+            color: #00cca3;
+        }
+
+        .navbar a:hover::after {
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .navbar {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 98px;
+                left: 0;
+                width: 92%;
+                background: rgba(10, 10, 10, 0.9);
+                text-align: center;
+                padding: 2% 4%;
+            }
+
+            .navbar.show {
+                display: flex;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: url('../img/xenex_background.gif') no-repeat center center fixed;
+            background-size: cover;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeInUp 2s ease-out;
+        }
+
+        .hero img {
+            width: 150px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .buy-now {
+            display: inline-block;
+            padding: 15px 30px;
+            margin-top: 20px;
+            background: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 5px;
+            font-size: 1.5rem;
+            text-decoration:none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .buy-now:hover {
+            transform: scale(1.1);
+            background: #00cca3;
+        }
+        .buy-now-presale{
+            display: inline-block;
+            padding: 12px 8px;
+            margin: 20px 9px 0px 9px;
+            background: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-decoration:none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.6s ease, background 0.3s ease;
+        }
+
+        .buy-now-presale:hover {
+            transform: scale(1.1);
+            background: #00cca3;
+            }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #00ffcc;
+            color: #0a0a0a;
+            border-radius: 50%;
+            padding: 20px;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        /* Countdown Timer */
+        .XXX_countdown-section {
+            text-align: center;
+            padding: 50px;
+            background-color: #111;
+            color: white;
+            animation: fadeInUp 2s ease-out;
+        }
+        .countdown-section {
+            background-color: #111;
+            padding: 80px 20px;
+            text-align: center;
+            background: url('https://i.gifer.com/6ioZ.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+        .countdown-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-family: Arial, sans-serif;
+}
+
+.time-box {
+    background: #111;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.time-box span {
+    display: block;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.time-box small {
+    font-size: 12px;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .light-mode {
+            background-color: #fff;
+            color: #333;
+        }
+
+        .light-mode header {
+            background-color: #f1f1f1;
+        }
+
+        .light-mode .buy-now .fcolor {
+            background-color: #333;
+            color: #fff;
+        }
+
+
+        .light-selector {
+            background-color: #00ffcc;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #0a0a0a;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .light-selector:hover {
+            background-color: #00cca3;
+        }
+
+        .progress-container {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00ffcc, #00cca3);
+    border-radius: 10px;
+    transition: width 1s ease-in-out;
+    position: relative;
+}
+
+.glare {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6);
+    opacity: 0.7;
+    filter: blur(2px);
+    transform: skewX(-20deg);
+    animation: glareMove 2s infinite linear;
+}
+
+@keyframes glareMove {
+    0% {
+        left: -10%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+.progress-text {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: #00ffcc;
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.8);
+}
+
+
+
+/* FAQ Section */
+.faq-section {
+    background: linear-gradient(135deg, #0a0a0a, #111);
+    padding: 60px 20px;
+    text-align: center;
+    color: #00ffcc;
+    animation: fadeInUp 2s ease-in-out;
+}
+
+.faq-title {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-shadow: 0 0 15px rgba(0, 255, 204, 0.8);
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.faq-item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(0, 255, 204, 0.3);
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease-in-out;
+}
+
+.faq-item:hover {
+    background: rgba(0, 255, 204, 0.2);
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+}
+
+.faq-question {
+    font-size: 1.4rem;
+    margin: 0;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.faq-answer {
+    display: none;
+    font-size: 1.2rem;
+    margin-top: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    transition: opacity 0.4s ease-in-out;
+}
+
+/* Glitch Animation */
+.faq-question:hover {
+    color: #00cca3;
+    text-shadow: 0 0 5px #00cca3, 0 0 10px #00cca3, 0 0 15px #00cca3;
+}
+
+/* Animation for Answer */
+.faq-answer.show {
+    display: block;
+    animation: slideDown 0.5s ease-in-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Xenex AI</h1>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <nav class="navbar">
+            <a href="#hero" onclick="toggleMenuClose()">Home</a>
+            <a href="#presale" onclick="toggleMenuClose()">Presale</a>
+            <a href="#token-info" onclick="toggleMenuClose()">Token Info</a>
+            <a href="#faq" onclick="toggleMenuClose()">FAQ</a>
+            <a href="#team" onclick="toggleMenuClose()">Team</a>
+            <button class="light-selector" onclick="toggleLight()">Switch to Light Mode</button>
+        </nav>
+    </header>
+
+    <section class="hero" id="hero" data-aos="fade-up">
+        <img src="../img/logo.png" alt="Xenex AI Logo">
+        <h2>The Future of Alien-AI Blockchain</h2>
+        <h3>A cutting-edge, secure, and decentralized cryptocurrency</h3>
+        <a class="buy-now" href="#presale">Buy Now</a>
+    </section>
+    <span id="presale"></span>
+
+    <section class="countdown-section" id="presalexxx" data-aos="fade-up">
+        <h2>Buy XNX in presale now!</h2>
+
+        <div id="countdown" class="countdown-container">
+          <div class="time-box"><span id="days">00</span><small class="fcolor">Days</small></div>
+          <div class="time-box"><span id="hours">00</span><small class="fcolor">Hours</small></div>
+          <div class="time-box"><span id="minutes">00</span><small class="fcolor">Minutes</small></div>
+          <div class="time-box"><span id="seconds">00</span><small class="fcolor">Seconds</small></div>
+        </div>
+        
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill">
+             <div class="glare"></div>
+            </div>
+          </div>
+            <p id="progress-text" class="progress-text">0% completed</p>
+        </div>
+        
+        <h3 class="fcolor">Until the next price increase</h3>
+        <br>
+        USD raised: $1,458,501.91
+        <br>
+        CRX raised: 86,765,221.099017
+        <br><br>
+        1 XNX = $0.001646
+        <br>
+        <a class="buy-now-presale" href="#token-buy-card">BUY WITH CARD</a>
+        <a class="buy-now-presale" href="#token-buy-crypto">BUY WITH CRYPTO</a>
+        
+    </section>
+
+    <section id="faq" class="faq-section" data-aos="fade-up">
+    <h2 class="faq-title">Frequently Asked Questions (FAQ)</h2>
+    
+    <div class="faq-container">
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">🔹 What is Xenex AI?</h3>
+            <p class="faq-answer">Xenex AI is a decentralized blockchain project powered by artificial intelligence, designed for high-speed transactions and AI-based investment strategies.</p>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">🚀 How can I participate in the presale?</h3>
+            <p class="faq-answer">You can join the Xenex AI presale by purchasing tokens through our secure platform. The countdown timer shows when the next price increase occurs.</p>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">🤖 What makes Xenex AI different?</h3>
+            <p class="faq-answer">Xenex AI merges blockchain security with AI intelligence, offering the most advanced decentralized investment technology.</p>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">💳 What payment methods are accepted?</h3>
+            <p class="faq-answer">You can purchase tokens using credit/debit cards, cryptocurrencies like BTC & ETH, and other payment gateways.</p>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">🔐 Is Xenex AI secure?</h3>
+            <p class="faq-answer">Absolutely! Our blockchain is built with top-tier security protocols to ensure safe and fast transactions.</p>
+        </div>
+
+        <div class="faq-item" onclick="toggleFAQ(this)">
+            <h3 class="faq-question">📈 How can I track my token holdings?</h3>
+            <p class="faq-answer">You can monitor your Xenex AI tokens directly through our dashboard or any blockchain explorer.</p>
+        </div>
+
+    </div>
+</section>
+
+
+    <section class="team-section" id="team">
+        <h2>Meet Our Team</h2>
+        <div class="team-member" data-aos="fade-up">
+            <img src="img/team1.jpg" alt="Team Member">
+            <p>John Doe</p>
+            <p>CEO</p>
+        </div>
+        <div class="team-member" data-aos="fade-up" data-aos-delay="200">
+            <img src="img/team2.jpg" alt="Team Member">
+            <p>Jane Smith</p>
+            <p>CTO</p>
+        </div>
+    </section>
+
+    
+<!-- 
+    buy with card/stripe
+    !-->
+<section data-aos="fade-up">
+    <script async
+  src="https://js.stripe.com/v3/buy-button.js">
+</script>
+
+<stripe-buy-button
+  buy-button-id="buy_btn_1QwMSBCBncsadcOkNllWEKEQ"
+  publishable-key="pk_live_51QwLnTCBncsadcOkeKcSwStXxBsKEDJAx4KzwoHhvptCDTHNwlnWks97Ro1syEO2RaGeSeX59yLM0AhQqmusVTxw00GbaiOdbb">
+</stripe-buy-button>
+</section>
+
+<footer>
+ <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
+</footer>
+
+    <script>
+        AOS.init(); // Initialize animations
+
+        function toggleMenu() {
+            document.querySelector(".navbar").classList.toggle("show");
+        }
+        function toggleMenuClose() {
+            setTimeout(() => {
+                document.querySelector(".navbar").classList.toggle("show");
+            }, 220);
+        }
+
+function updateCountdown() {
+    const presaleDate = new Date("March 1, 2025 00:00:00").getTime();
+    const now = new Date().getTime();
+    const timeLeft = presaleDate - now;
+
+    if (timeLeft <= 0) {
+        document.getElementById("countdown").innerHTML = "Presale has started!";
+        return;
+    }
+
+    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+    document.getElementById("days").textContent = days.toString().padStart(2, '0');
+    document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
+    document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
+    document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
+}
+
+function updateProgressBar() {
+    const presaleDate = new Date("March 1, 2025 00:00:00").getTime();
+    const startDate = new Date("February 1, 2025 00:00:00").getTime(); // Beispiel: Presale begann am 1. Februar
+    const now = new Date().getTime();
+
+    const totalDuration = presaleDate - startDate;
+    const elapsedTime = now - startDate;
+    let progressPercent = (elapsedTime / totalDuration) * 100;
+
+    progressPercent = Math.max(0, Math.min(progressPercent, 100)); // Begrenzung auf 0-100%
+
+    document.querySelector(".progress-fill").style.width = progressPercent + "%";
+    document.getElementById("progress-text").textContent = progressPercent.toFixed(1) + "% completed";
+}
+
+// Update Progress Bar alle 1 Sekunde
+setInterval(updateProgressBar, 1000);
+updateProgressBar(); // Direkt ausführen
+
+
+// Alle 1 Sekunde aktualisieren
+setInterval(updateCountdown, 1000);
+updateCountdown(); // Sofort starten
+
+
+
+
+        function toggleLight() {
+            document.body.classList.toggle('light-mode');
+            const button = document.querySelector('.light-selector');
+            button.textContent = document.body.classList.contains('light-mode') ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+        }
+
+      function toggleFAQ(element) {
+    let answer = element.querySelector('.faq-answer');
+    
+    if (answer.classList.contains('show')) {
+        answer.classList.remove('show');
+    } else {
+        document.querySelectorAll('.faq-answer').forEach((ans) => ans.classList.remove('show'));
+        answer.classList.add('show');
+    }
+}
+
+
+    </script>
+</body>
+</html>
