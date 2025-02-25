@@ -433,9 +433,24 @@
         </div>
     </section>
 
-    <footer>
-        <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
-    </footer>
+    
+<!-- 
+    buy with card/stripe
+    !-->
+<section data-aos="fade-up">
+    <script async
+  src="https://js.stripe.com/v3/buy-button.js">
+</script>
+
+<stripe-buy-button
+  buy-button-id="buy_btn_1QwMSBCBncsadcOkNllWEKEQ"
+  publishable-key="pk_live_51QwLnTCBncsadcOkeKcSwStXxBsKEDJAx4KzwoHhvptCDTHNwlnWks97Ro1syEO2RaGeSeX59yLM0AhQqmusVTxw00GbaiOdbb">
+</stripe-buy-button>
+</section>
+
+<footer>
+ <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
+</footer>
 
     <script>
         AOS.init(); // Initialize animations
