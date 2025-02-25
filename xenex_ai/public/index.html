@@ -309,7 +309,9 @@
             document.querySelector(".navbar").classList.toggle("show");
         }
         function toggleMenuClose() {
-            document.querySelector(".navbar").classList.toggle("show");
+            setTimeout(
+                document.querySelector(".navbar").classList.toggle("show");
+                , 1000);
         }
 
         function updateCountdown() {
