@@ -205,6 +205,33 @@
             text-align: center;
             padding: 10px 0;
         }
+        .light-mode {
+            background-color: #fff;
+            color: #333;
+        }
+
+        .light-mode header {
+            background-color: #f1f1f1;
+        }
+
+        .light-mode .buy-now {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .light-selector {
+            background-color: #00ffcc;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #0a0a0a;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .light-selector:hover {
+            background-color: #00cca3;
+        }
     </style>
 </head>
 <body>
@@ -217,6 +244,7 @@
             <a href="#presale-highlights">Presale</a>
             <a href="#faq">FAQ</a>
             <a href="#team">Team</a>
+            <button class="light-selector" onclick="toggleLight()">Switch to Light Mode</button>
         </nav>
     </header>
 
@@ -287,6 +315,13 @@
         }
 
         setInterval(updateCountdown, 1000);
+
+        function toggleLight() {
+            document.body.classList.toggle('light-mode');
+            const button = document.querySelector('.light-selector');
+            button.textContent = document.body.classList.contains('light-mode') ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+        }
+
     </script>
 </body>
 </html>
