@@ -281,8 +281,8 @@
         <div class="menu-toggle" onclick="toggleMenu()">☰</div>
         <nav class="navbar">
             <a href="#hero" onclick="toggleMenuClose()">Home</a>
+            <a href="#presale" onclick="toggleMenuClose()">Presale</a>
             <a href="#token-info" onclick="toggleMenuClose()">Token Info</a>
-            <a href="#presale-highlights" onclick="toggleMenuClose()">Presale</a>
             <a href="#faq" onclick="toggleMenuClose()">FAQ</a>
             <a href="#team" onclick="toggleMenuClose()">Team</a>
             <button class="light-selector" onclick="toggleLight()">Switch to Light Mode</button>
@@ -363,7 +363,7 @@
         function toggleMenuClose() {
             setTimeout(() => {
                 document.querySelector(".navbar").classList.toggle("show");
-            }, 460);
+            }, 360);
         }
 
 function updateCountdown() {
