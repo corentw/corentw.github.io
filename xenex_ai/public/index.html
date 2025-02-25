@@ -247,7 +247,7 @@
         <h1>Xenex AI</h1>
         <div class="menu-toggle" onclick="toggleMenu()">☰</div>
         <nav class="navbar">
-            <a href="#hero">Home</a>
+            <a href="#hero" onclick="toggleMenuClose()">Home</a>
             <a href="#token-info">Token Info</a>
             <a href="#presale-highlights">Presale</a>
             <a href="#faq">FAQ</a>
@@ -307,6 +307,9 @@
 
         function toggleMenu() {
             document.querySelector(".navbar").classList.toggle("show");
+        }
+        function toggleMenuClose() {
+            document.querySelector(".navbar").classList.toggle("hide");
         }
 
         function updateCountdown() {
