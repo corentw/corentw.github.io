@@ -233,7 +233,7 @@
     }
     .xcountdown-section {
       background-color: #111;
-      padding: 10px auto;
+      padding: 28px auto;
       text-align: center;
       background: url('https://i.gifer.com/6ioZ.gif') no-repeat center center fixed;
       background-size: cover;
@@ -518,12 +518,15 @@
       margin-bottom: 2rem;
     }
     .dashboard-card {
-      background-color: #111;
-      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(0, 255, 204, 0.3);
       border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,255,204,0.4);
-      color: #fff;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 15px;
+      padding: 15px 20px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease-in-out;
       animation: cardFadeIn 0.8s ease forwards;
       opacity: 0;
     }
@@ -724,7 +727,7 @@
 
 
           <div class="dashboard-card">
-            aktueller presale-Tokenpreis:
+            aktueller presale Tokenpreis:
             $<span id="xactprice">0.001646</span>
 
             
