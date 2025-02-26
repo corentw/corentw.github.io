@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WalletConnect für alle Wallets</title>
+    <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.6.6/dist/umd/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+</head>
+<body>
+    <h2>Verbinde deine Krypto-Wallet</h2>
+    <button id="connectMetamask">MetaMask verbinden</button>
+    <button id="connectWalletConnect">WalletConnect verbinden</button>
+    <p id="walletInfo"></p>
+
+    <script>
+        let web3;
+        let provider;
+
+        // **MetaMask-Verbindung**
+        async function connectMetamask() {
+            if (window.ethereum) {
+                try {
+                    web3 = new Web3(window.ethereum);
+                    await window.ethereum.request({ method: "eth_requestAccounts" });
+                    const accounts = await web3.eth.getAccounts();
+                    document.getElementById("walletInfo").innerText = "MetaMask verbunden: " + accounts[0];
+                } catch (error) {
+                    console.error("MetaMask-Verbindung fehlgeschlagen:", error);
+                    document.getElementById("walletInfo").innerText = "Fehler beim Verbinden.";
+                }
+            } else {
+                alert("MetaMask nicht gefunden! Bitte installiere MetaMask.");
+            }
+        }
+
+        // **WalletConnect-Verbindung für mobile Wallets**
+        async function connectWalletConnect() {
+            provider = new WalletConnectProvider.default({
+                rpc: {
+                    1: "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID", // Ersetze mit deinem Infura-Projekt-ID
+                }
+            });
+
+            try {
+                await provider.enable();
+                web3 = new Web3(provider);
+                const accounts = await web3.eth.getAccounts();
+                document.getElementById("walletInfo").innerText = "WalletConnect verbunden: " + accounts[0];
+
+                // Event-Listener für das Trennen der Verbindung
+                provider.on("disconnect", () => {
+                    document.getElementById("walletInfo").innerText = "Wallet getrennt.";
+                });
+
+            } catch (error) {
+                console.error("WalletConnect-Verbindung fehlgeschlagen:", error);
+                document.getElementById("walletInfo").innerText = "Fehler beim Verbinden.";
+            }
+        }
+
+        document.getElementById("connectMetamask").addEventListener("click", connectMetamask);
+        document.getElementById("connectWalletConnect").addEventListener("click", connectWalletConnect);
+    </script>
+</body>
+</html>
