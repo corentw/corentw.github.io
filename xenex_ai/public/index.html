@@ -561,9 +561,30 @@
         grid-template-columns: 1fr;
       }
     }
+
+    .banner {
+    width: 100%;
+    background: linear-gradient(90deg, #ff2d55, #5b2eff);
+    padding: 20px 0;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    position:absolute;
+    z-index: 1001;
+}
+
+marquee {
+    font-size: 18px;
+    font-weight:300;
+    color: white;
+}
   </style>
 </head>
 <body>
+
+<div class="banner">
+        <marquee id="promo-text">Lädt...</marquee>
+    </div>
+  
   <header>
     <h1>Xenex AI</h1>
     <!-- Neues Dashboard-Icon -->
@@ -864,6 +885,31 @@
       listItem.className = 'text-gray-700 mb-2';
       historyList.appendChild(listItem);
     });
+
+
+
+// Array mit verschiedenen Promo-Texten
+const promoMessages = [
+    "🚀 Xenex AI – The future of artificial intelligence starts here! 🔥",
+    "💡 Smart solutions for smart people – Welcome to Xenex AI! 🤖",
+    "🌍 Innovation meets performance – Xenex AI is changing the world! ⚡",
+    "🔥 AI-powered technology that makes your life easier! 🌟",
+    "💻 Built for speed, performance & efficiency – Xenex AI! 🚀",
+];
+
+
+// Funktion, um zufällige Werbebotschaften anzuzeigen
+function updatePromoText() {
+    const randomMessage = promoMessages[Math.floor(Math.random() * promoMessages.length)];
+    document.getElementById("promo-text").textContent = randomMessage;
+}
+
+// Aktualisierung alle 5 Sekunden mit neuer Message
+setInterval(updatePromoText, 5000);
+
+// Erste Initialisierung
+updatePromoText();
+
   </script>
 </body>
 </html>
