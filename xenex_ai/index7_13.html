@@ -512,23 +512,7 @@
       color: #4CAF50;
       font-weight: bold;
     }
-    .dashboard-animation {
-      text-align: center;
-      margin-bottom: 2rem;
-      animation: fadeInUp 1s ease-out;
-    }
-    #animation-box {
-      margin: 20px auto;
-      width: 150px;
-      height: 150px;
-      background: radial-gradient(circle, #00ffcc, #00cca3);
-      border-radius: 50%;
-      box-shadow: 0 0 15px rgba(0,255,204,0.5);
-      transition: transform 0.3s ease-in-out;
-    }
-    #animation-box:hover {
-      transform: rotate(10deg) scale(1.05);
-    }
+    
     /* Anpassungen für kleinere Bildschirme */
     @media (max-width: 768px) {
       .dashboard-grid {
@@ -691,6 +675,34 @@
       <div class="dashboard-container">
         <h2 class="dashboard-title">Dashboard</h2>
         <div class="dashboard-grid">
+
+<div id="xcountdown" class="countdown-container">
+      <div class="time-box"><span id="xdays">00</span><small class="fcolor">Days</small></div>
+      <div class="time-box"><span id="xhours">00</span><small class="fcolor">Hours</small></div>
+      <div class="time-box"><span id="xminutes">00</span><small class="fcolor">Minutes</small></div>
+      <div class="time-box"><span id="xseconds">00</span><small class="fcolor">Seconds</small></div>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill">
+          <div class="glare"></div>
+        </div>
+      </div>
+      <p id="xprogress-text" class="progress-text">0% completed</p>
+    </div>
+    <h3 class="fcolor">Until the next price increase</h3>
+    <br>
+ 
+  
+  
+  
+
+
+
+
+
+
+
           <!-- Aktuelle Token -->
           <div class="dashboard-card">
             <h2>Aktuelle Token</h2>
@@ -706,13 +718,8 @@
             </ul>
           </div>
         </div>
-        <!-- Animationsbereich -->
-        <div class="dashboard-animation">
-          <h2>Token-Animation</h2>
-          <div id="animation-box">xxx</div>
-        </div>
-      </div>
-      <button class="buy-now-presale" onclick="closeModal('modal-dashboard')">Schließen</button>
+        <!-- Endbereich --> 
+        <button class="buy-now-presale" onclick="closeModal('modal-dashboard')">Schließen</button>
     </div>
   </div>
 
@@ -748,6 +755,12 @@
       document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
       document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
       document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
+
+      document.getElementById("xdays").textContent = days.toString().padStart(2, '0');
+      document.getElementById("xhours").textContent = hours.toString().padStart(2, '0');
+      document.getElementById("xminutes").textContent = minutes.toString().padStart(2, '0');
+      document.getElementById("xseconds").textContent = seconds.toString().padStart(2, '0');
+   
     }
 
     function updateProgressBar() {
@@ -760,6 +773,8 @@
       progressPercent = Math.max(0, Math.min(progressPercent, 100));
       document.querySelector(".progress-fill").style.width = progressPercent + "%";
       document.getElementById("progress-text").textContent = progressPercent.toFixed(1) + "% completed";
+      document.getElementById("xprogress-text").textContent = progressPercent.toFixed(1) + "% completed";
+
     }
     setInterval(updateProgressBar, 1000);
     updateProgressBar();
@@ -794,16 +809,6 @@
       }
     }
 
-    // Token Animation mit GSAP (ohne API)
-    gsap.from("#animation-box", {
-      duration: 2,
-      x: 100,
-      rotation: 360,
-      scale: 0.5,
-      ease: "power2.inOut",
-      repeat: -1,
-      yoyo: true
-    });
 
     // Demo-Daten für Kaufhistorie und Tokenwert
     const demoTokenValue = 5000;
