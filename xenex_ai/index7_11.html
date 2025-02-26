@@ -538,7 +538,7 @@
             <a href="#token-info" onclick="toggleMenuClose()">Token Info</a>
             <a href="#faq" onclick="toggleMenuClose()">FAQ</a>
             <a href="#team" onclick="toggleMenuClose()">Team</a>
-            <a href="#dashboard" class="text-yellow-300" onclick="toggleMenuClose()">Dashboard</a>
+            <a href="#dashboard" class="text-yellow-300" onclick="toggleMenuClose();openModal('modal-crypto');">Dashboard</a>
             <button class="light-selector" onclick="toggleLight()">Switch to Light Mode</button>
           
         </nav>
@@ -678,7 +678,11 @@
   
 
 <!-- Dashboard Bereich -->
-<div id="dashboard" class="p-8">
+<!-- Modal für Crypto Purchase -->
+<div id="modal-dashboard" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal-dashboard')">&times;</span>
+    <div id="dashboard" class="p-8">
     <h1 class="text-3xl text-gray-900 mb-6">Willkommen zum Dashboard</h1>
 
     <!-- Token Anzeige -->
@@ -704,10 +708,11 @@
         <h2 class="text-2xl mb-4">Token-Animation</h2>
         <div id="animation-box" class="w-32 h-32 bg-indigo-600 rounded-full"></div>
     </section>
-</div>
-
-
-  
+   </div>
+      
+    <button class="buy-now-presale" onclick="closeModal('modal-dashboard')">Close</button>
+  </div>
+</div> 
 
 <footer>
  <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
