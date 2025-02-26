@@ -231,6 +231,17 @@
       color: white;
       box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
     }
+    .xcountdown-section {
+      background-color: #111;
+      padding: 28px auto;
+      text-align: center;
+      background: url('https://i.gifer.com/6ioZ.gif') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+      border: 2px solid rgba(0, 255, 204, 0.3);
+      border-radius: 10px;
+    }
     .countdown-container {
       display: flex;
       justify-content: center;
@@ -251,6 +262,27 @@
       font-weight: bold;
     }
     .time-box small {
+      font-size: 12px;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+
+    /* timebox/countdown Dashboard */
+    .xtime-box {
+      background: #111;
+      color: #fff;
+      padding: 8px 4px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 18px;
+    }
+    .xtime-box span {
+      display: block;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .xtime-box small {
       font-size: 12px;
       text-transform: uppercase;
       opacity: 0.7;
@@ -452,7 +484,7 @@
     .dashboard-modal {
       max-width: 900px;
       margin: 5% auto;
-      padding: 30px;
+      padding: 30px 8px;
       background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(10,10,10,0.95));
       border: 2px solid #00ffcc;
       border-radius: 15px;
@@ -472,7 +504,7 @@
     .dashboard-title {
       text-align: center;
       margin-bottom: 1.5rem;
-      font-size: 2.5rem;
+      font-size: 1.5rem;
       color: #00ffcc;
       text-shadow: 0 0 10px rgba(0,255,204,0.7);
       animation: titlePulse 2s infinite alternate;
@@ -488,12 +520,15 @@
       margin-bottom: 2rem;
     }
     .dashboard-card {
-      background-color: #111;
-      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(0, 255, 204, 0.3);
       border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,255,204,0.4);
-      color: #fff;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 15px;
+      padding: 15px 20px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease-in-out;
       animation: cardFadeIn 0.8s ease forwards;
       opacity: 0;
     }
@@ -512,23 +547,7 @@
       color: #4CAF50;
       font-weight: bold;
     }
-    .dashboard-animation {
-      text-align: center;
-      margin-bottom: 2rem;
-      animation: fadeInUp 1s ease-out;
-    }
-    #animation-box {
-      margin: 20px auto;
-      width: 150px;
-      height: 150px;
-      background: radial-gradient(circle, #00ffcc, #00cca3);
-      border-radius: 50%;
-      box-shadow: 0 0 15px rgba(0,255,204,0.5);
-      transition: transform 0.3s ease-in-out;
-    }
-    #animation-box:hover {
-      transform: rotate(10deg) scale(1.05);
-    }
+    
     /* Anpassungen für kleinere Bildschirme */
     @media (max-width: 768px) {
       .dashboard-grid {
@@ -606,7 +625,7 @@
     <br>
     CRX raised: 86,765,221.099017
     <br><br>
-    1 XNX = $0.001646
+    1 XNX = $<span id="actprice">n/A</span>
     <br>
     <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-card')">BUY WITH CARD</a>
     <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-crypto')">BUY WITH CRYPTO</a>
@@ -691,6 +710,24 @@
       <div class="dashboard-container">
         <h2 class="dashboard-title">Dashboard</h2>
         <div class="dashboard-grid">
+          
+<div class="xcountdown-section">
+<div id="xcountdown" class="countdown-container">
+      <div class="xtime-box"><span id="xdays">00</span><small class="fcolor">Days</small></div>
+      <div class="xtime-box"><span id="xhours">00</span><small class="fcolor">Hours</small></div>
+      <div class="xtime-box"><span id="xminutes">00</span><small class="fcolor">Minutes</small></div>
+      <div class="xtime-box"><span id="xseconds">00</span><small class="fcolor">Seconds</small></div>
+</div>
+  <span id="xprogress-text" class="progress-text">0% completed</span>
+  <span class="progress-text">until the next price increase.</span>
+</div>
+<br>
+<div class="dashboard-card">
+  aktueller presale Tokenpreis: $<span id="xactprice">0.000000</span>
+</div>
+
+
+
           <!-- Aktuelle Token -->
           <div class="dashboard-card">
             <h2>Aktuelle Token</h2>
@@ -706,13 +743,8 @@
             </ul>
           </div>
         </div>
-        <!-- Animationsbereich -->
-        <div class="dashboard-animation">
-          <h2>Token-Animation</h2>
-          <div id="animation-box">xxx</div>
-        </div>
-      </div>
-      <button class="buy-now-presale" onclick="closeModal('modal-dashboard')">Schließen</button>
+        <!-- Endbereich --> 
+        <button class="buy-now-presale" onclick="closeModal('modal-dashboard')">Schließen</button>
     </div>
   </div>
 
@@ -732,6 +764,12 @@
       }, 220);
     }
 
+    function actualTokenPrice() {
+      tokenprice = "0.001646";
+      document.getElementById("actprice").innerHTML = tokenprice;
+      document.getElementById("xactprice").innerHTML = tokenprice;
+    }
+
     function updateCountdown() {
       const presaleDate = new Date("March 1, 2025 00:00:00").getTime();
       const now = new Date().getTime();
@@ -748,6 +786,12 @@
       document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
       document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
       document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
+
+      document.getElementById("xdays").textContent = days.toString().padStart(2, '0');
+      document.getElementById("xhours").textContent = hours.toString().padStart(2, '0');
+      document.getElementById("xminutes").textContent = minutes.toString().padStart(2, '0');
+      document.getElementById("xseconds").textContent = seconds.toString().padStart(2, '0');
+   
     }
 
     function updateProgressBar() {
@@ -760,11 +804,15 @@
       progressPercent = Math.max(0, Math.min(progressPercent, 100));
       document.querySelector(".progress-fill").style.width = progressPercent + "%";
       document.getElementById("progress-text").textContent = progressPercent.toFixed(1) + "% completed";
+      document.getElementById("xprogress-text").textContent = progressPercent.toFixed(1) + "% completed";
+
     }
     setInterval(updateProgressBar, 1000);
     updateProgressBar();
     setInterval(updateCountdown, 1000);
     updateCountdown();
+
+    actualTokenPrice();
 
     function toggleLight() {
       document.body.classList.toggle('light-mode');
@@ -794,16 +842,6 @@
       }
     }
 
-    // Token Animation mit GSAP (ohne API)
-    gsap.from("#animation-box", {
-      duration: 2,
-      x: 100,
-      rotation: 360,
-      scale: 0.5,
-      ease: "power2.inOut",
-      repeat: -1,
-      yoyo: true
-    });
 
     // Demo-Daten für Kaufhistorie und Tokenwert
     const demoTokenValue = 5000;
