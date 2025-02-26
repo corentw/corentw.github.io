@@ -572,7 +572,6 @@
     padding: 15px 30px;
     background: linear-gradient(90deg, #ff2d55, #5b2eff);
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    top:100px;
 }
 
 .logo {
@@ -587,6 +586,15 @@
   </style>
 </head>
 <body>
+
+<div class="banner">
+        <div class="logo">Xenex AI</div>
+        <div class="uptime-container">
+            <span>Uptime:</span>
+            <span id="uptime">Lädt...</span>
+        </div>
+</div>
+  
   <header>
     <h1>Xenex AI</h1>
     <!-- Neues Dashboard-Icon -->
@@ -624,17 +632,6 @@
       <button class="light-selector" onclick="toggleLight()">Switch to Light Mode</button>
     </nav>
   </header>
-
-
-<div class="banner">
-        <div class="logo">Xenex AI</div>
-        <div class="uptime-container">
-            <span>Uptime:</span>
-            <span id="uptime">Lädt...</span>
-        </div>
-</div>
-
-  
 
   <section class="hero" id="hero" data-aos="fade-up">
     <img src="../img/logo.png" alt="Xenex AI Logo">
