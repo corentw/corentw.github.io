@@ -562,41 +562,26 @@
       }
     }
 
-
-
-
     .banner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
+    width: 100%;
     background: linear-gradient(90deg, #ff2d55, #5b2eff);
+    padding: 15px 0;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    position:absolute;
-    top:100px;
-    height:auto;
+    overflow: hidden;
 }
 
-.logo {
-    font-size: 24px;
+marquee {
+    font-size: 20px;
     font-weight: bold;
-}
-
-.uptime-container {
-    font-size: 18px;
-    font-weight: bold;
+    color: white;
 }
   </style>
 </head>
 <body>
 
 <div class="banner">
-        <div class="logo">Xenex AI</div>
-        <div class="uptime-container">
-            <span>Uptime:</span>
-            <span id="uptime">Lädt...</span>
-        </div>
-</div>
+        <marquee id="uptime-text">Lädt...</marquee>
+    </div>
   
   <header>
     <h1>Xenex AI</h1>
@@ -901,7 +886,7 @@
 
 
 
-    // Startzeitpunkt des Systems (zum Beispiel eine feste Startzeit)
+// Startzeitpunkt des Systems
 const startTime = new Date("2025-02-01T00:00:00Z");
 
 function updateUptime() {
@@ -913,8 +898,8 @@ function updateUptime() {
     const hours = Math.floor((uptimeMs / (1000 * 60 * 60)) % 24);
     const days = Math.floor(uptimeMs / (1000 * 60 * 60 * 24));
 
-    document.getElementById("uptime").textContent = 
-        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    document.getElementById("uptime-text").textContent = 
+        `🔥 Xenex AI - Uptime: ${days}d ${hours}h ${minutes}m ${seconds}s 🔥`;
 }
 
 // Aktualisierung alle 1 Sekunde
@@ -922,6 +907,7 @@ setInterval(updateUptime, 1000);
 
 // Erste Initialisierung
 updateUptime();
+
 
   </script>
 </body>
