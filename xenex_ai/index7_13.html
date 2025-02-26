@@ -233,7 +233,7 @@
     }
     .xcountdown-section {
       background-color: #111;
-      padding: 10px 20px;
+      padding: 10px auto;
       text-align: center;
       background: url('https://i.gifer.com/6ioZ.gif') no-repeat center center fixed;
       background-size: cover;
@@ -620,7 +620,7 @@
     <br>
     CRX raised: 86,765,221.099017
     <br><br>
-    1 XNX = $0.001646
+    1 XNX = $<span id="actprice">0.001646</span>
     <br>
     <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-card')">BUY WITH CARD</a>
     <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-crypto')">BUY WITH CRYPTO</a>
@@ -723,7 +723,12 @@
 
 
 
+          <div class="dashboard-card">
+            aktueller presale-Tokenpreis:
+            $<span id="xactprice">0.001646</span>
 
+            
+          </div>
 
 
 
@@ -761,6 +766,12 @@
       setTimeout(() => {
         document.querySelector(".navbar").classList.toggle("show");
       }, 220);
+    }
+
+    function actualTokenPrice() {
+      tokenprice = "0.001646";
+      document.getElementById("actprice").innerHTML = tokenprice;
+      document.getElementById("xactprice").innerHTML = tokenprice;
     }
 
     function updateCountdown() {
@@ -804,6 +815,8 @@
     updateProgressBar();
     setInterval(updateCountdown, 1000);
     updateCountdown();
+
+    actualTokenPrice();
 
     function toggleLight() {
       document.body.classList.toggle('light-mode');
