@@ -891,14 +891,13 @@ marquee {
 
 // Array mit verschiedenen Promo-Texten
 const promoMessages = [
-    "Xenex AI – The future of artificial intelligence starts here! -- Smart solutions for smart people – Welcome to Xenex AI! -- Innovation meets performance – Xenex AI is changing the world! -- AI-powered technology that makes your life easier! -- Built for speed, performance & efficiency – Xenex AI! --",
-    "💡";
+    "Xenex AI – The future of artificial intelligence starts here! -- Smart solutions for smart people – Welcome to Xenex AI! -- Innovation meets performance – Xenex AI is changing the world! -- AI-powered technology that makes your life easier! -- Built for speed, performance & efficiency – Xenex AI! --"
 ];
 
 
 // Funktion, um zufällige Werbebotschaften anzuzeigen
 function updatePromoText() {
-    const randomMessage = promoMessages[Math.floor(Math.random() * promoMessages.length)];
+    const randomMessage = promoMessages;
     document.getElementById("promo-text").textContent = randomMessage;
 }
 
