@@ -888,28 +888,26 @@ marquee {
 
 
 
-// Startzeitpunkt des Systems
-const startTime = new Date("2025-02-01T00:00:00Z");
+// Array mit verschiedenen Promo-Texten
+const promoMessages = [
+    "🚀 Xenex AI – Die Zukunft der künstlichen Intelligenz beginnt hier! 🔥",
+    "💡 Smarte Lösungen für smarte Menschen – Willkommen bei Xenex AI! 🤖",
+    "🌍 Innovation trifft auf Performance – Xenex AI verändert die Welt! ⚡",
+    "🔥 KI-gestützte Technologien, die dein Leben einfacher machen! 🌟",
+    "💻 Entwickelt für Geschwindigkeit, Leistung & Effizienz – Xenex AI! 🚀",
+];
 
-function updateUptime() {
-    const now = new Date();
-    const uptimeMs = now - startTime;
-
-    const seconds = Math.floor((uptimeMs / 1000) % 60);
-    const minutes = Math.floor((uptimeMs / (1000 * 60)) % 60);
-    const hours = Math.floor((uptimeMs / (1000 * 60 * 60)) % 24);
-    const days = Math.floor(uptimeMs / (1000 * 60 * 60 * 24));
-
-    document.getElementById("uptime-text").textContent = 
-        `🔥 Xenex AI - Uptime: ${days}d ${hours}h ${minutes}m ${seconds}s 🔥`;
+// Funktion, um zufällige Werbebotschaften anzuzeigen
+function updatePromoText() {
+    const randomMessage = promoMessages[Math.floor(Math.random() * promoMessages.length)];
+    document.getElementById("promo-text").textContent = randomMessage;
 }
 
-// Aktualisierung alle 1 Sekunde
-setInterval(updateUptime, 1000);
+// Aktualisierung alle 5 Sekunden mit neuer Message
+setInterval(updatePromoText, 5000);
 
 // Erste Initialisierung
-updateUptime();
-
+updatePromoText();
 
   </script>
 </body>
