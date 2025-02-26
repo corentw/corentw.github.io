@@ -427,6 +427,62 @@
 }
 
 
+
+/* Modal-Overlay */
+.modal {
+  display: none; /* Versteckt standardmäßig */
+  position: fixed;
+  z-index: 2000; /* Über allen anderen Inhalten */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.9); /* Dunkles Overlay */
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal-Inhalt */
+.modal-content {
+  background: #0a0a0a;
+  margin: 10% auto;
+  padding: 20px 30px;
+  border: 2px solid #00ffcc;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+  animation: slideDownModal 0.5s ease-out;
+  box-shadow: 0 0 20px rgba(0, 255, 204, 0.7);
+}
+
+@keyframes slideDownModal {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Schließen-Button */
+.close {
+  color: #00ffcc;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close:hover {
+  color: #00cca3;
+}
+
+
     </style>
 </head>
 <body>
@@ -478,8 +534,9 @@
         <br><br>
         1 XNX = $0.001646
         <br>
-        <a class="buy-now-presale" href="#token-buy-card">BUY WITH CARD</a>
-        <a class="buy-now-presale" href="#token-buy-crypto">BUY WITH CRYPTO</a>
+        <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-card')">BUY WITH CARD</a>
+        <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-crypto')">BUY WITH CRYPTO</a>
+
         
     </section>
 
@@ -535,20 +592,43 @@
         </div>
     </section>
 
+
+<!-- Modal für Card Purchase -->
+<div id="modal-card" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal-card')">&times;</span>
+    <h2>Buy with Card</h2>
+    <p>Purchase your XNX tokens with your credit/debit card through our secure system.</p>
+
     
-<!-- 
-    buy with card/stripe
-    !-->
-<section data-aos="fade-up">
-    <script async
-  src="https://js.stripe.com/v3/buy-button.js">
-</script>
+    <!-- buy with card/stripe !-->
+    <section data-aos="fade-up">
+      <script async
+       src="https://js.stripe.com/v3/buy-button.js">
+      </script>
 
 <stripe-buy-button
   buy-button-id="buy_btn_1QwMSBCBncsadcOkNllWEKEQ"
   publishable-key="pk_live_51QwLnTCBncsadcOkeKcSwStXxBsKEDJAx4KzwoHhvptCDTHNwlnWks97Ro1syEO2RaGeSeX59yLM0AhQqmusVTxw00GbaiOdbb">
 </stripe-buy-button>
 </section>
+    
+    <!-- Hier könnte ein Formular oder weitere Anweisungen folgen -->
+    <button class="buy-now-presale" onclick="closeModal('modal-card')">Close</button>
+  </div>
+</div>
+
+<!-- Modal für Crypto Purchase -->
+<div id="modal-crypto" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal-crypto')">&times;</span>
+    <h2>Buy with Crypto</h2>
+    <p>Purchase your XNX tokens using cryptocurrencies (BTC, ETH, etc.).</p>
+    <!-- Hier könnten Wallet-Details oder weitere Schritte folgen -->
+    <button class="buy-now-presale" onclick="closeModal('modal-crypto')">Close</button>
+  </div>
+</div>
+
 
 <footer>
  <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
@@ -630,6 +710,24 @@ updateCountdown(); // Sofort starten
         answer.classList.add('show');
     }
 }
+
+      
+
+      function openModal(modalId) {
+  document.getElementById(modalId).style.display = "block";
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = "none";
+}
+
+// Schließt das Modal, wenn außerhalb geklickt wird
+window.onclick = function(event) {
+  if (event.target.classList.contains('modal')) {
+    event.target.style.display = "none";
+  }
+}
+
 
 
     </script>
