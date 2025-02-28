@@ -358,6 +358,7 @@
       background-color: #333;
       color: #fff;
     }
+    
     .light-mode .faq-section {
       background-color:#f1f1f1;
       color: #333;
@@ -366,6 +367,42 @@
     .light-mode .faq-title {
       text-shadow: 0 0 15px rgba(184, 0, 220, 0.8);
     }
+    .light-mode .faq-item {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(118, 0, 224, 0.3);
+      border-radius: 10px;
+      margin-bottom: 15px;
+      padding: 15px 20px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease-in-out;
+    }
+    .light-mode .faq-item:hover {
+      background: rgba(0, 255, 204, 0.2);
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+    }
+    .light-mode .faq-question {
+      font-size: 1rem;
+      margin: 0;
+      position: relative;
+      transition: color 0.3s;
+    }
+    .light-mode .faq-answer {
+      display: none;
+      font-size: 0.8rem;
+      margin-top: 10px;
+      color: rgba(255, 255, 255, 0.8);
+      transition: opacity 0.4s ease-in-out;
+    }
+    .light-mode .faq-question:hover {
+      color: #00cca3;
+      text-shadow: 0 0 5px #00cca3, 0 0 10px #00cca3, 0 0 15px #00cca3;
+    }
+
+
+    
     .light-mode .dashboard-modal {
       background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.95));
     }
