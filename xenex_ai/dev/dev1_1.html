@@ -415,8 +415,25 @@
     .light-selector:hover {
       background-color: #00cca3;
     }
+    
+    .glare {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 10%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.6);
+      opacity: 0.7;
+      filter: blur(2px);
+      transform: skewX(-20deg);
+      animation: glareMove 2s infinite linear;
+    }
+    @keyframes glareMove {
+      0% { left: -10%; }
+      100% { left: 100%; }
+    }
 
-    .progress-container {
+   .progress-container {
       width: 80%;
       max-width: 600px;
       margin: 20px auto;
@@ -439,22 +456,7 @@
       transition: width 1s ease-in-out;
       position: relative;
     }
-    .glare {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 10%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.6);
-      opacity: 0.7;
-      filter: blur(2px);
-      transform: skewX(-20deg);
-      animation: glareMove 2s infinite linear;
-    }
-    @keyframes glareMove {
-      0% { left: -10%; }
-      100% { left: 100%; }
-    }
+    
     .progress-text {
       margin-top: 14px;
       font-size: 0.8rem;
@@ -474,8 +476,9 @@
       background: rgba(0,0,0, 0);
     }
     .progress-main {
-      font-size: 1.8rem;
+      font-size: 1.2rem;
     }
+    
     .progress-raised {
       background: rgba(255,255,255, 0);
       border:none;
