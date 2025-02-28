@@ -364,6 +364,15 @@
       background: url('https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/661672110905871.5ff991888d085.gif') no-repeat center center fixed;
       background-size: cover;
     }
+    .light-mode .light-selector {
+      background-color: #7600E0;
+      color: #0a0a0a;
+    }
+    .light-mode .progress-fill {
+      background: linear-gradient(90deg, #7600E0, #B800DC);
+    }
+
+    
     .light-selector {
       background-color: #00ffcc;
       border: none;
@@ -679,7 +688,7 @@ marquee {
       <a href="#faq" onclick="toggleMenuClose()">FAQ</a>
       <a href="#team" onclick="toggleMenuClose()">Team</a>
       <a href="#dashboard" onclick="toggleMenuClose();openModal('modal-dashboard');">Dashboard</a>
-      <button class="light-selector" onclick="toggleLight()">Switch to Light Mode</button>
+      <button class="light-selector" onclick="toggleLight();toggleMenuClose();">Light Mode</button>
     </nav>
   </header>
 
@@ -910,7 +919,7 @@ marquee {
     function toggleLight() {
       document.body.classList.toggle('light-mode');
       const button = document.querySelector('.light-selector');
-      button.textContent = document.body.classList.contains('light-mode') ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+      button.textContent = document.body.classList.contains('light-mode') ? 'Dark Mode' : 'Light Mode';
     }
 
     function toggleFAQ(element) {
