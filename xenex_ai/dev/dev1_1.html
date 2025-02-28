@@ -328,6 +328,10 @@
       color: #000;
       text-shadow: 0 0 10px  rgba(0, 0, 0, 0.8);
     }
+    .light-mode .progress-raised {
+      background: rgba(255,255,255, 0.48);
+      color:#000;
+    }
     .light-mode .navbar {
       color: #7600E0;
       background: rgba(255, 255, 255, 0.9);
@@ -460,6 +464,12 @@
       font-size: 0.8rem;
       color: #00ffcc;
       text-shadow: 0 0 10px rgba(0, 255, 204, 0.8);
+    }
+    .progress-raised {
+      background: rgba(255,255,255, 0);
+      border:none;
+      border-radius:10px;
+      color:#fff;
     }
 
     /* FAQ Section */
@@ -742,12 +752,12 @@ marquee {
     </div>
     <h3 class="fcolor">Until the next price increase</h3>
     <br>
-    USD raised: $1,458,501.91
+    <div class="progress-raised">
+      USD raised: $1,458,501.91
+      <br>CRX raised: 86,765,221.099017
+      <br><br>1 XNX = $<span id="actprice">n/A</span>
     <br>
-    CRX raised: 86,765,221.099017
-    <br><br>
-    1 XNX = $<span id="actprice">n/A</span>
-    <br>
+    </div>
     <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-card')">BUY WITH CARD</a>
     <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-crypto')">BUY WITH CRYPTO</a>
   </section>
