@@ -461,7 +461,7 @@
       color: #00ffcc;
       text-shadow: 0 0 10px rgba(0, 255, 204, 0.8);
       background: rgba(0,0,0, 0);
-      padding: 12px;
+      padding: 12px auto;
       border:none;
       border-radius: 10px;
       width:100%;
@@ -472,6 +472,9 @@
       color: #00ffcc;
       text-shadow: 0 0 10px rgba(0, 255, 204, 0.8);
       background: rgba(0,0,0, 0);
+    }
+    .progress-main {
+      font-size: 1.8rem;
     }
     .progress-raised {
       background: rgba(255,255,255, 0);
@@ -758,7 +761,7 @@ marquee {
         </div>
       </div>
       <p class="progress-text">
-        <span id="progress-text">0% completed</span><br>
+        <span id="progress-text" class="progress-main">0% completed</span><br>
         <span>until the next price increase</span> 
       </p>
     </div>
