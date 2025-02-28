@@ -477,7 +477,7 @@
       padding: 12px auto;
     }
     .progress-main {
-      font-size: 1.38rem;
+      font-size: 1.28rem;
     }
     
     .progress-raised {
@@ -696,119 +696,108 @@ marquee {
     line-height: 30px; /* Gleich der Höhe des Banners */
 }
 
-  </style>
+</style>
 </head>
 <body>
-
 <div class="banner" data-aos="fade-out">
-        <marquee id="promo-text">Lädt...</marquee>
-    </div>
+  <marquee id="promo-text">Lädt...</marquee>
+</div>
   
-  <header>
-    <h2>Xenex AI</h2>
-    <!-- Neues Dashboard-Icon -->
-    <div class="dashboard-icon" onclick="openModal('modal-dashboard')">
-
-      
-<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+<header>
+  <h2>Xenex AI</h2>
+  <!-- Neues Dashboard-Icon -->
+  <div class="dashboard-icon" onclick="openModal('modal-dashboard')">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
   <!-- Kuppel -->
-  <ellipse cx="32" cy="22" rx="14" ry="10" fill="none" stroke="currentColor" stroke-width="3"/>
-  
+    <ellipse cx="32" cy="22" rx="14" ry="10" fill="none" stroke="currentColor" stroke-width="3"/>
   <!-- Untertasse -->
-  <ellipse cx="32" cy="34" rx="24" ry="10" fill="none" stroke="currentColor" stroke-width="3"/>
-  
+    <ellipse cx="32" cy="34" rx="24" ry="10" fill="none" stroke="currentColor" stroke-width="3"/>
   <!-- Lichter -->
-  <circle cx="14" cy="34" r="2" fill="currentColor"/>
-  <circle cx="24" cy="38" r="2" fill="currentColor"/>
-  <circle cx="32" cy="40" r="2" fill="currentColor"/>
-  <circle cx="40" cy="38" r="2" fill="currentColor"/>
-  <circle cx="50" cy="34" r="2" fill="currentColor"/>
-</svg>
+    <circle cx="14" cy="34" r="2" fill="currentColor"/>
+    <circle cx="24" cy="38" r="2" fill="currentColor"/>
+    <circle cx="32" cy="40" r="2" fill="currentColor"/>
+    <circle cx="40" cy="38" r="2" fill="currentColor"/>
+    <circle cx="50" cy="34" r="2" fill="currentColor"/>
+    </svg>
+  </div>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <nav class="navbar">
+    <a href="#hero" onclick="toggleMenuClose()">Home</a>
+    <a href="#presale" onclick="toggleMenuClose()">Presale</a>
+    <a href="#token-info" onclick="toggleMenuClose()">Token Info</a>
+    <a href="#faq" onclick="toggleMenuClose()">FAQ</a>
+    <a href="#team" onclick="toggleMenuClose()">Team</a>
+    <a href="#dashboard" onclick="toggleMenuClose();openModal('modal-dashboard');">Dashboard</a>
+    <button class="light-selector" onclick="toggleLight();btime='no';toggleMenuClose();">Light Mode</button>
+  </nav>
+</header>
+  
+<section class="hero" id="hero" data-aos="fade-up">
+  <img src="../img/logo.png" alt="Xenex AI Logo">
+  <h2>The Future of Alien-AI Blockchain</h2>
+  <h3>A cutting-edge, secure, and decentralized cryptocurrency</h3>
+  <a class="buy-now" href="#presale">Buy Now</a>
+</section>
+<span id="presale"></span>
 
-
-
-
-
-    </div>
-    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-    <nav class="navbar">
-      <a href="#hero" onclick="toggleMenuClose()">Home</a>
-      <a href="#presale" onclick="toggleMenuClose()">Presale</a>
-      <a href="#token-info" onclick="toggleMenuClose()">Token Info</a>
-      <a href="#faq" onclick="toggleMenuClose()">FAQ</a>
-      <a href="#team" onclick="toggleMenuClose()">Team</a>
-      <a href="#dashboard" onclick="toggleMenuClose();openModal('modal-dashboard');">Dashboard</a>
-      <button class="light-selector" onclick="toggleLight();btime='no';toggleMenuClose();">Light Mode</button>
-    </nav>
-  </header>
-
-  <section class="hero" id="hero" data-aos="fade-up">
-    <img src="../img/logo.png" alt="Xenex AI Logo">
-    <h2>The Future of Alien-AI Blockchain</h2>
-    <h3>A cutting-edge, secure, and decentralized cryptocurrency</h3>
-    <a class="buy-now" href="#presale">Buy Now</a>
-  </section>
-  <span id="presale"></span>
-
-  <section class="countdown-section" id="presalexxx" data-aos="fade-up">
-    <h2>Buy XNX in presale now!</h2>
-    <div id="countdown" class="countdown-container">
-      <div class="time-box"><span id="days">00</span><small class="fcolor">Days</small></div>
-      <div class="time-box"><span id="hours">00</span><small class="fcolor">Hours</small></div>
-      <div class="time-box"><span id="minutes">00</span><small class="fcolor">Minutes</small></div>
-      <div class="time-box"><span id="seconds">00</span><small class="fcolor">Seconds</small></div>
-    </div>
-    <div class="progress-container">
-      <div class="progress-bar">
-        <div class="progress-fill">
-          <div class="glare"></div>
-        </div>
+<section class="countdown-section" id="presalexxx" data-aos="fade-up">
+  <h2>Buy XNX in presale now!</h2>
+  <div id="countdown" class="countdown-container">
+    <div class="time-box"><span id="days">00</span><small class="fcolor">Days</small></div>
+    <div class="time-box"><span id="hours">00</span><small class="fcolor">Hours</small></div>
+    <div class="time-box"><span id="minutes">00</span><small class="fcolor">Minutes</small></div>
+    <div class="time-box"><span id="seconds">00</span><small class="fcolor">Seconds</small></div>
+  </div>
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill">
+        <div class="glare"></div>
       </div>
-      <p class="progress-text">
-        <span id="progress-text" class="progress-main">0% completed</span><br>
-        <span>until the next price increase</span> 
-      </p>
     </div>
+    <p class="progress-text">
+      <span id="progress-text" class="progress-main">0% completed</span><br>
+      <span>until the next price increase</span> 
+    </p>
+  </div>
  
-    <div class="progress-raised">
-      USD raised: $1,458,501.91
-      <br>CRX raised: 86,765,221.099017
-      <br><br>1 XNX = $<span id="actprice">n/A</span>
-    <br>
-    </div>
-    <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-card')">BUY WITH CARD</a>
-    <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-crypto')">BUY WITH CRYPTO</a>
-  </section>
+  <div class="progress-raised">
+    USD raised: $1,458,501.91<br>
+    CRX raised: 86,765,221.099017<br><br>
+    1 XNX = $<span id="actprice">n/A</span><br>
+  </div>
+  <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-card')">BUY WITH CARD</a>
+  <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-crypto')">BUY WITH CRYPTO</a>
+</section>
 
-  <section id="faq" class="faq-section" data-aos="fade-up">
-    <h2 class="faq-title">Frequently Asked Questions (FAQ)</h2>
-    <div class="faq-container">
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">What is Xenex AI?</h3>
-        <p class="faq-answer">Xenex AI is a decentralized blockchain project powered by artificial intelligence, designed for high-speed transactions and AI-based investment strategies.</p>
-      </div>
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">How can I participate in the presale?</h3>
-        <p class="faq-answer">You can join the Xenex AI presale by purchasing tokens through our secure platform. The countdown timer shows when the next price increase occurs.</p>
-      </div>
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">What makes Xenex AI different?</h3>
-        <p class="faq-answer">Xenex AI merges blockchain security with AI intelligence, offering the most advanced decentralized investment technology.</p>
-      </div>
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">What payment methods are accepted?</h3>
-        <p class="faq-answer">You can purchase tokens using credit/debit cards, cryptocurrencies like BTC & ETH, and other payment gateways.</p>
-      </div>
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">Is Xenex AI secure?</h3>
-        <p class="faq-answer">Absolutely! Our blockchain is built with top-tier security protocols to ensure safe and fast transactions.</p>
-      </div>
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">How can I track my token holdings?</h3>
-        <p class="faq-answer">You can monitor your Xenex AI tokens directly through our dashboard or any blockchain explorer.</p>
-      </div>
+<section id="faq" class="faq-section" data-aos="fade-up">
+  <h2 class="faq-title">Frequently Asked Questions (FAQ)</h2>
+  <div class="faq-container">
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <h3 class="faq-question">What is Xenex AI?</h3>
+      <p class="faq-answer">Xenex AI is a decentralized blockchain project powered by artificial intelligence, designed for high-speed transactions and AI-based investment strategies.</p>
     </div>
-  </section>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <h3 class="faq-question">How can I participate in the presale?</h3>
+      <p class="faq-answer">You can join the Xenex AI presale by purchasing tokens through our secure platform. The countdown timer shows when the next price increase occurs.</p>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <h3 class="faq-question">What makes Xenex AI different?</h3>
+      <p class="faq-answer">Xenex AI merges blockchain security with AI intelligence, offering the most advanced decentralized investment technology.</p>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <h3 class="faq-question">What payment methods are accepted?</h3>
+      <p class="faq-answer">You can purchase tokens using credit/debit cards, cryptocurrencies like BTC & ETH, and other payment gateways.</p>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <h3 class="faq-question">Is Xenex AI secure?</h3>
+      <p class="faq-answer">Absolutely! Our blockchain is built with top-tier security protocols to ensure safe and fast transactions.</p>
+    </div>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <h3 class="faq-question">How can I track my token holdings?</h3>
+      <p class="faq-answer">You can monitor your Xenex AI tokens directly through our dashboard or any blockchain explorer.</p>
+    </div>
+  </div>
+</section>
 
   <section class="team-section" id="team">
     <h2>Meet Our Team</h2>
@@ -825,9 +814,7 @@ marquee {
   </section>
 
   <section class="team-member" data-aos="fade-up"><br>
-    <p>Always do your own research. Nothing here is financial advice. This is a meme coin.
-    © 2025 xenexAi</p>
-    <br><br><br>
+    <p>Always do your own research. Nothing here is financial advice. This is a meme coin. © 2025 xenexAi</p><br><br><br>
   </section>
 
   <!-- Modal für Card Purchase -->
@@ -866,41 +853,45 @@ marquee {
         <h2 class="dashboard-title">Dashboard</h2>
         <div class="dashboard-grid">
           
-<div class="xcountdown-section">
-<div id="xcountdown" class="countdown-container">
-      <div class="xtime-box"><span id="xdays">00</span><small class="fcolor">Days</small></div>
-      <div class="xtime-box"><span id="xhours">00</span><small class="fcolor">Hours</small></div>
-      <div class="xtime-box"><span id="xminutes">00</span><small class="fcolor">Minutes</small></div>
-      <div class="xtime-box"><span id="xseconds">00</span><small class="fcolor">Seconds</small></div>
-</div>
-  <span id="xprogress-text" class="xprogress-text">0% completed</span>
-  <span class="xprogress-text">until the next price increase.</span>
-</div>
-<div class="dashboard-card">
-  aktueller presale Tokenpreis: $<span id="xactprice">0.000000</span>
-</div>
-
-
-
+          <div class="xcountdown-section">
+            <div id="xcountdown" class="countdown-container">
+              <div class="xtime-box"><span id="xdays">00</span><small class="fcolor">Days</small></div>
+              <div class="xtime-box"><span id="xhours">00</span><small class="fcolor">Hours</small></div>
+              <div class="xtime-box"><span id="xminutes">00</span><small class="fcolor">Minutes</small></div>
+              <div class="xtime-box"><span id="xseconds">00</span><small class="fcolor">Seconds</small></div>
+            </div>
+            <div class="xprogress-text">
+              <span id="xprogress-text">0% completed</span>
+              <span>until the next price increase.</span>
+            </div>
+            <div class="dashboard-card">
+              aktueller presale Tokenpreis: $<span id="xactprice">0.000000</span>
+            </div>
           <!-- Aktuelle Token -->
-          <div class="dashboard-card">
-            <h2>Aktuelle Token</h2>
-            <p id="token-value">Wert: 5000 Tokens</p>
-            <p>Letzter Kauf: 2500 Tokens</p>
-            <p class="early-bird">Early Bird-Vorteile: 10% Rabatt</p>
-          </div>
+            <div class="dashboard-card">
+              <h2>Aktuelle Token</h2>
+              <p id="token-value">Wert: 5000 Tokens</p>
+              <p>Letzter Kauf: 2500 Tokens</p>
+              <p class="early-bird">Early Bird-Vorteile: 10% Rabatt</p>
+            </div>
           <!-- Kaufhistorie -->
-          <div class="dashboard-card">
-            <h2>Kaufhistorie</h2>
-            <ul id="purchase-history">
-              <!-- Dynamische Kaufhistorie wird hier eingefügt -->
-            </ul>
+            <div class="dashboard-card">
+              <h2>Kaufhistorie</h2>
+              <ul id="purchase-history">
+          <!-- Dynamische Kaufhistorie wird hier eingefügt -->
+              </ul>
+            </div>
           </div>
-        </div>
+          
         <!-- Endbereich --> 
-        <button class="buy-now-presale" onclick="closeModal('modal-dashboard')">Schließen</button>
+          <button class="buy-now-presale" onclick="closeModal('modal-dashboard')">Schließen</button>
+        </div>
+      </div>
     </div>
-  </div></div>
+  </div>
+      
+
+  
 
   <footer>
     <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
