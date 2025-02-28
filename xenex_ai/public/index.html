@@ -353,14 +353,32 @@
       background: #333;
     }
     .light-mode .countdown-section {
-      background: url('../img/nois_light3.gif') no-repeat center center fixed;
+      background: url('../img/nois2.gif') no-repeat center center fixed;
+      background-size: cover;
+      color:#000
     }
     .light-mode .xcountdown-section {
-      background: url('../img/nois_light3.gif') no-repeat center center fixed;
+      background: url('../img/nois2.gif') no-repeat center center fixed;
+      background-size: cover;
+      color:#000;
     }
     .light-mode .hero {
       background: url('https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/661672110905871.5ff991888d085.gif') no-repeat center center fixed;
+      background-size: cover;
     }
+    .light-mode .light-selector {
+      background-color: #7600E0;
+      color: #0a0a0a;
+    }
+    .light-mode .progress-fill {
+      background: linear-gradient(90deg, #7600E0, #B800DC);
+    }
+    .light-mode .progress-bar {
+      background: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 15px rgba(118, 0, 224, 0.5);
+    }
+
+    
     .light-selector {
       background-color: #00ffcc;
       border: none;
@@ -676,7 +694,7 @@ marquee {
       <a href="#faq" onclick="toggleMenuClose()">FAQ</a>
       <a href="#team" onclick="toggleMenuClose()">Team</a>
       <a href="#dashboard" onclick="toggleMenuClose();openModal('modal-dashboard');">Dashboard</a>
-      <button class="light-selector" onclick="toggleLight()">Switch to Light Mode</button>
+      <button class="light-selector" onclick="toggleLight();btime='no';toggleMenuClose();">Light Mode</button>
     </nav>
   </header>
 
@@ -720,27 +738,27 @@ marquee {
     <h2 class="faq-title">Frequently Asked Questions (FAQ)</h2>
     <div class="faq-container">
       <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">🔹 What is Xenex AI?</h3>
+        <h3 class="faq-question">What is Xenex AI?</h3>
         <p class="faq-answer">Xenex AI is a decentralized blockchain project powered by artificial intelligence, designed for high-speed transactions and AI-based investment strategies.</p>
       </div>
       <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">🚀 How can I participate in the presale?</h3>
+        <h3 class="faq-question">How can I participate in the presale?</h3>
         <p class="faq-answer">You can join the Xenex AI presale by purchasing tokens through our secure platform. The countdown timer shows when the next price increase occurs.</p>
       </div>
       <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">🤖 What makes Xenex AI different?</h3>
+        <h3 class="faq-question">What makes Xenex AI different?</h3>
         <p class="faq-answer">Xenex AI merges blockchain security with AI intelligence, offering the most advanced decentralized investment technology.</p>
       </div>
       <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">💳 What payment methods are accepted?</h3>
+        <h3 class="faq-question">What payment methods are accepted?</h3>
         <p class="faq-answer">You can purchase tokens using credit/debit cards, cryptocurrencies like BTC & ETH, and other payment gateways.</p>
       </div>
       <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">🔐 Is Xenex AI secure?</h3>
+        <h3 class="faq-question">Is Xenex AI secure?</h3>
         <p class="faq-answer">Absolutely! Our blockchain is built with top-tier security protocols to ensure safe and fast transactions.</p>
       </div>
       <div class="faq-item" onclick="toggleFAQ(this)">
-        <h3 class="faq-question">📈 How can I track my token holdings?</h3>
+        <h3 class="faq-question">How can I track my token holdings?</h3>
         <p class="faq-answer">You can monitor your Xenex AI tokens directly through our dashboard or any blockchain explorer.</p>
       </div>
     </div>
@@ -758,6 +776,12 @@ marquee {
       <p>Jane Smith</p>
       <p>CTO</p>
     </div>
+  </section>
+
+  <section class="team-member" data-aos="fade-up"><br>
+    <p>Always do your own research. Nothing here is financial advice. This is a meme coin.
+    © 2025 xenexAi</p>
+    <br><br><br>
   </section>
 
   <!-- Modal für Card Purchase -->
@@ -838,14 +862,20 @@ marquee {
 
   <script>
     AOS.init(); // Initialize animations
+    btime='yes';
 
     function toggleMenu() {
       document.querySelector(".navbar").classList.toggle("show");
     }
     function toggleMenuClose() {
-      setTimeout(() => {
+      if(btime == 'yes') {
+        setTimeout(() => {
+          document.querySelector(".navbar").classList.toggle("show");
+        }, 220);
+      }else{
         document.querySelector(".navbar").classList.toggle("show");
-      }, 220);
+        btime='yes';
+      }
     }
 
     function actualTokenPrice() {
@@ -901,7 +931,7 @@ marquee {
     function toggleLight() {
       document.body.classList.toggle('light-mode');
       const button = document.querySelector('.light-selector');
-      button.textContent = document.body.classList.contains('light-mode') ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+      button.textContent = document.body.classList.contains('light-mode') ? 'Dark Mode' : 'Light Mode';
     }
 
     function toggleFAQ(element) {
@@ -965,4 +995,4 @@ updatePromoText();
 
   </script>
 </body>
-</html>
+  </html>
