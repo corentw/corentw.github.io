@@ -688,7 +688,7 @@ marquee {
       <a href="#faq" onclick="toggleMenuClose()">FAQ</a>
       <a href="#team" onclick="toggleMenuClose()">Team</a>
       <a href="#dashboard" onclick="toggleMenuClose();openModal('modal-dashboard');">Dashboard</a>
-      <button class="light-selector" onclick="toggleLight();toggleMenuClose();">Light Mode</button>
+      <button class="light-selector" onclick="toggleLight();btime='no';toggleMenuClose();">Light Mode</button>
     </nav>
   </header>
 
@@ -856,14 +856,20 @@ marquee {
 
   <script>
     AOS.init(); // Initialize animations
+    btime='yes';
 
     function toggleMenu() {
       document.querySelector(".navbar").classList.toggle("show");
     }
     function toggleMenuClose() {
-      setTimeout(() => {
+      if(btime == 'yes') {
+        setTimeout(() => {
+          document.querySelector(".navbar").classList.toggle("show");
+        }, 220);
+      }else{
         document.querySelector(".navbar").classList.toggle("show");
-      }, 220);
+        btime='yes';
+      }
     }
 
     function actualTokenPrice() {
