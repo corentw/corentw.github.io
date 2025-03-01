@@ -17,12 +17,10 @@
 
     <script>
         let provider = null;
-        const recipientAddress = new solanaWeb3.PublicKey("A17hsLU7q5LoMKWV3EWS6XH8csZ1VTWqVbfMMevtVmkQ"); // Zieladresse
-
-        console.log("JavaScript läuft!"); // Test: Funktioniert die Seite?
+        const recipientAddress = "A17hsLU7q5LoMKWV3EWS6XH8csZ1VTWqVbfMMevtVmkQ"; // Empfängeradresse
 
         // Wallet verbinden
-        document.getElementById('connectWallet').addEventListener("click", async function() {
+        document.getElementById('connectWallet').onclick = async function() {
             console.log("Verbindungsversuch...");
             if (window.solana && window.solana.isPhantom) {
                 provider = window.solana;
@@ -37,13 +35,13 @@
                 }
             } else {
                 alert('Phantom Wallet ist nicht installiert!');
-                console.error("Kein Phantom Wallet gefunden!");
             }
-        });
+        };
 
         // SOL senden
-        document.getElementById('sendTransaction').addEventListener("click", async function() {
+        document.getElementById('sendTransaction').onclick = async function() {
             console.log("Sende Transaktion...");
+
             if (!provider || !provider.publicKey) {
                 alert('Bitte verbinde zuerst deine Wallet!');
                 console.error("Keine Wallet verbunden.");
@@ -58,23 +56,24 @@
             }
 
             const lamports = Math.floor(amountInput * 1e9); // SOL in Lamports umwandeln
-            console.log(`Sende ${lamports} Lamports an ${recipientAddress.toString()}...`);
+            console.log(`Sende ${lamports} Lamports an ${recipientAddress}...`);
 
             try {
-                const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed');
-                const transaction = new solanaWeb3.Transaction();
+                // Ändere hier solanaWeb3 zu window.solanaWeb3
+                const connection = new window.solanaWeb3.Connection(window.solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed');
+                const transaction = new window.solanaWeb3.Transaction();
 
                 transaction.add(
-                    solanaWeb3.SystemProgram.transfer({
+                    window.solanaWeb3.SystemProgram.transfer({
                         fromPubkey: provider.publicKey,
-                        toPubkey: recipientAddress,
+                        toPubkey: new window.solanaWeb3.PublicKey(recipientAddress),
                         lamports: lamports,
                     })
                 );
 
                 // Blockhash abrufen
-                const latestBlockhash = await connection.getLatestBlockhash();
-                transaction.recentBlockhash = latestBlockhash.blockhash;
+                const { blockhash } = await connection.getLatestBlockhash();
+                transaction.recentBlockhash = blockhash;
                 transaction.feePayer = provider.publicKey;
 
                 console.log("Transaktion erstellt:", transaction);
@@ -96,7 +95,7 @@
                 console.error("Transaktion fehlgeschlagen:", error);
                 alert("Fehler bei der Transaktion: " + error.message);
             }
-        });
+        };
     </script>
 </body>
 </html>
