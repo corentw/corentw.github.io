@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Web3 Integration</title>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
+</head>
+<body>
+    <h1>Solana Web3 Integration</h1>
+
+    <button id="connectWallet">Wallet verbinden</button>
+    <p>Verbundene Wallet: <span id="walletAddress">Nicht verbunden</span></p>
+
+    <input type="number" id="amount" placeholder="Betrag in SOL" step="0.01" min="0.001">
+    <button id="sendTransaction">SOL senden</button>
+
+    <script>
+        let provider = null;
+        const recipientAddress = new solanaWeb3.PublicKey("A17hsLU7q5LoMKWV3EWS6XH8csZ1VTWqVbfMMevtVmkQ"); // Zieladresse
+
+        console.log("JavaScript läuft!"); // Test: Funktioniert die Seite?
+
+        // Wallet verbinden
+        document.getElementById('connectWallet').addEventListener("click", async function() {
+            console.log("Verbindungsversuch...");
+            if (window.solana && window.solana.isPhantom) {
+                provider = window.solana;
+                try {
+                    await provider.connect();
+                    document.getElementById('walletAddress').innerText = provider.publicKey.toString();
+                    console.log("Wallet verbunden:", provider.publicKey.toString());
+                    alert('Wallet verbunden: ' + provider.publicKey.toString());
+                } catch (err) {
+                    console.error("Verbindung fehlgeschlagen:", err);
+                    alert('Verbindung fehlgeschlagen: ' + err.message);
+                }
+            } else {
+                alert('Phantom Wallet ist nicht installiert!');
+                console.error("Kein Phantom Wallet gefunden!");
+            }
+        });
+
+        // SOL senden
+        document.getElementById('sendTransaction').addEventListener("click", async function() {
+            console.log("Sende Transaktion...");
+            if (!provider || !provider.publicKey) {
+                alert('Bitte verbinde zuerst deine Wallet!');
+                console.error("Keine Wallet verbunden.");
+                return;
+            }
+
+            const amountInput = document.getElementById('amount').value;
+            if (!amountInput || isNaN(amountInput) || amountInput <= 0) {
+                alert('Bitte einen gültigen Betrag eingeben.');
+                console.error("Ungültiger Betrag:", amountInput);
+                return;
+            }
+
+            const lamports = Math.floor(amountInput * 1e9); // SOL in Lamports umwandeln
+            console.log(`Sende ${lamports} Lamports an ${recipientAddress.toString()}...`);
+
+            try {
+                const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed');
+                const transaction = new solanaWeb3.Transaction();
+
+                transaction.add(
+                    solanaWeb3.SystemProgram.transfer({
+                        fromPubkey: provider.publicKey,
+                        toPubkey: recipientAddress,
+                        lamports: lamports,
+                    })
+                );
+
+                // Blockhash abrufen
+                const latestBlockhash = await connection.getLatestBlockhash();
+                transaction.recentBlockhash = latestBlockhash.blockhash;
+                transaction.feePayer = provider.publicKey;
+
+                console.log("Transaktion erstellt:", transaction);
+
+                // Transaktion signieren
+                const signedTransaction = await provider.signTransaction(transaction);
+                console.log("Transaktion signiert:", signedTransaction);
+
+                // Transaktion senden
+                const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                console.log("Transaktion gesendet! TX:", signature);
+                alert(`Transaktion gesendet! TX: ${signature}`);
+
+                // Transaktion bestätigen
+                await connection.confirmTransaction(signature, 'finalized');
+                alert(`Transaktion bestätigt! TX: ${signature}`);
+                console.log("Transaktion bestätigt! TX:", signature);
+            } catch (error) {
+                console.error("Transaktion fehlgeschlagen:", error);
+                alert("Fehler bei der Transaktion: " + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
