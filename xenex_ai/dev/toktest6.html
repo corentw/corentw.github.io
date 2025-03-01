@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Web3 Integration</title>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
+</head>
+<body>
+    <h1>Web3 Integration</h1>
+
+    <button id="connectWallet">Wallet verbinden</button>
+    <input type="number" id="amount" placeholder="Betrag in SOL" step="0.01" min="0.001">
+    <button id="sendTransaction">SOL senden</button>
+
+    <script>
+        let provider;
+        const recipientAddress = "A17hsLU7q5LoMKWV3EWS6XH8csZ1VTWqVbfMMevtVmkQ"; // Empfängeradresse
+
+        // Wallet verbinden
+        document.getElementById('connectWallet').onclick = async function() {
+            if (window.solana && window.solana.isPhantom) {
+                provider = window.solana;
+                try {
+                    await provider.connect();
+                    alert('Wallet verbunden: ' + provider.publicKey.toString());
+                } catch (err) {
+                    alert('Verbindung fehlgeschlagen: ' + err.message);
+                }
+            } else {
+                alert('Phantom Wallet ist nicht installiert!');
+            }
+        };
+
+        // SOL senden
+        document.getElementById('sendTransaction').onclick = async function() {
+            if (!provider || !provider.publicKey) {
+                alert('Bitte verbinde zuerst deine Wallet!');
+                return;
+            }
+
+            const amountInput = document.getElementById('amount').value;
+            if (!amountInput || isNaN(amountInput) || amountInput <= 0) {
+                alert('Bitte einen gültigen Betrag eingeben.');
+                return;
+            }
+
+            const lamports = Math.floor(amountInput * 1e9); // SOL in Lamports umwandeln
+            const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed');
+
+            const transaction = new solanaWeb3.Transaction().add(
+                solanaWeb3.SystemProgram.transfer({
+                    fromPubkey: provider.publicKey,
+                    toPubkey: new solanaWeb3.PublicKey(recipientAddress),
+                    lamports: lamports,
+                })
+            );
+
+            try {
+                // Aktuellen Blockhash abrufen
+                const { blockhash } = await connection.getLatestBlockhash();
+                transaction.recentBlockhash = blockhash;
+                transaction.feePayer = provider.publicKey;
+
+                // Transaktion signieren
+                const signedTransaction = await provider.signTransaction(transaction);
+
+                // Transaktion senden
+                const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                alert(`Transaktion gesendet! TX: ${signature}`);
+
+                // Transaktion bestätigen
+                await connection.confirmTransaction(signature, 'finalized');
+                alert(`Transaktion bestätigt! TX: ${signature}`);
+            } catch (error) {
+                console.error("Transaktion fehlgeschlagen:", error);
+                alert("Fehler bei der Transaktion: " + error.message);
+            }
+        };
+    </script>
+</body>
+</html>
