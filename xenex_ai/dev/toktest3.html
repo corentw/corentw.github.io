@@ -8,6 +8,7 @@
 </head>
 <body>
     <h1>Web3 Integration</h1>
+    <div id="myaddress"> </div>
 
     <button id="connectWallet">Wallet verbinden</button>
     <button id="sendTransaction">SOL senden</button>
@@ -25,6 +26,8 @@
                 try {
                     await provider.connect();
                     alert('Wallet verbunden: ' + provider.publicKey.toString());
+                    document.getElementById("myaddress").innerText = provider.publicKey.toString();
+
                 } catch (err) {
                     alert('Verbindung fehlgeschlagen: ' + err.message);
                 }
