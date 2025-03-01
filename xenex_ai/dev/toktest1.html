@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jup.ag Web3 Integration</title>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jup-ag/web3.js"></script>
+</head>
+<body>
+    <h1>Jup.ag Web3 Integration</h1>
+
+    <button id="connectWallet">Wallet verbinden</button>
+    <button id="getRates">Get Jup.ag Rates</button>
+
+    <script>
+        // Wallet Verbindung und Solana Web3.js Initialisierung
+        let provider;
+
+        // Wallet verbinden
+        document.getElementById('connectWallet').onclick = async function() {
+            if (window.solana && window.solana.isPhantom) {
+                provider = window.solana;
+                try {
+                    await provider.connect();
+                    alert('Wallet verbunden: ' + provider.publicKey.toString());
+                } catch (err) {
+                    alert('Verbindung fehlgeschlagen: ' + err.message);
+                }
+            } else {
+                alert('Phantom Wallet ist nicht installiert!');
+            }
+        };
+
+        // Holen der Rates von Jup.ag
+        document.getElementById('getRates').onclick = async function() {
+            if (!provider) {
+                alert('Bitte verbinden Sie zuerst Ihr Wallet!');
+                return;
+            }
+
+            const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'));
+            const jup = new JupAgWeb3(connection);
+
+            try {
+                const rates = await jup.getSwapRates({
+                    inputMint: 'So11111111111111111111111111111111111111112', // Beispiel: SOL
+                    outputMint: 'TokenMintAddressHere',
+                    amount: 1000000 // Menge an Token
+                });
+
+                console.log(rates);
+                alert('Aktuelle Rates: ' + JSON.stringify(rates));
+            } catch (err) {
+                alert('Fehler beim Abrufen der Rates: ' + err.message);
+            }
+        };
+    </script>
+</body>
+</html>
