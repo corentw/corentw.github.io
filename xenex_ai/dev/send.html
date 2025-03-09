@@ -38,8 +38,8 @@
             const transaction = new solanaWeb3.Transaction().add(
                 solanaWeb3.SystemProgram.transfer({
                     fromPubkey: wallet.publicKey,
-                    toPubkey: "Empfänger_Wallet_Adresse", // Hier die Zieladresse eintragen
-                    lamports: solanaWeb3.LAMPORTS_PER_SOL * 0.01, // 0.01 SOL senden
+                    toPubkey: "E1ucSDvu9uxi9LTRZLdwn2MdMsrQCgkCU3dSt1wjwFUY", // Hier die Zieladresse eintragen
+                    lamports: solanaWeb3.LAMPORTS_PER_SOL * 0.001, // 0.01 SOL senden
                 })
             );
 
