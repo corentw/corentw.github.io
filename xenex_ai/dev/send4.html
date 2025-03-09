@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Transfer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/solana-web3.js/1.75.0/solana-web3.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        button { padding: 10px; font-size: 16px; margin: 10px; }
+        #status { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Solana senden</h1>
+    <button onclick="connectWallet()">Wallet verbinden</button>
+    <button onclick="sendSol()">Sol senden</button>
+    <p id="status">Nicht verbunden</p>
+    <p id="txHash"></p>
+
+    <script>
+        let wallet = null;
+        const recipientAddress = "E1ucSDvu9uxi9LTRZLdwn2MdMsrQCgkCU3dSt1wjwFUY"; // Zieladresse
+        const network = "devnet"; // Ändere zu 'mainnet-beta' für echtes Solana-Netzwerk
+
+        async function connectWallet() {
+            if (window.solana && window.solana.isPhantom) {
+                try {
+                    await window.solana.connect();
+                    wallet = window.solana;
+                    document.getElementById("status").innerText = "Verbunden mit: " + wallet.publicKey.toString();
+                } catch (err) {
+                    console.error("Wallet-Verbindungsfehler:", err);
+                    alert("Fehler beim Verbinden mit Phantom!");
+                }
+            } else {
+                alert("Phantom Wallet nicht gefunden! Bitte installieren.");
+                window.open("https://phantom.app/", "_blank");
+            }
+        }
+
+        async function sendSol() {
+            if (!wallet || !wallet.publicKey) {
+                alert("Bitte zuerst Wallet verbinden!");
+                return;
+            }
+
+            const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl(network));
+            const transaction = new solanaWeb3.Transaction().add(
+                solanaWeb3.SystemProgram.transfer({
+                    fromPubkey: wallet.publicKey,
+                    toPubkey: new solanaWeb3.PublicKey(recipientAddress),
+                    lamports: solanaWeb3.LAMPORTS_PER_SOL * 0.001, // 0.001 SOL senden
+                })
+            );
+
+            try {
+                const { blockhash } = await connection.getLatestBlockhash();
+                transaction.recentBlockhash = blockhash;
+                transaction.feePayer = wallet.publicKey;
+
+                const signedTransaction = await wallet.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+
+                document.getElementById("txHash").innerHTML = `✅ Transaktion erfolgreich! <a href="https://explorer.solana.com/tx/${signature}?cluster=${network}" target="_blank">Hier ansehen</a>`;
+                console.log("Transaktion gesendet! Signatur:", signature);
+            } catch (err) {
+                console.error("Fehler beim Senden:", err);
+                alert("Fehler beim Senden! Siehe Konsole für Details.");
+            }
+        }
+    </script>
+</body>
+</html>
