@@ -46,8 +46,8 @@
       align-items: center;
       cursor: pointer;
       right: 56px;
-      position: fixed;
-      top: 28px;
+      position:fixed;
+      top:28px;
     }
     .dashboard-icon svg {
       width: 36px;
@@ -231,8 +231,8 @@
       background-size: cover;
       color: white;
       box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
-      border: none;
-      border-radius: 0px;
+      border:none;
+      border-radius:0px;
     }
     .xcountdown-section {
       background-color: #111;
@@ -270,6 +270,7 @@
       opacity: 0.7;
     }
 
+
     /* timebox/countdown Dashboard */
     .xtime-box {
       background: #111;
@@ -303,7 +304,7 @@
     }
     .light-mode footer {
       background: #f1f1f1;
-      color: #000;
+      color:#000;
     }
     .light-mode {
       background-color: #fff;
@@ -320,17 +321,18 @@
     }
     .light-mode .progress-text {
       color: #fff;
-      text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      text-shadow: 0 0 10px  rgba(0, 0, 0, 0.8);
+     /* text-shadow: 0 0 10px rgba(118, 0, 224, 0.8); */
       background: linear-gradient(90deg, rgba(118, 0, 224, 0.9), rgba(184, 0, 220, 0.9));
     }
     .light-mode .xprogress-text {
       color: #000;
-      text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      text-shadow: 0 0 10px  rgba(0, 0, 0, 0.8);
       background: rgba(255,255,255, 0);
     }
     .light-mode .progress-raised {
       background: rgba(255,255,255, 0.68);
-      color: #000;
+      color:#000;
     }
     .light-mode .navbar {
       color: #7600E0;
@@ -358,7 +360,7 @@
     }
     
     .light-mode .faq-section {
-      background-color: #f1f1f1;
+      background-color:#f1f1f1;
       color: #333;
       background: linear-gradient(135deg, #f1f1f1, #fefefe);
     }
@@ -396,7 +398,9 @@
     }
     .light-mode .faq-question:hover {
       color: #7600E0;
+     /* text-shadow: 0 0 2px #7600E0, 0 0 4px #7600E0, 0 0 8px #7600E0; */
     }
+
 
     
     .light-mode .dashboard-modal {
@@ -408,7 +412,7 @@
     .light-mode .countdown-section {
       background: url('../img/nois3.gif') no-repeat center center fixed;
       background-size: cover;
-      color: #000;
+      color:#000;
       box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.7);
       border: 2px solid rgba(255, 255, 255, 0.4);
       border-radius: 0px 0px 20px 20px;
@@ -417,7 +421,7 @@
     .light-mode .xcountdown-section {
       background: url('../img/nois3.gif') no-repeat center center fixed;
       background-size: cover;
-      color: #000;
+      color:#000;
       box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 0px 0px 20px 20px;
@@ -500,7 +504,7 @@
       text-shadow: 0 0 10px rgba(0, 255, 204, 0.8);
       background: rgba(0,0,0, 0);
       padding: 12px auto;
-      border: none;
+      border:none;
       border-radius: 10px;
     }
     .xprogress-text {
@@ -518,9 +522,9 @@
     
     .progress-raised {
       background: rgba(255,255,255, 0);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
+      border:none;
+      border-radius:10px;
+      color:#fff;
       padding: 12px;
     }
 
@@ -573,6 +577,7 @@
     }
     .faq-question:hover {
       color: #00cca3;
+      /* text-shadow: 0 0 5px #00cca3, 0 0 10px #00cca3, 0 0 15px #00cca3; */
     }
     .faq-answer.show {
       display: block;
@@ -711,26 +716,27 @@
     }
 
     .banner {
-      width: 100%;
-      background: linear-gradient(90deg, #7600E0, #B800DC);
-      padding: 3px 0;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-      overflow: hidden;
-      position: absolute;
-      z-index: 999;
-      top: 84px;
-      display: flex;
-      align-items: center;
-      height: 30px;
-    }
+    width: 100%;
+    background: linear-gradient(90deg, #7600E0, #B800DC);
+    padding: 3px 0;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    position: absolute;
+    z-index: 999;
+    top: 84px;
+    display: flex;
+    align-items: center; /* Vertikal zentrieren */
+    height: 30px; /* Anpassen, falls nötig */
+}
 
-    marquee {
-      font-size: 16px;
-      font-weight: 300;
-      color: white;
-      line-height: 30px;
-    }
-  </style>
+marquee {
+    font-size: 16px;
+    font-weight: 300;
+    color: white;
+    line-height: 30px; /* Gleich der Höhe des Banners */
+}
+
+</style>
 </head>
 <body>
 <div class="banner" data-aos="fade-out">
@@ -742,16 +748,16 @@
   <!-- Neues Dashboard-Icon -->
   <div class="dashboard-icon" onclick="openModal('modal-dashboard')">
     <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-      <!-- Kuppel -->
-      <ellipse cx="32" cy="22" rx="14" ry="10" fill="none" stroke="currentColor" stroke-width="3"/>
-      <!-- Untertasse -->
-      <ellipse cx="32" cy="34" rx="24" ry="10" fill="none" stroke="currentColor" stroke-width="3"/>
-      <!-- Lichter -->
-      <circle cx="14" cy="34" r="2" fill="currentColor"/>
-      <circle cx="24" cy="38" r="2" fill="currentColor"/>
-      <circle cx="32" cy="40" r="2" fill="currentColor"/>
-      <circle cx="40" cy="38" r="2" fill="currentColor"/>
-      <circle cx="50" cy="34" r="2" fill="currentColor"/>
+  <!-- Kuppel -->
+    <ellipse cx="32" cy="22" rx="14" ry="10" fill="none" stroke="currentColor" stroke-width="3"/>
+  <!-- Untertasse -->
+    <ellipse cx="32" cy="34" rx="24" ry="10" fill="none" stroke="currentColor" stroke-width="3"/>
+  <!-- Lichter -->
+    <circle cx="14" cy="34" r="2" fill="currentColor"/>
+    <circle cx="24" cy="38" r="2" fill="currentColor"/>
+    <circle cx="32" cy="40" r="2" fill="currentColor"/>
+    <circle cx="40" cy="38" r="2" fill="currentColor"/>
+    <circle cx="50" cy="34" r="2" fill="currentColor"/>
     </svg>
   </div>
   <div class="menu-toggle" onclick="toggleMenu()">☰</div>
@@ -774,9 +780,8 @@
 </section>
 <span id="presale"></span>
 
-<!-- Countdown- und Presale-Sektion -->
 <section class="countdown-section" id="presalexxx" data-aos="fade-up">
-  <h2 id="countdown-header">Buy XNX in presale now!</h2>
+  <h2>Buy XNX in presale now!</h2>
   <div id="countdown" class="countdown-container">
     <div class="time-box"><span id="days">00</span><small class="fcolor">Days</small></div>
     <div class="time-box"><span id="hours">00</span><small class="fcolor">Hours</small></div>
@@ -791,7 +796,7 @@
     </div>
     <p class="progress-text">
       <span id="progress-text" class="progress-main">0% completed</span><br>
-      <span id="progress-label">until the next price increase</span> 
+      <span>until the next price increase</span> 
     </p>
   </div>
  
@@ -852,7 +857,7 @@
     <p>Always do your own research. Nothing here is financial advice. This is a meme coin. © 2025 xenexAi</p><br><br><br>
   </section>
 
-  <!-- Modal for Card Purchase -->
+  <!-- Modal für Card Purchase -->
   <div id="modal-card" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal('modal-card')">&times;</span>
@@ -870,7 +875,7 @@
     </div>
   </div>
 
-  <!-- Modal for Crypto Purchase -->
+  <!-- Modal für Crypto Purchase -->
   <div id="modal-crypto" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal('modal-crypto')">&times;</span>
@@ -880,7 +885,7 @@
     </div>
   </div>
 
-  <!-- Dashboard Area (as Modal) -->
+  <!-- Dashboard Bereich (als Modal) -->
   <div id="modal-dashboard" class="modal">
     <div class="modal-content dashboard-modal">
       <span class="close" onclick="closeModal('modal-dashboard')">&times;</span>
@@ -897,35 +902,40 @@
             </div>
             <div class="xprogress-text">
               <span id="xprogress-text">0% completed</span>
-              <span id="xprogress-label">until the next price increase.</span>
+              <span>until the next price increase.</span>
             </div>
           </div>
+
+          <div id="countdown-text"> tsttxt </div>
+
           
           <div class="dashboard-card">
-            Current presale Token Price: $<span id="xactprice">n/A</span>
+            aktueller presale Tokenpreis: $<span id="xactprice">0.000000</span>
           </div>
-          <!-- Current Tokens -->
+          <!-- Aktuelle Token -->
           <div class="dashboard-card">
-            <h2>Current Tokens</h2>
-            <p id="token-value">Value: 5000 Tokens</p>
-            <p>Last Purchase: 2500 Tokens</p>
-            <p class="early-bird">Early Bird Benefits: 10% Discount</p>
+            <h2>Aktuelle Token</h2>
+            <p id="token-value">Wert: 5000 Tokens</p>
+            <p>Letzter Kauf: 2500 Tokens</p>
+            <p class="early-bird">Early Bird-Vorteile: 10% Rabatt</p>
           </div>
-          <!-- Purchase History -->
+          <!-- Kaufhistorie -->
           <div class="dashboard-card">
-            <h2>Purchase History</h2>
+            <h2>Kaufhistorie</h2>
             <ul id="purchase-history">
-          <!-- Dynamic purchase history will be inserted here -->
+          <!-- Dynamische Kaufhistorie wird hier eingefügt -->
             </ul>
           </div>
           
-          <!-- End Area --> 
-          <button class="buy-now-presale" onclick="closeModal('modal-dashboard')">Close</button>
+        <!-- Endbereich --> 
+          <button class="buy-now-presale" onclick="closeModal('modal-dashboard')">Schließen</button>
         </div>
       </div>
     </div>
   </div>
       
+
+  
 
   <footer>
     <p>&copy; 2025 Xenex AI. All Rights Reserved.</p>
@@ -933,138 +943,7 @@
 
   <script>
     AOS.init(); // Initialize animations
-    btime = 'yes';
-
-    // --- Presale-Daten und Preissteigerungseinstellungen ---
-    const presaleStart = new Date("May 1, 2025 00:00:00"); // Presale-Startdatum
-    const basePrice = 0.001646; // Startpreis
-    const maxMonths = 10; // Anzahl der Monate, in denen der Preis steigt
-    const increaseFactor = 1.05; // 5% Erhöhung pro Monat
-
-    // Berechnet die Monatsdifferenz zwischen zwei Daten
-    function getMonthDifference(start, end) {
-      let months = (end.getFullYear() - start.getFullYear()) * 12;
-      months -= start.getMonth();
-      months += end.getMonth();
-      return months;
-    }
-
-    // Aktualisiert den Tokenpreis basierend auf den vergangenen vollen Monaten seit Presale-Start
-    function actualTokenPrice() {
-      const now = new Date();
-      let monthDiff = 0;
-      if (now >= presaleStart) {
-        monthDiff = getMonthDifference(presaleStart, now);
-        if (monthDiff > maxMonths) monthDiff = maxMonths;
-      }
-      const tokenPrice = (basePrice * Math.pow(increaseFactor, monthDiff)).toFixed(6);
-      document.getElementById("actprice").innerHTML = tokenPrice;
-      document.getElementById("xactprice").innerHTML = tokenPrice;
-    }
-
-    // Aktualisiert den Countdown und die Überschrift
-    function updateCountdown() {
-      const now = new Date();
-      let targetDate, headerText;
-
-      if (now < presaleStart) {
-        // Countdown bis zum Presale-Start
-        targetDate = presaleStart;
-        headerText = "Presale starts in:";
-      } else {
-        let monthDiff = getMonthDifference(presaleStart, now);
-        if (monthDiff >= maxMonths) {
-          document.getElementById("countdown").innerHTML = "<p>No further price increases.</p>";
-          document.getElementById("xcountdown").innerHTML = "<p>No further price increases.</p>";
-          document.getElementById("countdown-header").innerText = "Presale ongoing";
-          return;
-        } else {
-          // Countdown bis zur nächsten Preissteigerung
-          headerText = "Next price increase in:";
-          targetDate = new Date(presaleStart);
-          targetDate.setMonth(targetDate.getMonth() + monthDiff + 1);
-        }
-      }
-
-      const timeLeft = targetDate - now;
-
-      if (timeLeft <= 0) {
-        // Falls der Countdown abgelaufen ist, wird der Text temporär gesetzt und die Funktionen warten auf das nächste Intervall
-        document.getElementById("countdown").innerHTML = "<p>Updating...</p>";
-        document.getElementById("xcountdown").innerHTML = "<p>Updating...</p>";
-        return;
-      }
-
-      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-      document.getElementById("days").textContent = days.toString().padStart(2, '0');
-      document.getElementById("hours").textContent = hours.toString().padStart(2, '0');
-      document.getElementById("minutes").textContent = minutes.toString().padStart(2, '0');
-      document.getElementById("seconds").textContent = seconds.toString().padStart(2, '0');
-
-      document.getElementById("xdays").textContent = days.toString().padStart(2, '0');
-      document.getElementById("xhours").textContent = hours.toString().padStart(2, '0');
-      document.getElementById("xminutes").textContent = minutes.toString().padStart(2, '0');
-      document.getElementById("xseconds").textContent = seconds.toString().padStart(2, '0');
-
-      document.getElementById("countdown-header").innerText = headerText;
-    }
-
-    // Aktualisiert den Fortschrittsbalken im aktuellen monatlichen Preisintervall
-    function updateProgressBar() {
-      const now = new Date();
-      let periodStart, periodEnd;
-
-      if (now < presaleStart) {
-        document.querySelector(".progress-fill").style.width = "0%";
-        document.getElementById("progress-text").textContent = "0% completed";
-        document.getElementById("xprogress-text").textContent = "0% completed";
-        return;
-      }
-
-      let monthDiff = getMonthDifference(presaleStart, now);
-      if (monthDiff >= maxMonths) {
-        // Falls mehr als die maximale Anzahl an Monaten erreicht ist,
-        // setzen wir den Fortschritt auf 100% und zeigen keine weiteren Steigerungen an.
-        document.querySelector(".progress-fill").style.width = "100%";
-        document.getElementById("progress-text").textContent = "100% completed";
-        document.getElementById("xprogress-text").textContent = "100% completed";
-        return;
-      }
-
-      // Bestimme Start und Ende des aktuellen Monatsintervalls
-      periodStart = new Date(presaleStart);
-      periodStart.setMonth(periodStart.getMonth() + monthDiff);
-      periodEnd = new Date(periodStart);
-      periodEnd.setMonth(periodEnd.getMonth() + 1);
-
-      const periodDuration = periodEnd - periodStart;
-      // Falls periodDuration fehlerhaft ist, beende die Funktion
-      if (periodDuration <= 0) {
-        document.querySelector(".progress-fill").style.width = "100%";
-        document.getElementById("progress-text").textContent = "No further price increases.";
-        document.getElementById("xprogress-text").textContent = "No further price increases.";
-        return;
-      }
-      const elapsed = now - periodStart;
-      let progressPercent = (elapsed / periodDuration) * 100;
-      progressPercent = Math.max(0, Math.min(progressPercent, 100));
-
-      document.querySelector(".progress-fill").style.width = progressPercent + "%";
-      document.getElementById("progress-text").textContent = progressPercent.toFixed(1) + "% completed";
-      document.getElementById("xprogress-text").textContent = progressPercent.toFixed(1) + "% completed";
-    }
-
-    // Intervall-Aufrufe zur Aktualisierung
-    setInterval(updateProgressBar, 1000);
-    setInterval(updateCountdown, 1000);
-    setInterval(actualTokenPrice, 1000);
-    updateProgressBar();
-    updateCountdown();
-    actualTokenPrice();
+    btime='yes';
 
     function toggleMenu() {
       document.querySelector(".navbar").classList.toggle("show");
@@ -1074,11 +953,121 @@
         setTimeout(() => {
           document.querySelector(".navbar").classList.toggle("show");
         }, 220);
-      } else {
+      }else{
         document.querySelector(".navbar").classList.toggle("show");
-        btime = 'yes';
+        btime='yes';
       }
     }
+
+ 
+
+    
+   
+  // ************* Konfiguration *************
+  // Stelle hier den Presalestart ein (Datum und Uhrzeit anpassen!)
+  const presaleStart = new Date("2025-05-01T00:00:00");
+  // Anfangspreis des Tokens (wie im Code vorgegeben)
+  const initialPrice = "0.001646";
+  // Annäherung eines Monats: 30 Tage in Millisekunden
+  const monthDuration = 30 * 24 * 60 * 60 * 1000;
+  // Maximale Anzahl von Preiserhöhungen (nächste 11 Monate)
+  const maxIncrements = 11;
+
+  // ************* Fortschrittsanzeige (Progress Bar) *************
+  function updateProgressBar() {
+    const now = new Date();
+    let progressPercent = 0;
+
+    if (now < presaleStart) {
+      // Vor Presalestart: Zeige 0% oder optional den Countdown bis zum Start (hier als 0% Fortschritt)
+      progressPercent = 0;
+    } else {
+      // Seit Presalestart: Berechne, wie weit wir im aktuellen Monat sind
+      const timeSincePresale = now - presaleStart;
+      // Bestimme, in welchem Preiserhöhungsintervall (Monat) wir uns befinden – maximal maxIncrements
+      const currentMonthIndex = Math.min(Math.floor(timeSincePresale / monthDuration), maxIncrements);
+      // Errechne den Start des aktuellen Intervalls
+      const periodStart = new Date(presaleStart.getTime() + currentMonthIndex * monthDuration);
+      const timeInCurrentPeriod = now - periodStart;
+      progressPercent = Math.max(0, Math.min((timeInCurrentPeriod / monthDuration) * 100, 100));
+    }
+
+    // Update der DOM-Elemente – bitte sicherstellen, dass diese in Deinem HTML vorhanden sind!
+    document.querySelector(".progress-fill").style.width = progressPercent + "%";
+    document.getElementById("progress-text").textContent = progressPercent.toFixed(1) + "% completed";
+    document.getElementById("xprogress-text").textContent = progressPercent.toFixed(1) + "% completed";
+  }
+
+  // ************* Countdown-Funktion *************
+  function updateCountdown() {
+    const now = new Date();
+    let countdownText = "";
+
+    if (now < presaleStart) {
+      // Vor Presalestart: Countdown bis zum Start
+      const diff = presaleStart - now;
+      countdownText = "Presale starts in " + formatTime(diff);
+    } else {
+      // Seit Presalestart: Countdown bis zur nächsten Preiserhöhung
+      const timeSincePresale = now - presaleStart;
+      const currentMonthIndex = Math.floor(timeSincePresale / monthDuration);
+      if (currentMonthIndex < maxIncrements) {
+        const nextIncreaseTime = new Date(presaleStart.getTime() + (currentMonthIndex + 1) * monthDuration);
+        const diff = nextIncreaseTime - now;
+        countdownText = "Next price increase in " + formatTime(diff);
+      } else {
+        // Nach den 11 Erhöhungen – Endpreis erreicht
+        countdownText = "Final price reached.";
+      }
+    }
+    // Stelle sicher, dass in Deinem HTML ein Element mit der ID "countdown-text" existiert!
+    document.getElementById("countdown-text").textContent = countdownText;
+  }
+
+  // ************* Preisberechnung *************
+  function actualTokenPrice() {
+    const now = new Date();
+    let currentPrice = initialPrice;
+
+    if (now >= presaleStart) {
+      const timeSincePresale = now - presaleStart;
+      // Bestimme, wie viele vollständige Monate (Preiserhöhungsintervalle) vergangen sind, maximal maxIncrements
+      const monthsPassed = Math.min(Math.floor(timeSincePresale / monthDuration), maxIncrements);
+      // Preissteigerung um 0,5% pro Monat (d.h. multiplikative Erhöhung)
+      currentPrice = initialPrice * Math.pow(1.005, monthsPassed);
+    }
+    // Update des Preises – bitte sicherstellen, dass in Deinem HTML ein Element mit der ID "token-price" existiert!
+    // document.getElementById("token-price").textContent = currentPrice.toFixed(4);
+    document.getElementById("actprice").innerHTML = tokenprice;
+    document.getElementById("xactprice").innerHTML = tokenprice;
+
+  }
+
+  // ************* Hilfsfunktion zur Zeitformatierung *************
+  function formatTime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const days = Math.floor(totalSeconds / (3600 * 24));
+    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+  }
+
+  // ************* Intervall-Updates *************
+  // Aktualisiere die Progress Bar jede Sekunde
+  setInterval(updateProgressBar, 1000);
+  updateProgressBar();
+
+  // Aktualisiere den Countdown jede Sekunde
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
+
+  // Aktualisiere den Tokenpreis jede Sekunde
+  setInterval(actualTokenPrice, 1000);
+  actualTokenPrice();
+
+
+    
 
     function toggleLight() {
       document.body.classList.toggle('light-mode');
@@ -1108,6 +1097,7 @@
       }
     }
 
+
     // Demo-Daten für Kaufhistorie und Tokenwert
     const demoTokenValue = 5000;
     const demoPurchaseHistory = [
@@ -1115,7 +1105,7 @@
       { date: '2025-02-18', amount: 1500 },
       { date: '2025-02-15', amount: 2000 },
     ];
-    document.getElementById('token-value').textContent = `Value: ${demoTokenValue} Tokens`;
+    document.getElementById('token-value').textContent = `Wert: ${demoTokenValue} Tokens`;
     const historyList = document.getElementById('purchase-history');
     demoPurchaseHistory.forEach(item => {
       const listItem = document.createElement('li');
@@ -1124,20 +1114,26 @@
       historyList.appendChild(listItem);
     });
 
-    // Array mit verschiedenen Promo-Texten
-    const promoMessages = [
-      "Xenex AI – The future of artificial intelligence starts here! •• Smart solutions for smart people – Welcome to Xenex AI! •• Innovation meets performance – Xenex AI is changing the world! •• AI-powered technology that makes your life easier! •• Built for speed, performance & efficiency – Xenex AI! ••"
-    ];
 
-    // Funktion, um zufällige Werbebotschaften anzuzeigen
-    function updatePromoText() {
-      const randomMessage = promoMessages;
-      document.getElementById("promo-text").textContent = randomMessage;
-    }
 
-    // Aktualisierung alle 5 Sekunden (Intervall bleibt auf langem Wert, wie im Original)
-    setInterval(updatePromoText, 9999999999);
-    updatePromoText();
+// Array mit verschiedenen Promo-Texten
+const promoMessages = [
+    "Xenex AI – The future of artificial intelligence starts here! •• Smart solutions for smart people – Welcome to Xenex AI! •• Innovation meets performance – Xenex AI is changing the world! •• AI-powered technology that makes your life easier! •• Built for speed, performance & efficiency – Xenex AI! ••"
+];
+
+
+// Funktion, um zufällige Werbebotschaften anzuzeigen
+function updatePromoText() {
+    const randomMessage = promoMessages;
+    document.getElementById("promo-text").textContent = randomMessage;
+}
+
+// Aktualisierung alle 5 Sekunden mit neuer Message
+setInterval(updatePromoText, 9999999999);
+
+// Erste Initialisierung
+updatePromoText();
+
   </script>
 </body>
-</html>
+  </html>
