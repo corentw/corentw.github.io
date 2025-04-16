@@ -549,7 +549,7 @@
       </div>
       <p class="progress-text">
         <span id="progress-text" class="progress-main">0% completed</span><br>
-        <span>until the next price increase</span>
+        <span id="progress-until">until the next price increase</span>
       </p>
     </div>
     <div class="progress-raised">
@@ -648,7 +648,7 @@
             </div>
             <div class="xprogress-text">
               <span id="xprogress-text">0% completed</span>
-              <span>until the next price increase.</span>
+              <span id="xprogress-until">until the next price increase.</span>
             </div>
           </div>
           <div id="countdown-text" style="text-align: center; font-size: 1.2rem; padding: 10px 0;">
@@ -743,7 +743,11 @@
         progressFillElement.style.width = progressPercent + "%";
         let remainingPercent = (100 - progressPercent).toFixed(1);
         document.getElementById("progress-text").textContent = "still " + remainingPercent + "% until the presale starts!";
-        document.getElementById("xprogress-text").textContent = "still " + remainingPercent + "% until the presale starts!";        
+        document.getElementById("progress-until").textContent = "until the presale starts!";
+        document.getElementById("xprogress-text").textContent = "still " + remainingPercent + "% until the presale starts!"; 
+        document.getElementById("xprogress-until").textContent = "until the presale starts!";
+
+      
         document.getElementById("buxnx").textContent = "Buy XNX in presale soon!";
 
       } else {
@@ -754,6 +758,8 @@
           progressFillElement.style.width = progressPercent + "%";
           document.getElementById("progress-text").textContent = "presale successfully completed.";
           document.getElementById("xprogress-text").textContent = "presale successfully completed.";
+          document.getElementById("progress-until").textContent = "";
+          document.getElementById("xprogress-until").textContent = "";
           document.getElementById("buxnx").textContent = "Presale completed successfuly!";
 
         } else {
@@ -761,8 +767,10 @@
           const intervalElapsed = now - intervalStart;
           progressPercent = Math.min((intervalElapsed / monthDuration) * 100, 100);
           progressFillElement.style.width = progressPercent + "%";
-          document.getElementById("progress-text").textContent = progressPercent.toFixed(1) + "% completed until the next price increase";
-          document.getElementById("xprogress-text").textContent = progressPercent.toFixed(1) + "% completed until the next price increase";
+          document.getElementById("progress-text").textContent = progressPercent.toFixed(1) + "% completed";
+          document.getElementById("xprogress-text").textContent = progressPercent.toFixed(1) + "% completed";
+          document.getElementById("progress-until").textContent = "until the next price increase";
+          document.getElementById("xprogress-until").textContent = "until the next price increase";
           document.getElementById("buxnx").textContent = "Buy XNX in presale now!";
         }
       }
