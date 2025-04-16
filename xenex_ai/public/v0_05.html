@@ -770,7 +770,7 @@
       
       if (now < presaleStart) {
         // Vor Presale: Countdown von einem festgelegten Startzeitpunkt (hier 2025-04-01T00:00:00) bis zum Presale-Start
-        const prePresaleStart = new Date("2025-08-01T00:00:00");
+        const prePresaleStart = new Date("2025-01-01T00:00:00");
         const totalPreDuration = presaleStart - prePresaleStart;
         const elapsedPreDuration = now - prePresaleStart;
         progressPercent = Math.max(0, Math.min((elapsedPreDuration / totalPreDuration) * 100, 100));
