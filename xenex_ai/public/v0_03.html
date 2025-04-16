@@ -57,10 +57,7 @@
       cursor: pointer;
       color: #00ffcc;
     }
-    .navbar {
-      display: flex;
-      gap: 10px;
-    }
+    .navbar { display: flex; gap: 10px; }
     .navbar a {
       color: #00ffcc;
       font-size: 1.2rem;
@@ -228,10 +225,7 @@
       text-align: center;
       padding: 2px 0;
     }
-    .light-mode footer {
-      background: #f1f1f1;
-      color:#000;
-    }
+    .light-mode footer { background: #f1f1f1; color:#000; }
     .light-mode { background-color: #fff; color: #333; }
     .light-mode header { background-color: #f1f1f1; }
     .light-mode h2 { color: #7600E0; }
@@ -313,13 +307,8 @@
       background: url('https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/661672110905871.5ff991888d085.gif') no-repeat center center fixed;
       background-size: cover;
     }
-    .light-mode .light-selector {
-      background-color: #7600E0;
-      color: #fff;
-    }
-    .light-mode .progress-fill {
-      background: linear-gradient(90deg, #7600E0, #B800DC);
-    }
+    .light-mode .light-selector { background-color: #7600E0; color: #fff; }
+    .light-mode .progress-fill { background: linear-gradient(90deg, #7600E0, #B800DC); }
     .light-mode .progress-bar {
       background: rgba(255, 255, 255, 0.4);
       box-shadow: 0 0 15px rgba(118, 0, 224, 0.5);
@@ -347,29 +336,9 @@
       animation: glareMove 2s infinite linear;
     }
     @keyframes glareMove { 0% { left: -10%; } 100% { left: 100%; } }
-    .progress-container {
-      width: 80%;
-      max-width: 600px;
-      margin: 20px auto;
-      text-align: center;
-    }
-    .progress-bar {
-      width: 100%;
-      height: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
-    }
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #00ffcc, #00cca3);
-      border-radius: 10px;
-      transition: width 1s ease-in-out;
-      position: relative;
-    }
+    .progress-container { width: 80%; max-width: 600px; margin: 20px auto; text-align: center; }
+    .progress-bar { width: 100%; height: 20px; background: rgba(255, 255, 255, 0.2); border-radius: 10px; position: relative; overflow: hidden; box-shadow: 0 0 15px rgba(0, 255, 204, 0.5); }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00ffcc, #00cca3); border-radius: 10px; transition: width 1s ease-in-out; position: relative; }
     .progress-text {
       margin-top: 18px;
       font-size: 0.8rem;
@@ -390,13 +359,7 @@
       padding: 12px auto 4px auto;
     }
     .progress-main { font-size: 1.28rem; }
-    .progress-raised {
-      background: rgba(255,255,255, 0);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      padding: 12px;
-    }
+    .progress-raised { background: rgba(255,255,255, 0); border: none; border-radius: 10px; color: #fff; padding: 12px; }
     .faq-section {
       background: linear-gradient(135deg, #0a0a0a, #111);
       padding: 60px 20px;
@@ -571,14 +534,12 @@
   <span id="presale"></span>
   <section class="countdown-section" id="presale" data-aos="fade-up">
     <h2>Buy XNX in presale now!</h2>
-    <!-- Haupt-Countdown: einzelne Felder -->
     <div id="countdown" class="countdown-container">
       <div class="time-box"><span id="days">00</span><small class="fcolor">Days</small></div>
       <div class="time-box"><span id="hours">00</span><small class="fcolor">Hours</small></div>
       <div class="time-box"><span id="minutes">00</span><small class="fcolor">Minutes</small></div>
       <div class="time-box"><span id="seconds">00</span><small class="fcolor">Seconds</small></div>
     </div>
-    <!-- Fortschrittsanzeige -->
     <div class="progress-container">
       <div class="progress-bar">
         <div class="progress-fill">
@@ -677,7 +638,6 @@
       <div class="dashboard-container">
         <h2 class="dashboard-title">Dashboard</h2>
         <div class="dashboard-grid">
-          <!-- Dashboard Countdown (separate Anzeige) -->
           <div class="xcountdown-section">
             <div id="xcountdown" class="countdown-container">
               <div class="xtime-box"><span id="xdays">00</span><small class="fcolor">Days</small></div>
@@ -690,7 +650,6 @@
               <span>until the next price increase.</span>
             </div>
           </div>
-          <!-- Dashboard statischer Text (optional) -->
           <div id="countdown-text" style="text-align: center; font-size: 1.2rem; padding: 10px 0;">
             Countdown status
           </div>
@@ -761,37 +720,38 @@
     };
 
     // --- Presale-Konfiguration ---
-    // Datum und Uhrzeit des Presale-Starts (anpassen wie benötigt)
     const presaleStart = new Date("2025-05-01T00:00:00");
-    // Startpreis (wird ab presale als Zahl verarbeitet)
     const initialPrice = parseFloat("0.001646");
-    // Dauer eines "Monats" in Millisekunden (30 Tage)
     const monthDuration = 30 * 24 * 60 * 60 * 1000;
-    // Maximale Anzahl der Preissteigerungen (11 Monate)
     const maxIncrements = 11;
 
     // -------------------------------
-    // Update: Fortschrittsanzeige (Progress-Bar)
+    // Update Progress Bar (optimiert)
     function updateProgressBar() {
       const now = new Date();
       let progressPercent = 0;
+      const progressFillElement = document.querySelector(".progress-fill");
+      if (!progressFillElement) return;
       if (now < presaleStart) {
         progressPercent = 0;
       } else {
         const timeSincePresale = now - presaleStart;
-        // Ermittle aktuellen Preiserhöhungsintervall (nicht mehr als maxIncrements)
-        const currentMonthIndex = Math.min(Math.floor(timeSincePresale / monthDuration), maxIncrements);
-        const periodStart = new Date(presaleStart.getTime() + currentMonthIndex * monthDuration);
-        const timeInCurrentPeriod = now - periodStart;
-        progressPercent = Math.min((timeInCurrentPeriod / monthDuration) * 100, 100);
+        let currentMonthIndex = Math.floor(timeSincePresale / monthDuration);
+        if (currentMonthIndex >= maxIncrements) {
+          progressPercent = 100;
+        } else {
+          const intervalStart = new Date(presaleStart.getTime() + currentMonthIndex * monthDuration);
+          const intervalElapsed = now - intervalStart;
+          progressPercent = Math.min((intervalElapsed / monthDuration) * 100, 100);
+        }
       }
-      document.querySelector(".progress-fill").style.width = progressPercent + "%";
+      progressFillElement.style.width = progressPercent + "%";
       document.getElementById("progress-text").textContent = progressPercent.toFixed(1) + "% completed";
       document.getElementById("xprogress-text").textContent = progressPercent.toFixed(1) + "% completed";
     }
 
     // -------------------------------
-    // Update: Countdown (und einzelne Countdown-Felder)
+    // Update Countdown (Haupt- und Dashboardfelder)
     function updateCountdown() {
       const now = new Date();
       let diff;
@@ -801,7 +761,7 @@
         countdownLabel = "Presale starts in ";
       } else {
         const timeSincePresale = now - presaleStart;
-        const currentMonthIndex = Math.floor(timeSincePresale / monthDuration);
+        let currentMonthIndex = Math.floor(timeSincePresale / monthDuration);
         if (currentMonthIndex < maxIncrements) {
           const nextIncreaseTime = new Date(presaleStart.getTime() + (currentMonthIndex + 1) * monthDuration);
           diff = nextIncreaseTime - now;
@@ -811,7 +771,6 @@
           countdownLabel = "Final price reached.";
         }
       }
-      // Falls diff > 0, berechne Tage, Stunden, Minuten, Sekunden
       let days = "00", hours = "00", minutes = "00", seconds = "00";
       if (diff > 0) {
         const totalSeconds = Math.floor(diff / 1000);
@@ -820,45 +779,31 @@
         minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
         seconds = String(totalSeconds % 60).padStart(2, "0");
       }
-      // Update Haupt-Countdown-Felder
       document.getElementById("days").textContent = days;
       document.getElementById("hours").textContent = hours;
       document.getElementById("minutes").textContent = minutes;
       document.getElementById("seconds").textContent = seconds;
-      // Update Dashboard-Countdown-Felder
       document.getElementById("xdays").textContent = days;
       document.getElementById("xhours").textContent = hours;
       document.getElementById("xminutes").textContent = minutes;
       document.getElementById("xseconds").textContent = seconds;
-      // Update zusätzlichen Countdown-Text (Dashboard)
       document.getElementById("countdown-text").textContent = countdownLabel + (diff > 0 ? days + "d " + hours + "h " + minutes + "m " + seconds + "s" : "");
     }
 
     // -------------------------------
-    // Update: Preisberechnung (aktueller Tokenpreis)
+    // Update Token Price
     function actualTokenPrice() {
       const now = new Date();
       let currentPrice = initialPrice;
       if (now >= presaleStart) {
         const timeSincePresale = now - presaleStart;
-        const monthsPassed = Math.min(Math.floor(timeSincePresale / monthDuration), maxIncrements);
+        let monthsPassed = Math.floor(timeSincePresale / monthDuration);
+        monthsPassed = Math.min(monthsPassed, maxIncrements);
         currentPrice = initialPrice * Math.pow(1.005, monthsPassed);
       }
-      // Aktualisiere Preisanzeige in beiden Bereichen
       const priceStr = currentPrice.toFixed(6);
       document.getElementById("actprice").textContent = priceStr;
       document.getElementById("xactprice").textContent = priceStr;
-    }
-
-    // -------------------------------
-    // Helper: Formatierung (falls benötigt)
-    function formatTime(ms) {
-      const totalSeconds = Math.floor(ms / 1000);
-      const days = Math.floor(totalSeconds / (3600 * 24));
-      const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-      return days + "d " + hours + "h " + minutes + "m " + seconds + "s";
     }
 
     // -------------------------------
@@ -867,7 +812,7 @@
     const demoPurchaseHistory = [
       { date: '2025-02-20', amount: 2500 },
       { date: '2025-02-18', amount: 1500 },
-      { date: '2025-02-15', amount: 2000 },
+      { date: '2025-02-15', amount: 2000 }
     ];
     document.getElementById('token-value').textContent = `Wert: ${demoTokenValue} Tokens`;
     const historyList = document.getElementById('purchase-history');
@@ -879,7 +824,7 @@
     });
 
     // -------------------------------
-    // Promo-Texte (optional; feste Botschaft oder erweiterbar)
+    // Promo-Texte (optional)
     const promoMessages = [
       "Xenex AI – The future of artificial intelligence starts here! •• Smart solutions for smart people – Welcome to Xenex AI! •• Innovation meets performance – Xenex AI is changing the world! •• AI-powered technology that makes your life easier! •• Built for speed, performance & efficiency – Xenex AI!"
     ];
@@ -890,11 +835,10 @@
     updatePromoText();
 
     // -------------------------------
-    // Intervall-Updates
+    // Intervall-Updates (jede Sekunde)
     setInterval(updateProgressBar, 1000);
     setInterval(updateCountdown, 1000);
     setInterval(actualTokenPrice, 1000);
-    // Erste Updates sofort
     updateProgressBar();
     updateCountdown();
     actualTokenPrice();
