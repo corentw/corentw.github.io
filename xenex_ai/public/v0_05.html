@@ -95,20 +95,20 @@
     }
     .hero {
       height: 100vh;
-      background-img: url('x../img/xenex_background.gif') no-repeat center center fixed;
-      background:rgba(0,0,0,0.78);
+      background-img: url('../img/xenex_background.gif') no-repeat center center fixed;
+      background:rgba(0,0,0,0.62);
       background-size: cover;
       text-align: center;
       display: flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      opacity:1;
+      opacity:0.6;
       animation: fadeInUp 3s ease-in;
     }
     .hero img { width: 150px; margin-bottom: 20px; animation: pulse 2s infinite; }
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-    @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(40px); } 100% { opacity: 0.6; transform: translateY(0); } }
     @keyframes slideIn { 0% { opacity: 0; transform: translateX(-100%); } 100% { opacity: 1; transform: translateX(0); } }
     .buy-now {
       display: inline-block;
