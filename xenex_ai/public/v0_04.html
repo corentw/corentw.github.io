@@ -736,15 +736,15 @@
       
       if (now < presaleStart) {
         // Vor Presale: Countdown von einem festgelegten Startzeitpunkt (hier 2025-04-01T00:00:00) bis zum Presale-Start
-        const prePresaleStart = new Date("2025-04-01T00:00:00");
+        const prePresaleStart = new Date("2025-08-01T00:00:00");
         const totalPreDuration = presaleStart - prePresaleStart;
         const elapsedPreDuration = now - prePresaleStart;
         progressPercent = Math.max(0, Math.min((elapsedPreDuration / totalPreDuration) * 100, 100));
         progressFillElement.style.width = progressPercent + "%";
         let remainingPercent = (100 - progressPercent).toFixed(1);
-        document.getElementById("progress-text").textContent = "still " + remainingPercent + "% until the presale starts!";
+        document.getElementById("progress-text").textContent = "still " + remainingPercent + "%";
         document.getElementById("progress-until").textContent = "until the presale starts!";
-        document.getElementById("xprogress-text").textContent = "still " + remainingPercent + "% until the presale starts!"; 
+        document.getElementById("xprogress-text").textContent = "still " + remainingPercent + "%"; 
         document.getElementById("xprogress-until").textContent = "until the presale starts!";
 
       
