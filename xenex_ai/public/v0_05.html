@@ -755,7 +755,7 @@
     };
 
     // --- Presale-Konfiguration ---
-    const presaleStart = new Date("2025-05-01T00:00:00");
+    const presaleStart = new Date("2025-09-01T00:00:00");
     const initialPrice = parseFloat("0.001646");
     const monthDuration = 30 * 24 * 60 * 60 * 1000;
     const maxIncrements = 11;
@@ -770,7 +770,7 @@
       
       if (now < presaleStart) {
         // Vor Presale: Countdown von einem festgelegten Startzeitpunkt (hier 2025-04-01T00:00:00) bis zum Presale-Start
-        const prePresaleStart = new Date("2025-06-01T00:00:00");
+        const prePresaleStart = new Date("2025-08-01T00:00:00");
         const totalPreDuration = presaleStart - prePresaleStart;
         const elapsedPreDuration = now - prePresaleStart;
         progressPercent = Math.max(0, Math.min((elapsedPreDuration / totalPreDuration) * 100, 100));
