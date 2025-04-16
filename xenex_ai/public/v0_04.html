@@ -534,7 +534,7 @@
   </section>
   <span id="presale"></span>
   <section class="countdown-section" id="presale" data-aos="fade-up">
-    <h2>Buy XNX in presale now!</h2>
+    <h2 id="buxnx">Buy XNX in presale!</h2>
     <div id="countdown" class="countdown-container">
       <div class="time-box"><span id="days">00</span><small class="fcolor">Days</small></div>
       <div class="time-box"><span id="hours">00</span><small class="fcolor">Hours</small></div>
@@ -742,16 +742,20 @@
         progressPercent = Math.max(0, Math.min((elapsedPreDuration / totalPreDuration) * 100, 100));
         progressFillElement.style.width = progressPercent + "%";
         let remainingPercent = (100 - progressPercent).toFixed(1);
-        document.getElementById("progress-text").textContent = "noch " + remainingPercent + "% bis zum Start des presales!";
-        document.getElementById("xprogress-text").textContent = "noch " + remainingPercent + "% bis zum Start des presales!";
+        document.getElementById("progress-text").textContent = "still " + remainingPercent + "% until the presale starts!";
+        document.getElementById("xprogress-text").textContent = "still " + remainingPercent + "% until the presale starts!";        
+        document.getElementById("buxnx").textContent = "Buy XNX in presale soon!";
+
       } else {
         const timeSincePresale = now - presaleStart;
         let currentMonthIndex = Math.floor(timeSincePresale / monthDuration);
         if (currentMonthIndex >= maxIncrements) {
           progressPercent = 100;
           progressFillElement.style.width = progressPercent + "%";
-          document.getElementById("progress-text").textContent = "presale erfolgreich abgeschlossen.";
-          document.getElementById("xprogress-text").textContent = "presale erfolgreich abgeschlossen.";
+          document.getElementById("progress-text").textContent = "presale successfully completed.";
+          document.getElementById("xprogress-text").textContent = "presale successfully completed.";
+          document.getElementById("buxnx").textContent = "Presale completed successfuly!";
+
         } else {
           const intervalStart = new Date(presaleStart.getTime() + currentMonthIndex * monthDuration);
           const intervalElapsed = now - intervalStart;
@@ -759,6 +763,7 @@
           progressFillElement.style.width = progressPercent + "%";
           document.getElementById("progress-text").textContent = progressPercent.toFixed(1) + "% completed until the next price increase";
           document.getElementById("xprogress-text").textContent = progressPercent.toFixed(1) + "% completed until the next price increase";
+          document.getElementById("buxnx").textContent = "Buy XNX in presale now!";
         }
       }
     }
