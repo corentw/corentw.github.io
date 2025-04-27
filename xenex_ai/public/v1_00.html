@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Xenex AI - The future of Alien-AI blockchain with high scalability, lightning-fast transactions, and AI-powered investment strategies." />
+  <meta name="keywords" content="Xenex AI, Blockchain, Cryptocurrency, Presale, Tokens, AI" />
+  <meta name="author" content="Xenex AI Team" />
+  <link rel="icon" href="../img/logo.png" type="image/x-icon" />
+  <title>Xenex AI Presale</title>
+
+  <!-- AOS für Scroll-Animationen -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Solana Web3.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.93.0/lib/index.iife.min.js"></script>
+
+  <style>
+    /* Grund-Reset */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #0a0a0a;
+      color: #00ffcc;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease;
+    }
+    a { text-decoration: none; }
+
+    /* Header */
+    header {
+      position: fixed; top: 0; left: 0; width: 100%;
+      padding: 10px 5%;
+      background: rgba(10,10,10,0.9);
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 1000;
+    }
+    header h2 { color: #00ffcc; font-weight: 600; }
+    .menu-toggle { font-size: 1.8rem; cursor: pointer; color: #00ffcc; display: none; }
+    .navbar {
+      display: flex; gap: 1rem;
+    }
+    .navbar a, .light-selector {
+      color: #00ffcc; font-size: 1rem; font-weight: 500;
+      transition: color .3s;
+    }
+    .navbar a:hover, .light-selector:hover { color: #00cca3; }
+    @media (max-width:768px) {
+      .menu-toggle { display: block; }
+      .navbar { display: none; flex-direction: column; background: rgba(10,10,10,0.9); position: absolute; top: 60px; left: 0; width: 100%; }
+      .navbar.show { display: flex; }
+    }
+
+    /* Video-Hintergrund */
+    .video-background {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden;
+    }
+    .video-background video {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .video-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); z-index: -1;
+    }
+
+    /* Hero-Section */
+    .hero {
+      height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      padding: 0 1rem;
+    }
+    .hero img {
+      width: 120px; margin-bottom: 1rem; animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); } 50% { transform: scale(1.05); }
+    }
+    .hero h2 { font-size: 2.5rem; margin-bottom: .5rem; }
+    .hero h3 { font-size: 1.1rem; font-weight: 300; color: #ccc; }
+    .buy-now {
+      display: inline-block; margin-top: 1.5rem; padding: .8rem 2rem;
+      background: #00ffcc; color: #0a0a0a; font-weight: 600; border-radius: 5px;
+      transition: transform .3s, background .3s;
+    }
+    .buy-now:hover { transform: scale(1.05); background: #00cca3; }
+
+    /* Presale-Countdown */
+    .countdown-section {
+      padding: 6rem 1rem 4rem; text-align: center; background: #111;
+    }
+    .countdown-container {
+      display: flex; justify-content: center; gap: 1rem; margin: 1.5rem 0;
+    }
+    .time-box {
+      background: #222; padding: .8rem; border-radius: 8px;
+      min-width: 60px; color: #fff;
+    }
+    .time-box span { display: block; font-size: 1.5rem; font-weight: 600; }
+    .time-box small { font-size: .7rem; opacity: .7; }
+
+    /* Progress Bar */
+    .progress-container { max-width: 600px; margin: 2rem auto; }
+    .progress-bar {
+      width: 100%; height: 16px; background: rgba(255,255,255,0.1);
+      border-radius: 8px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0%; background: linear-gradient(90deg,#00ffcc,#00cca3);
+      transition: width 1s ease-in-out;
+    }
+    .glare {
+      position: absolute; top:0; left: -30%; width: 30%; height:100%;
+      background: rgba(255,255,255,0.5); filter: blur(4px);
+      animation: glareMove 1.5s infinite;
+    }
+    @keyframes glareMove { from{left:-30%} to{left:130%} }
+
+    .progress-text { margin-top: .5rem; font-size: .9rem; color: #00ffcc; }
+
+    /* FAQ, Team, Footer (gekürzt übernommen) */
+    .faq-section { padding:4rem 1rem; background:#111; }
+    .faq-title { font-size:1.5rem; margin-bottom:2rem; }
+    .faq-item { background:rgba(255,255,255,0.05); margin-bottom:1rem; padding:1rem; border-radius:8px; cursor:pointer; }
+    .faq-answer { display:none; margin-top:.5rem; color:#ccc; }
+    .faq-answer.show { display:block; }
+
+    footer {
+      background:rgba(10,10,10,0.9); text-align:center; padding:.5rem;
+      position:fixed; bottom:0; left:0; width:100%; color:#888; font-size:.8rem;
+    }
+
+    /* Modal-Grundlagen */
+    .modal {
+      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.8); justify-content:center; align-items:center;
+      z-index:2000;
+    }
+    .modal-content {
+      background:#0a0a0a; padding:2rem; border-radius:10px;
+      max-width:400px; width:90%; position:relative;
+    }
+    .modal-content h2 { color:#00ffcc; margin-bottom:1rem; }
+    .modal-content .close {
+      position:absolute; top:10px; right:15px; font-size:1.5rem; color:#00ffcc; cursor:pointer;
+    }
+
+    /* Presale-Card im Crypto-Modal */
+    .card {
+      background: #16162a; padding: 1.5rem; border-radius:12px;
+      box-shadow: 0 4px 20px rgba(0,255,204,0.2); text-align:center;
+      margin-top:1rem;
+    }
+    .card button, .card input {
+      width:100%; margin-top:.8rem; padding:.8rem; border:none; outline:none;
+      border-radius:8px; font-size:1rem;
+    }
+    .card input { background:#222; color:#fff; }
+    .card button {
+      background:#00ffcc; color:#0a0a0a; font-weight:600;
+      cursor:pointer; transition:transform .2s;
+    }
+    .card button:hover:not(:disabled){ transform:scale(1.03); }
+    .card button:disabled { background:#444; cursor:not-allowed; }
+    .loader {
+      display:inline-block; width:14px; height:14px;
+      border:2px solid #0a0a0a; border-top:2px solid #00ffcc;
+      border-radius:50%; animation:spin .8s linear infinite;
+      vertical-align:middle; margin-left:6px;
+    }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header>
+    <h2>Xenex AI</h2>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    <nav class="navbar">
+      <a href="#hero">Home</a>
+      <a href="#presale">Presale</a>
+      <a href="#faq">FAQ</a>
+      <a href="#team">Team</a>
+      <a href="javascript:;" onclick="openModal('modal-crypto')">Buy Crypto</a>
+      <button class="light-selector" onclick="toggleLight()">Light Mode</button>
+    </nav>
+  </header>
+
+  <!-- Video-Hintergrund -->
+  <div class="video-background">
+    <video autoplay muted loop playsinline>
+      <source src="https://xenex-ai.github.io/img/promo_presale_small.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero" id="hero" data-aos="fade-up">
+    <img src="../img/logo.png" alt="Xenex AI Logo">
+    <h2>The Future of Alien-AI Blockchain</h2>
+    <h3>Cutting-edge, secure & decentralized Token-Sale</h3>
+    <a class="buy-now" href="#presale">Buy Now</a>
+  </section>
+
+  <!-- Countdown & Progress -->
+  <section class="countdown-section" id="presale" data-aos="fade-up">
+    <h2 id="buxnx">Buy XNX in Presale!</h2>
+    <div class="countdown-container">
+      <div class="time-box"><span id="days">00</span><small>Days</small></div>
+      <div class="time-box"><span id="hours">00</span><small>Hours</small></div>
+      <div class="time-box"><span id="minutes">00</span><small>Min</small></div>
+      <div class="time-box"><span id="seconds">00</span><small>Sec</small></div>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar"><div class="progress-fill"><div class="glare"></div></div></div>
+      <p class="progress-text" id="progress-text">0% completed</p>
+    </div>
+    <a class="buy-now-presale buy-now" href="javascript:;" onclick="openModal('modal-crypto')">BUY WITH CRYPTO</a>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section" id="faq" data-aos="fade-up">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    <div class="faq-item" onclick="toggleFAQ(this)">
+      <h3 class="faq-question">What is Xenex AI?</h3>
+      <p class="faq-answer">Xenex AI is a decentralized blockchain project powered by AI...</p>
+    </div>
+    <!-- weitere Items... -->
+  </section>
+
+  <!-- Team -->
+  <section class="team-section" id="team" data-aos="fade-up" style="padding:4rem 1rem; text-align:center;">
+    <h2>Meet Our Team</h2>
+    <p style="color:#aaa; margin-top:1rem;">Always do your own research. © 2025 Xenex AI</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Xenex AI. All Rights Reserved.
+  </footer>
+
+  <!-- Modal: Buy with Crypto -->
+  <div id="modal-crypto" class="modal" onclick="if(event.target===this)closeModal('modal-crypto')">
+    <div class="modal-content" data-aos="zoom-in">
+      <span class="close" onclick="closeModal('modal-crypto')">&times;</span>
+      <h2>Buy XNX with Crypto</h2>
+      <p>Verbinde deine Phantom Wallet und kaufe direkt mit SOL.</p>
+
+      <div class="card">
+        <button id="connectWallet">Wallet verbinden</button>
+        <div id="walletInfo">Noch nicht verbunden</div>
+        <input id="solAmount" type="number" step="0.0001" min="0.0001" placeholder="SOL Betrag eingeben">
+        <div id="info">Du erhältst: 0 XNX</div>
+        <button id="buyBtn" disabled>Buy XNX</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AOS & Main-Script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script>
+    AOS.init({ once: true, duration: 800 });
+
+    // Navbar mobile
+    function toggleMenu() {
+      document.querySelector('.navbar').classList.toggle('show');
+    }
+    function toggleLight() {
+      document.body.classList.toggle('light-mode');
+    }
+    // FAQ
+    function toggleFAQ(el) {
+      const ans = el.querySelector('.faq-answer');
+      document.querySelectorAll('.faq-answer').forEach(a=>a.classList.remove('show'));
+      ans.classList.toggle('show');
+    }
+    // Modal
+    function openModal(id) { document.getElementById(id).style.display='flex'; }
+    function closeModal(id){ document.getElementById(id).style.display='none'; }
+
+    // Presale Timer/Progress
+    const presaleStart = new Date("2025-09-01T00:00:00");
+    const initialPrice   = 0.001646;
+    const monthMs        = 30*24*60*60*1000;
+    const maxSteps       = 11;
+
+    function updateCountdown() {
+      const now = new Date();
+      let diff, label;
+      if (now < presaleStart) {
+        diff = presaleStart - now;
+        label = "Presale starts in";
+      } else {
+        const since = now - presaleStart;
+        const step  = Math.min(Math.floor(since/monthMs), maxSteps-1);
+        const next  = new Date(presaleStart.getTime() + (step+1)*monthMs);
+        diff = next - now;
+        label = since < monthMs*maxSteps ? "Next price increase in" : "Final price reached";
+      }
+      const s = Math.floor(diff/1000);
+      const d = String(Math.floor(s/86400)).padStart(2,'0');
+      const h = String(Math.floor((s%86400)/3600)).padStart(2,'0');
+      const m = String(Math.floor((s%3600)/60)).padStart(2,'0');
+      const sec = String(s%60).padStart(2,'0');
+      document.getElementById("days").textContent = d;
+      document.getElementById("hours").textContent = h;
+      document.getElementById("minutes").textContent = m;
+      document.getElementById("seconds").textContent = sec;
+      document.getElementById("buxnx").textContent = now< presaleStart ? "Buy XNX in Presale!" : "Buy XNX Now!";
+    }
+
+    function updateProgress() {
+      const now = new Date();
+      const bar = document.querySelector('.progress-fill');
+      let pct;
+      if (now < presaleStart) {
+        const start = new Date("2025-01-01");
+        pct = Math.min(100, Math.max(0, (now-start)/(presaleStart-start)*100));
+      } else {
+        const since = now - presaleStart;
+        const step  = Math.min(Math.floor(since/monthMs), maxSteps);
+        const intervalStart = new Date(presaleStart.getTime() + step*monthMs);
+        pct = step>=maxSteps ? 100 : Math.min(100, (now-intervalStart)/monthMs*100);
+      }
+      bar.style.width = pct+'%';
+      document.getElementById("progress-text").textContent = pct.toFixed(1)+'% completed';
+    }
+
+    function updatePrice() {
+      const now = new Date();
+      let price = initialPrice;
+      if (now>=presaleStart) {
+        const months = Math.min(Math.floor((now-presaleStart)/monthMs), maxSteps);
+        price = initialPrice * Math.pow(1.005, months);
+      }
+      document.getElementById("actprice")?.textContent = price.toFixed(6);
+    }
+
+    // Wallet & Buy-Logic
+    const connectBtn = document.getElementById('connectWallet');
+    const walletInfo = document.getElementById('walletInfo');
+    const solInput   = document.getElementById('solAmount');
+    const info       = document.getElementById('info');
+    const buyBtn     = document.getElementById('buyBtn');
+    let userPubKey   = null;
+    const SALE_ADDR  = '87rM7pH6PsUQ7zE7458XoD5K7od1heEuv1FyTguxenex';
+    const PRICE_PER  = 0.001648;
+
+    async function connectWallet() {
+      if (window.solana?.isPhantom) {
+        try {
+          const resp = await window.solana.connect();
+          userPubKey = resp.publicKey;
+          walletInfo.textContent = `Verbunden: ${userPubKey}`;
+          buyBtn.disabled = !solInput.value;
+        } catch {
+          alert('Wallet-Verbindung fehlgeschlagen');
+        }
+      } else alert('Bitte Phantom Wallet installieren');
+    }
+    function updateXNX() {
+      const sol = parseFloat(solInput.value);
+      if (!sol || sol<=0) {
+        info.textContent = 'Bitte gültige SOL-Menge';
+        buyBtn.disabled = true; return;
+      }
+      const tokens = Math.floor((sol/PRICE_PER)*10000)/10000;
+      info.innerHTML = `Du erhältst: <strong>${tokens}</strong> XNX`;
+      buyBtn.disabled = !userPubKey;
+    }
+    async function buyTokens() {
+      const sol = parseFloat(solInput.value);
+      if (!userPubKey||!sol) return alert('Bitte Wallet verbinden & SOL korrekt eingeben');
+      buyBtn.innerHTML = 'Wird verarbeitet <span class="loader"></span>';
+      buyBtn.disabled = true;
+      setTimeout(()=> {
+        const uri = new URL(`solana:${SALE_ADDR}`);
+        uri.searchParams.set('amount', sol);
+        uri.searchParams.set('label', 'XenexAI Presale');
+        window.location.href = uri;
+      },1200);
+    }
+    connectBtn.addEventListener('click', connectWallet);
+    solInput.addEventListener('input', updateXNX);
+    buyBtn.addEventListener('click', buyTokens);
+
+    // Intervall-Updates
+    setInterval(updateCountdown,1000);
+    setInterval(updateProgress,1000);
+    setInterval(updatePrice,1000);
+    updateCountdown(); updateProgress(); updatePrice();
+  </script>
+</body>
+</html>
