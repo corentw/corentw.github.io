@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Xenex AI - The future of Alien-AI blockchain with high scalability, lightning-fast transactions, and AI-powered investment strategies." />
+  <meta name="keywords" content="Xenex AI, Blockchain, Cryptocurrency, Presale, Tokens, AI" />
+  <meta name="author" content="Xenex AI Team" />
+  <link rel="icon" href="../img/logo.png" type="image/x-icon" />
+  <title>Xenex AI</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <!-- Solana Web3.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.93.0/lib/index.iife.min.js"></script>
+  <style>
+    /* Alle Styles bleiben wie in Deiner v0_02.html */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #0a0a0a;
+      color: #00ffcc;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease;
+    }
+    .fcolor { color: #00ffcc; }
+    header { position: fixed; top: 0; left: 0; width: 92%; padding: 4px 4%; background: rgba(10,10,10,0.9); z-index:1000; display:flex; justify-content:space-between; align-items:center; transition:background-color 0.5s ease; }
+    .dashboard-icon { display:inline-flex; align-items:center; cursor:pointer; right:56px; position:fixed; top:28px; }
+    .dashboard-icon svg { width:36px; height:36px; fill:#00ffcc; transition:transform 0.3s ease; }
+    .dashboard-icon:hover svg { transform:scale(1.1); }
+    .menu-toggle { display:none; font-size:2rem; cursor:pointer; color:#00ffcc; }
+    .navbar { display:flex; gap:10px; }
+    .navbar a { color:#00ffcc; font-size:1.2rem; text-decoration:none; position:relative; transition:color 0.3s ease-in-out; }
+    .navbar a::after { content:''; position:absolute; width:0; height:2px; bottom:-5px; left:50%; background:#00ffcc; transition:all 0.3s ease-in-out; transform:translateX(-50%); }
+    .navbar a:hover { color:#00cca3; }
+    .navbar a:hover::after { width:100%; }
+    @media(max-width:768px) {
+      .menu-toggle { display:block; }
+      .navbar { display:none; flex-direction:column; position:absolute; top:84px; left:0; width:92%; background:rgba(10,10,10,0.9); text-align:center; padding:2% 4%; }
+      .navbar.show { display:flex; }
+    }
+    .hero {
+      height:100vh;
+      background: url('../img/xenex_background.gif') no-repeat center center fixed;
+      background-size:cover;
+      background-color: rgba(0,0,0,0.68);
+      text-align:center;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      animation:fadeInUp 0.8s ease-out;
+    }
+    .hero img { width:150px; margin-bottom:20px; animation:pulse 2s infinite; }
+    @keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);} }
+    @keyframes fadeInUp { 0%{opacity:0;transform:translateY(40px);}100%{opacity:1;transform:translateY(0);} }
+    .buy-now { display:inline-block; padding:15px 30px; margin-top:20px; background:#00ffcc; color:#0a0a0a; border-radius:5px; font-size:1.5rem; font-weight:bold; transition:transform 0.3s,background 0.3s; }
+    .buy-now:hover { transform:scale(1.1); background:#00cca3; }
+    .buy-now-presale { display:inline-block; padding:12px 8px; margin:20px 9px 0 9px; background:#00ffcc; color:#0a0a0a; border-radius:5px; font-size:1rem; font-weight:bold; transition:transform 0.6s,background 0.3s; }
+    .buy-now-presale:hover { transform:scale(1.1); background:#00cca3; }
+    .countdown-section { background:#111; padding:80px 20px; text-align:center; background:url('../img/nois.gif') no-repeat center center fixed; background-size:cover; box-shadow:inset 0 0 30px rgba(0,0,0,0.7); }
+    .countdown-container { display:flex; justify-content:center; gap:15px; font-family:Arial,sans-serif; }
+    .time-box { background:#111; color:#fff; padding:10px 15px; border-radius:8px; text-align:center; font-size:24px; }
+    .time-box span { display:block; font-size:32px; font-weight:bold; }
+    .time-box small { font-size:12px; text-transform:uppercase; opacity:0.7; }
+    .progress-container { width:80%; max-width:600px; margin:20px auto; }
+    .progress-bar { width:100%; height:20px; background:rgba(255,255,255,0.2); border-radius:10px; position:relative; overflow:hidden; }
+    .progress-fill { height:100%; width:0; background:linear-gradient(90deg,#00ffcc,#00cca3); transition:width 1s ease-in-out; }
+    .glare { position:absolute; top:0; left:0; width:10%; height:100%; background:rgba(255,255,255,0.6); opacity:0.7; filter:blur(2px); transform:skewX(-20deg); animation:glareMove 2s linear infinite; }
+    @keyframes glareMove { from{left:-10%;}to{left:100%;} }
+    .progress-text { margin-top:18px; font-size:.8rem; color:#00ffcc; text-shadow:0 0 10px rgba(0,255,204,0.8); }
+    .fab { position:fixed; bottom:20px; right:20px; background:#00ffcc; color:#0a0a0a; border-radius:50%; padding:20px; font-size:1.5rem; box-shadow:0 4px 10px rgba(0,0,0,0.2); cursor:pointer; transition:transform .3s; }
+    .fab:hover { transform:scale(1.1); }
+    footer { position:fixed; bottom:0; left:0; width:100%; background:rgba(10,10,10,0.9); color:#fff; text-align:center; padding:2px 0; }
+  </style>
+</head>
+<body>
+  <div class="banner" data-aos="fade-out"><marquee id="promo-text">Lädt...</marquee></div>
+  <header>
+    <h2>Xenex AI</h2>
+    <div class="dashboard-icon" onclick="openModal('modal-dashboard')">…</div>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    <nav class="navbar">…</nav>
+  </header>
+  <div class="video-background"><video class="bg-video" autoplay muted loop playsinline><source src="https://xenex-ai.github.io/img/promo_presale_small.mp4" type="video/mp4"></video><div class="video-overlay"></div></div>
+
+  <span class="hero" id="hero" data-aos="fade-up">
+    <img src="../img/logo.png" alt="Xenex AI Logo" />
+    <h2>The Future of Alien-AI Blockchain</h2>
+    <h3>A cutting-edge, secure, and decentralized cryptocurrency</h3>
+    <a class="buy-now" href="#presale">Buy Now</a>
+  </span>
+
+  <section class="countdown-section" id="presale" data-aos="fade-up">
+    <h2 id="buxnx">Buy XNX in presale!</h2>
+    <div id="countdown" class="countdown-container">…</div>
+    <div class="progress-container">…</div>
+    <div class="progress-raised">USD raised: $1,458,501.91<br>CRX raised: 86,765,221.099017<br><br>1 XNX = $<span id="actprice">n/A</span><br></div>
+    <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-card')">BUY WITH CARD</a>
+    <a class="buy-now-presale" href="javascript:void(0)" onclick="openModal('modal-crypto')">BUY WITH CRYPTO</a>
+
+    <!-- Neuer Inline-Crypto UX Block -->
+    <div class="card" style="margin-top:2rem;">
+      <button id="connectWalletInline">Wallet verbinden</button>
+      <div id="walletInfoInline" style="margin:1rem 0; color:#ccc;">Noch nicht verbunden</div>
+      <input id="solAmountInline" type="number" step="0.0001" min="0.0001" placeholder="SOL Betrag eingeben" />
+      <div id="infoInline" style="margin-top:1rem;">Du erhältst: 0 XNX</div>
+      <button id="buyBtnInline" disabled style="margin-top:1rem;">Buy XNX</button>
+    </div>
+  </section>
+
+  <section id="faq" class="faq-section" data-aos="fade-up">…</section>
+  <section id="team" class="team-section">…</section>
+  <div id="modal-card" class="modal">…</div>
+  <div id="modal-crypto" class="modal">…</div>
+  <div id="modal-dashboard" class="modal">…</div>
+  <footer>…</footer>
+
+  <script>
+    AOS.init(); let btime='yes';
+    function toggleMenu(){ document.querySelector('.navbar').classList.toggle('show'); }
+    function openModal(id){ document.getElementById(id).style.display='block'; }
+    function closeModal(id){ document.getElementById(id).style.display='none'; }
+    // Inline-Crypto UX Logic
+    const connectBtnInline = document.getElementById('connectWalletInline');
+    const walletInfoInline= document.getElementById('walletInfoInline');
+    const solInputInline  = document.getElementById('solAmountInline');
+    const infoInline      = document.getElementById('infoInline');
+    const buyBtnInline    = document.getElementById('buyBtnInline');
+    let userPubKeyInline = null;
+    const SALE_ADDR='87rM7pH6PsUQ7zE7458XoD5K7od1heEuv1FyTguxenex';
+    const PRICE_PER=0.001648;
+    async function connectWalletInline(){
+      if(window.solana?.isPhantom){
+        try{ const resp= await window.solana.connect(); userPubKeyInline=resp.publicKey; walletInfoInline.textContent=`Verbunden: ${userPubKeyInline}`; buyBtnInline.disabled=!solInputInline.value; }
+        catch{ alert('Wallet-Verbindung fehlgeschlagen'); }
+      } else alert('Phantom Wallet installieren');
+    }
+    function updateXNXInline(){ const sol=parseFloat(solInputInline.value); if(!sol||sol<=0){ infoInline.textContent='Bitte gültige SOL-Menge'; buyBtnInline.disabled=true;return;} const tokens=Math.floor((sol/PRICE_PER)*10000)/10000; infoInline.innerHTML=`Du erhältst: <strong>${tokens}</strong> XNX`; buyBtnInline.disabled=!userPubKeyInline;} 
+    function buyTokensInline(){ const sol=parseFloat(solInputInline.value); if(!userPubKeyInline||!sol) return alert('Wallet verbinden & SOL eingeben'); buyBtnInline.textContent='Lädt…'; buyBtnInline.disabled=true; setTimeout(()=>{ const uri=new URL(`solana:${SALE_ADDR}`); uri.searchParams.set('amount',sol); uri.searchParams.set('label','XenexAI Presale'); window.location.href=uri; },1000); }
+    connectBtnInline.addEventListener('click',connectWalletInline);
+    solInputInline.addEventListener('input',updateXNXInline);
+    buyBtnInline.addEventListener('click',buyTokensInline);
+  </script>
+</body>
+</html>
